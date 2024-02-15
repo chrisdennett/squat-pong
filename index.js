@@ -9,19 +9,19 @@ const webcamSize = { w: 320, h: 240 };
 let targetColour1 = { r: 255, g: 0, b: 0 }; // pink
 let tragetColourTotal = targetColour1.r + targetColour1.g + targetColour1.b;
 
-const tolerance = 30; // threshold
+const tolerance = 10; // threshold
 const colourCountTarg = 5;
 ctx.fillStyle = "red";
 
 // Setup
-canvas.width = 800;
-canvas.height = 600;
+canvas.width = 1280;
+canvas.height = 960;
 
 const smallCanvas = document.querySelector("#smallCanvas");
-smallCanvas.width = canvas.width;
-smallCanvas.height = canvas.height;
-const smallCtx = smallCanvas.getContext("2d");
-smallCtx.willReadFrequently = true;
+smallCanvas.width = 320;
+smallCanvas.height = 240;
+const smallCtx = smallCanvas.getContext("2d", { willReadFrequently: true });
+// smallCtx.willReadFrequently = true;
 
 const scaleX = canvas.width / smallCanvas.width;
 const scaleY = canvas.height / smallCanvas.height;
@@ -61,7 +61,12 @@ function loop() {
     canvas.height
   );
 
-  const imgData = smallCtx.getImageData(0, 0, canvas.width, canvas.height);
+  const imgData = smallCtx.getImageData(
+    0,
+    0,
+    smallCanvas.width,
+    smallCanvas.height
+  );
   const data = imgData.data;
 
   let marker = { x: 0, y: 0 };
@@ -78,18 +83,22 @@ function loop() {
       const g = data[i + 1];
       const b = data[i + 2];
 
-      if (
-        r === targetColour1.r &&
-        g === targetColour1.g &&
-        b === targetColour1.b
-      ) {
+      const testColour = { r, g, b };
+      isWithinTolerance;
+
+      if (isWithinTolerance(testColour, targetColour1, tolerance)) {
         marker = { x, y };
       }
     }
   }
 
   ctx.fillStyle = "red";
-  ctx.fillRect(marker.x * scaleX, marker.y * scaleY, 30, 30);
+  ctx.fillRect(
+    Math.round(marker.x * scaleX),
+    Math.round(marker.y * scaleX),
+    30,
+    30
+  );
 
   window.requestAnimationFrame(loop);
 }
@@ -103,6 +112,9 @@ function drawRect() {
 function drawVideoToCanvas(video, canvas) {
   const { videoWidth, videoHeight } = video;
   const ctx = canvas.getContext("2d");
+  ctx.save();
+  // ctx.translate(canvas.width, 0);
+  // ctx.scale(-1, 1);
   ctx.drawImage(
     video,
     0,
@@ -114,6 +126,7 @@ function drawVideoToCanvas(video, canvas) {
     canvas.width,
     canvas.height
   );
+  ctx.restore();
 }
 
 function isWithinTolerance(colour1, colour2, tolerance) {

@@ -17,7 +17,7 @@ body {
 
 #canvas {
   outline: 1px solid black;
-  transform: scaleX(-1);
+  /* transform: scaleX(-1); */
 }
 
 #smallCanvas {
