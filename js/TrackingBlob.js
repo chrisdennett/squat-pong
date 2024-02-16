@@ -27,29 +27,31 @@ export class TrackingBlob {
   }
 
   addIfWithinRange(x, y, maxDistance) {
-    // const isWithinRange =
-    //   Math.abs(x - this.centerX) <= maxDistance &&
-    //   Math.abs(y - this.centerY) <= maxDistance;
+    const isWithinRange =
+      Math.abs(x - this.centerX) <= maxDistance &&
+      Math.abs(y - this.centerY) <= maxDistance;
 
-    // if (isWithinRange) {
-    // adjust blob to contain x and y
-    if (x < this.left) {
-      this.left = x;
-    }
-    if (x > this.right) {
-      this.right = x;
-    }
+    if (isWithinRange || this.centerX === 0) {
+      // adjust blob to contain x and y
+      if (x < this.left) {
+        this.left = x;
+      }
+      if (x > this.right) {
+        this.right = x;
+      }
 
-    if (y < this.top) {
-      this.top = y;
-    }
-    if (y > this.bottom) {
-      this.bottom = y;
-    }
+      if (y < this.top) {
+        this.top = y;
+      }
+      if (y > this.bottom) {
+        this.bottom = y;
+      }
 
-    this.width = this.right - this.left;
-    this.height = this.bottom - this.top;
-    // }
+      this.width = this.right - this.left;
+      this.height = this.bottom - this.top;
+      this.centerX = this.left + this.width / 2;
+      this.centerY = this.top + this.height / 2;
+    }
 
     return true;
   }

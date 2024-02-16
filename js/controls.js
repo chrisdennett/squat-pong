@@ -6,6 +6,13 @@ const defaultSettings = {
     step: 1,
     value: window.localStorage.getItem("tolerance") || 12,
   },
+  maxBlobRadius: {
+    type: "slider",
+    min: 1,
+    max: 300,
+    step: 1,
+    value: window.localStorage.getItem("maxBlobRadius") || 80,
+  },
   // flipY: {
   //   type: "checkbox",
   //   value: window.localStorage.getItem("flipY") === "false" ? false : true,
@@ -45,6 +52,7 @@ export function initControls(controlsElement) {
 
     if (c.type === "slider") {
       let inputElement = document.createElement("input");
+      inputElement.style = "vertical-align: middle;";
       inputElement.type = "range";
       inputElement.min = c.min;
       inputElement.max = c.max;

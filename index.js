@@ -9,8 +9,7 @@ const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
 // Settings
 const webcamSize = { w: 320, h: 240 };
-let targetColour = { r: 255, g: 0, b: 0 };
-const maxBlobRadius = 100;
+let targetColour = { r: 60, g: 255, b: 255 };
 
 // Setup
 canvas.width = 800;
@@ -25,6 +24,7 @@ smallCtx.willReadFrequently = true;
 const scaleX = canvas.width / smallCanvas.width;
 // const scaleY = canvas.height / smallCanvas.height;
 const blob = new TrackingBlob(targetColour);
+const allBlobs = [blob];
 
 // kick things off
 const controls = document.querySelector("#controls");
@@ -58,7 +58,7 @@ function loop() {
     canvas.height
   );
 
-  blob.clear();
+  allBlobs[0].clear();
 
   const imgData = smallCtx.getImageData(
     0,
@@ -89,26 +89,18 @@ function loop() {
           params.tolerance
         )
       ) {
-        blob.addIfWithinRange(x * scaleX, y * scaleX, maxBlobRadius);
+        allBlobs[0].addIfWithinRange(
+          x * scaleX,
+          y * scaleX,
+          params.maxBlobRadius
+        );
       }
     }
   }
 
-  blob.display(ctx, scaleX);
+  allBlobs[0].display(ctx, scaleX);
 
   window.requestAnimationFrame(loop);
-}
-
-function drawBlob(blob) {
-  ctx.fillStyle = "red";
-  const x = blob.x1 * scaleX;
-  const y = blob.y1 * scaleX;
-  const w = (blob.x2 - blob.x1) * scaleX;
-  const h = (blob.y2 - blob.y1) * scaleX;
-
-  if (w > 0) {
-    ctx.fillRect(x, y, w, h);
-  }
 }
 
 // const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
