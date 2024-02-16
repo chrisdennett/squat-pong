@@ -1,34 +1,31 @@
 import { connectWebcam } from "./js/connectWebcam.js";
+import { initControls } from "./js/controls.js";
 
 const webcamVideo = document.querySelector("#webcamVideo");
 const canvas = document.querySelector("#canvas");
-const ctx = canvas.getContext("2d", { willReadFrequently: true });
+const ctx = canvas.getContext("2d");
 
 // Settings
 const webcamSize = { w: 320, h: 240 };
-let targetColour1 = { r: 255, g: 0, b: 0 }; // pink
-let tragetColourTotal = targetColour1.r + targetColour1.g + targetColour1.b;
+let targetColour = { r: 255, g: 0, b: 0 }; // pink
 
-const tolerance = 10; // threshold
-const colourCountTarg = 5;
-ctx.fillStyle = "red";
-
+const tolerance = 7; // threshold
 // Setup
-canvas.width = 1280;
-canvas.height = 960;
+canvas.width = 800;
+canvas.height = 600;
 
 const smallCanvas = document.querySelector("#smallCanvas");
 smallCanvas.width = 320;
 smallCanvas.height = 240;
 const smallCtx = smallCanvas.getContext("2d", { willReadFrequently: true });
-// smallCtx.willReadFrequently = true;
+smallCtx.willReadFrequently = true;
 
 const scaleX = canvas.width / smallCanvas.width;
 const scaleY = canvas.height / smallCanvas.height;
 
-console.log("scaleX: ", scaleX);
-
 // kick things off
+const controls = document.querySelector("#controls");
+const params = initControls(controls);
 connectWebcam(webcamVideo, webcamSize.w, webcamSize.h);
 loop();
 
@@ -37,17 +34,15 @@ canvas.addEventListener("click", (e) => {
   const r = imageData[0];
   const g = imageData[1];
   const b = imageData[2];
-
-  const rgbaColor = "rgb(" + r + "," + g + "," + b + ")";
-  console.log("rgbaColor: ", rgbaColor);
-
-  targetColour1 = { r, g, b }; // pink
-  tragetColourTotal = r + g + b;
+  // const rgbaColor = "rgb(" + r + "," + g + "," + b + ")";
+  targetColour = { r, g, b };
 });
 
 // Loop
 function loop() {
   drawVideoToCanvas(webcamVideo, smallCanvas);
+
+  console.log("params.tolerance: ", params.tolerance);
 
   ctx.drawImage(
     smallCanvas,
@@ -69,7 +64,8 @@ function loop() {
   );
   const data = imgData.data;
 
-  let marker = { x: 0, y: 0 };
+  // let marker = { x: 0, y: 0 };
+  let blobBounds = { x1: 1000, y1: 1000, x2: 10, y2: 10 };
 
   // for every row
   for (let y = 0; y < smallCanvas.height; y++) {
@@ -84,37 +80,61 @@ function loop() {
       const b = data[i + 2];
 
       const testColour = { r, g, b };
-      isWithinTolerance;
 
-      if (isWithinTolerance(testColour, targetColour1, tolerance)) {
-        marker = { x, y };
+      if (isWithinTolerance(testColour, targetColour, params.tolerance)) {
+        if (x < blobBounds.x1) {
+          blobBounds.x1 = x;
+        }
+        if (x > blobBounds.x2) {
+          blobBounds.x2 = x;
+        }
+
+        if (y < blobBounds.y1) {
+          blobBounds.y1 = y;
+        }
+        if (y > blobBounds.y2) {
+          blobBounds.y2 = y;
+        }
+
+        // marker = { x, y };
       }
     }
   }
 
-  ctx.fillStyle = "red";
-  ctx.fillRect(
-    Math.round(marker.x * scaleX),
-    Math.round(marker.y * scaleX),
-    30,
-    30
-  );
+  // drawRect(marker);
+  drawBlob(blobBounds);
 
   window.requestAnimationFrame(loop);
 }
 
-function drawRect() {
-  ctx.clearRect(0, 0, canvas.width, canvas.height);
-  ctx.fillStyle = "pink";
-  ctx.fillRect(rectX, rectY, rectWidth, rectHeight);
+function drawBlob(blob) {
+  ctx.fillStyle = "red";
+  const x = blob.x1 * scaleX;
+  const y = blob.y1 * scaleX;
+  const w = (blob.x2 - blob.x1) * scaleX;
+  const h = (blob.y2 - blob.y1) * scaleX;
+
+  if (w > 0) {
+    ctx.fillRect(x, y, w, h);
+  }
+}
+
+function drawRect(marker) {
+  ctx.fillStyle = "red";
+  ctx.fillRect(
+    Math.round(marker.x * scaleX),
+    Math.round(marker.y * scaleY),
+    30,
+    30
+  );
 }
 
 function drawVideoToCanvas(video, canvas) {
   const { videoWidth, videoHeight } = video;
   const ctx = canvas.getContext("2d");
   ctx.save();
-  // ctx.translate(canvas.width, 0);
-  // ctx.scale(-1, 1);
+  ctx.translate(canvas.width, 0);
+  ctx.scale(-1, 1);
   ctx.drawImage(
     video,
     0,
@@ -176,7 +196,7 @@ function isWithinTolerance(colour1, colour2, tolerance) {
 //     // Access the RGBA values of the pixel
 //     const webcamColour = { r: data[i], g: data[i + 1], b: data[i + 2] };
 
-//     colour1Found = testColour(webcamColour, targetColour1, tolerance);
+//     colour1Found = testColour(webcamColour, targetColour, tolerance);
 
 //     if (colour1Found) {
 //       colour1Count++;
@@ -217,7 +237,7 @@ function isWithinTolerance(colour1, colour2, tolerance) {
 //     const b = data[i + 2];
 //     const testColour = { r, g, b };
 
-//     if (isWithinTolerance(testColour, targetColour1, tolerance)) {
+//     if (isWithinTolerance(testColour, targetColour, tolerance)) {
 //       const colourTotal = r + b + g;
 //       const distanceFromTarget = Math.abs(tragetColourTotal - colourTotal);
 //       if (distanceFromTarget < closestMatch) {
