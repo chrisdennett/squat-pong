@@ -25,7 +25,7 @@ export function initControls(controlsElement) {
   const params = {};
   const keys = Object.keys(settings);
   for (let key of keys) {
-    params[key] = defaultSettings[key].value;
+    params[key] = parseFloat(defaultSettings[key].value);
   }
 
   for (let key of Object.keys(settings)) {

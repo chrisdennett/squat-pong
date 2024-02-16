@@ -1,15 +1,17 @@
+import { TrackingBlob } from "./js/TrackingBlob.js";
 import { connectWebcam } from "./js/connectWebcam.js";
 import { initControls } from "./js/controls.js";
+import { drawVideoToCanvas } from "./js/drawVideoToCanvas.js";
 
 const webcamVideo = document.querySelector("#webcamVideo");
 const canvas = document.querySelector("#canvas");
-const ctx = canvas.getContext("2d");
+const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
 // Settings
 const webcamSize = { w: 320, h: 240 };
-let targetColour = { r: 255, g: 0, b: 0 }; // pink
+let targetColour = { r: 255, g: 0, b: 0 };
+const maxBlobRadius = 100;
 
-const tolerance = 7; // threshold
 // Setup
 canvas.width = 800;
 canvas.height = 600;
@@ -21,7 +23,8 @@ const smallCtx = smallCanvas.getContext("2d", { willReadFrequently: true });
 smallCtx.willReadFrequently = true;
 
 const scaleX = canvas.width / smallCanvas.width;
-const scaleY = canvas.height / smallCanvas.height;
+// const scaleY = canvas.height / smallCanvas.height;
+const blob = new TrackingBlob(targetColour);
 
 // kick things off
 const controls = document.querySelector("#controls");
@@ -34,15 +37,14 @@ canvas.addEventListener("click", (e) => {
   const r = imageData[0];
   const g = imageData[1];
   const b = imageData[2];
-  // const rgbaColor = "rgb(" + r + "," + g + "," + b + ")";
+  const rgbaColor = "rgb(" + r + "," + g + "," + b + ")";
+  console.log("rgbaColor: ", rgbaColor);
   targetColour = { r, g, b };
 });
 
 // Loop
 function loop() {
   drawVideoToCanvas(webcamVideo, smallCanvas);
-
-  console.log("params.tolerance: ", params.tolerance);
 
   ctx.drawImage(
     smallCanvas,
@@ -56,6 +58,8 @@ function loop() {
     canvas.height
   );
 
+  blob.clear();
+
   const imgData = smallCtx.getImageData(
     0,
     0,
@@ -63,9 +67,6 @@ function loop() {
     smallCanvas.height
   );
   const data = imgData.data;
-
-  // let marker = { x: 0, y: 0 };
-  let blobBounds = { x1: 1000, y1: 1000, x2: 10, y2: 10 };
 
   // for every row
   for (let y = 0; y < smallCanvas.height; y++) {
@@ -81,28 +82,19 @@ function loop() {
 
       const testColour = { r, g, b };
 
-      if (isWithinTolerance(testColour, targetColour, params.tolerance)) {
-        if (x < blobBounds.x1) {
-          blobBounds.x1 = x;
-        }
-        if (x > blobBounds.x2) {
-          blobBounds.x2 = x;
-        }
-
-        if (y < blobBounds.y1) {
-          blobBounds.y1 = y;
-        }
-        if (y > blobBounds.y2) {
-          blobBounds.y2 = y;
-        }
-
-        // marker = { x, y };
+      if (
+        TrackingBlob.isWithinTolerance(
+          testColour,
+          targetColour,
+          params.tolerance
+        )
+      ) {
+        blob.addIfWithinRange(x * scaleX, y * scaleX, maxBlobRadius);
       }
     }
   }
 
-  // drawRect(marker);
-  drawBlob(blobBounds);
+  blob.display(ctx, scaleX);
 
   window.requestAnimationFrame(loop);
 }
@@ -117,62 +109,6 @@ function drawBlob(blob) {
   if (w > 0) {
     ctx.fillRect(x, y, w, h);
   }
-}
-
-function drawRect(marker) {
-  ctx.fillStyle = "red";
-  ctx.fillRect(
-    Math.round(marker.x * scaleX),
-    Math.round(marker.y * scaleY),
-    30,
-    30
-  );
-}
-
-function drawVideoToCanvas(video, canvas) {
-  const { videoWidth, videoHeight } = video;
-  const ctx = canvas.getContext("2d");
-  ctx.save();
-  ctx.translate(canvas.width, 0);
-  ctx.scale(-1, 1);
-  ctx.drawImage(
-    video,
-    0,
-    0,
-    videoWidth,
-    videoHeight,
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
-  ctx.restore();
-}
-
-function isWithinTolerance(colour1, colour2, tolerance) {
-  // test red
-  const minR = colour1.r - tolerance;
-  const maxR = colour1.r + tolerance;
-  if (colour2.r < minR || colour2.r > maxR) {
-    return false;
-  }
-
-  // if red matches test green
-  const minG = colour1.g - tolerance;
-  const maxG = colour1.g + tolerance;
-  if (colour2.g < minG || colour2.g > maxG) {
-    return false;
-  }
-
-  // if green matches test blue
-  const minB = colour1.b - tolerance;
-  const maxB = colour1.b + tolerance;
-  if (colour2.b < minB || colour2.b > maxB) {
-    return false;
-  }
-
-  // all matches.  Yay!
-  return true;
 }
 
 // const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
