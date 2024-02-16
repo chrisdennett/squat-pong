@@ -23,7 +23,7 @@ smallCtx.willReadFrequently = true;
 
 const scaleX = canvas.width / smallCanvas.width;
 // const scaleY = canvas.height / smallCanvas.height;
-const blob = new TrackingBlob(targetColour);
+const blob = new TrackingBlob();
 const allBlobs = [blob];
 
 // kick things off
@@ -58,7 +58,9 @@ function loop() {
     canvas.height
   );
 
-  allBlobs[0].clear();
+  for (let blob of allBlobs) {
+    blob.clear();
+  }
 
   const imgData = smallCtx.getImageData(
     0,
@@ -89,16 +91,30 @@ function loop() {
           params.tolerance
         )
       ) {
-        allBlobs[0].addIfWithinRange(
-          x * scaleX,
-          y * scaleX,
-          params.maxBlobRadius
-        );
+        let addedToBlob = false;
+        const xPos = x * scaleX;
+        const yPos = y * scaleX;
+
+        for (let blob of allBlobs) {
+          addedToBlob = blob.addIfWithinRange(xPos, yPos, params.maxBlobRadius);
+
+          if (addedToBlob) {
+            break;
+          }
+        }
+
+        if (!addedToBlob) {
+          const newBlob = new TrackingBlob();
+          newBlob.addIfWithinRange(xPos, yPos, params.maxBlobRadius);
+          allBlobs.push(newBlob);
+        }
       }
     }
   }
 
-  allBlobs[0].display(ctx, scaleX);
+  for (let blob of allBlobs) {
+    blob.display(ctx, scaleX);
+  }
 
   window.requestAnimationFrame(loop);
 }

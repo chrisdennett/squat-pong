@@ -1,6 +1,5 @@
 export class TrackingBlob {
-  constructor(colour) {
-    this.colour = colour;
+  constructor() {
     this.left = 10000;
     this.top = 10000;
     this.right = 0;
@@ -9,10 +8,8 @@ export class TrackingBlob {
     this.height = 0;
     this.centerX = 0;
     this.centerY = 0;
-  }
-
-  updateColour(colour) {
-    this.colour = colour;
+    const h = Math.round(Math.random() * 360);
+    this.fill = `hsl(${h},50%, 50%)`;
   }
 
   clear() {
@@ -31,7 +28,9 @@ export class TrackingBlob {
       Math.abs(x - this.centerX) <= maxDistance &&
       Math.abs(y - this.centerY) <= maxDistance;
 
-    if (isWithinRange || this.centerX === 0) {
+    const yesAddToBlob = isWithinRange || this.centerX === 0;
+
+    if (yesAddToBlob) {
       // adjust blob to contain x and y
       if (x < this.left) {
         this.left = x;
@@ -53,11 +52,11 @@ export class TrackingBlob {
       this.centerY = this.top + this.height / 2;
     }
 
-    return true;
+    return yesAddToBlob;
   }
 
   display(ctx) {
-    ctx.fillStyle = "red";
+    ctx.fillStyle = this.fill;
     const x = this.left;
     const y = this.top;
     const w = this.width;
