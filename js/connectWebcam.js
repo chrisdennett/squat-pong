@@ -14,11 +14,8 @@ export function connectWebcam(videoElement, width, height) {
 }
 
 /**
-
 // Use this function in app like so:
 import { connectWebcam } from "./js/connectWebcam.js";
-
 const webcamVideo = document.querySelector("#webcamVideo");
 connectWebcam(webcamVideo);
-
  */
