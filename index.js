@@ -4,12 +4,43 @@ import { initControls } from "./js/controls.js";
 import { drawVideoToCanvas } from "./js/drawVideoToCanvas.js";
 
 const webcamVideo = document.querySelector("#webcamVideo");
+const info = document.querySelector("#info");
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
 // Settings
 const webcamSize = { w: 320, h: 240 };
 let targetColour = { r: 179, g: 184, b: 99 }; // rgb(179,184,99)
+
+const blendModes = [
+  "source-over",
+  "source-in",
+  "source-out",
+  "source-atop",
+  "destination-over",
+  "destination-in",
+  "destination-out",
+  "destination-atop",
+  "lighter",
+  "copy",
+  "xor",
+  "multiply",
+  "screen",
+  "overlay",
+  "darken",
+  "lighten",
+  "color-dodge",
+  "color-burn",
+  "hard-light",
+  "soft-light",
+  "difference",
+  "exclusion",
+  "hue",
+  "saturation",
+  "color",
+  "luminosity",
+];
+let currBlendMode = blendModes[1];
 
 // Setup
 canvas.width = 800;
@@ -18,6 +49,7 @@ canvas.height = 600;
 const smallCanvas = document.querySelector("#smallCanvas");
 smallCanvas.width = 320;
 smallCanvas.height = 240;
+const smallCtx = smallCanvas.getContext("2d");
 
 const scaleX = canvas.width / smallCanvas.width;
 const scaleY = canvas.height / smallCanvas.height;
@@ -31,14 +63,23 @@ connectWebcam(webcamVideo, webcamSize.w, webcamSize.h);
 loop();
 
 // select colour
-canvas.addEventListener("click", (e) => {
-  const imageData = ctx.getImageData(e.offsetX, e.offsetY, 1, 1).data;
+smallCanvas.addEventListener("click", (e) => {
+  const imageData = smallCtx.getImageData(e.offsetX, e.offsetY, 1, 1).data;
   const r = imageData[0];
   const g = imageData[1];
   const b = imageData[2];
   const rgbaColor = "rgb(" + r + "," + g + "," + b + ")";
   console.log("rgbaColor: ", rgbaColor);
   targetColour = { r, g, b };
+});
+
+canvas.addEventListener("click", (e) => {
+  let nextIndex = blendModes.indexOf(currBlendMode) + 1;
+  if (nextIndex > blendModes.length - 1) {
+    nextIndex = 0;
+  }
+  currBlendMode = blendModes[nextIndex];
+  info.innerHTML = currBlendMode;
 });
 
 // Loop
@@ -57,6 +98,10 @@ function loop() {
     canvas.width,
     canvas.height
   );
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+  // ctx.globalCompositeOperation = currBlendMode;
+  ctx.fillRect(0, 0, canvas.width, canvas.height);
 
   for (let blob of allBlobs) {
     blob.clear();
