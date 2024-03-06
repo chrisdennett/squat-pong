@@ -4,59 +4,37 @@ import { initControls } from "./js/controls.js";
 import { drawVideoToCanvas } from "./js/drawVideoToCanvas.js";
 
 const webcamVideo = document.querySelector("#webcamVideo");
-const info = document.querySelector("#info");
+const colour1 = document.querySelector("#colour1");
+const colour2 = document.querySelector("#colour2");
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
 // Settings
 const webcamSize = { w: 320, h: 240 };
-let targetColour = { r: 179, g: 184, b: 99 }; // rgb(179,184,99)
-
-const blendModes = [
-  "source-over",
-  "source-in",
-  "source-out",
-  "source-atop",
-  "destination-over",
-  "destination-in",
-  "destination-out",
-  "destination-atop",
-  "lighter",
-  "copy",
-  "xor",
-  "multiply",
-  "screen",
-  "overlay",
-  "darken",
-  "lighten",
-  "color-dodge",
-  "color-burn",
-  "hard-light",
-  "soft-light",
-  "difference",
-  "exclusion",
-  "hue",
-  "saturation",
-  "color",
-  "luminosity",
-];
-let currBlendMode = blendModes[1];
+let targetColour = { r: 234, g: 255, b: 120 }; // rgb(179,184,99)
+let target2Colour = { r: 255, g: 229, b: 138 };
 
 // Setup
 canvas.width = 800;
 canvas.height = 600;
+colour1.style.width = "30px";
+colour1.style.height = "30px";
+colour1.style.backgroundColor = `rgb(${targetColour.r},${targetColour.g},${targetColour.b})`;
+colour2.style.width = "30px";
+colour2.style.height = "30px";
+colour2.style.backgroundColor = `rgb(${target2Colour.r},${target2Colour.g},${target2Colour.b})`;
 
 const blobsCanvas = document.querySelector("#blobsCanvas");
 const smallCanvas = document.querySelector("#smallCanvas");
 smallCanvas.width = blobsCanvas.width = 320;
 smallCanvas.height = blobsCanvas.height = 240;
-const smallCtx = smallCanvas.getContext("2d");
+const smallCtx = smallCanvas.getContext("2d", { willReadFrequently: true });
 const blobCtx = blobsCanvas.getContext("2d");
 blobCtx.fillStyle = "rgb(255, 255, 255)";
 blobCtx.fillRect(0, 0, blobsCanvas.width, blobsCanvas.height);
 
-const scaleX = canvas.width / smallCanvas.width;
-const scaleY = canvas.height / smallCanvas.height;
+// const scaleX = canvas.width / smallCanvas.width;
+// const scaleY = canvas.height / smallCanvas.height;
 const blob = new TrackingBlob();
 const allBlobs = [blob];
 
@@ -74,16 +52,13 @@ smallCanvas.addEventListener("click", (e) => {
   const b = imageData[2];
   const rgbaColor = "rgb(" + r + "," + g + "," + b + ")";
   console.log("rgbaColor: ", rgbaColor);
-  targetColour = { r, g, b };
-});
-
-blobsCanvas.addEventListener("click", (e) => {
-  let nextIndex = blendModes.indexOf(currBlendMode) + 1;
-  if (nextIndex > blendModes.length - 1) {
-    nextIndex = 0;
+  if (e.shiftKey) {
+    target2Colour = { r, g, b };
+    colour2.style.backgroundColor = `rgb(${r},${g},${b})`;
+  } else {
+    targetColour = { r, g, b };
+    colour1.style.backgroundColor = `rgb(${r},${g},${b})`;
   }
-  currBlendMode = blendModes[nextIndex];
-  info.innerHTML = currBlendMode;
 });
 
 // Loop
@@ -118,7 +93,7 @@ function loop() {
   );
 
   // fade out the blob canvas trails
-  blobCtx.globalAlpha = 0.01; // fade rate
+  blobCtx.globalAlpha = 0.1; // fade rate
   blobCtx.globalCompositeOperation = "destination-out"; // fade out destination pixels
   blobCtx.fillRect(0, 0, blobsCanvas.width, blobsCanvas.height);
   blobCtx.globalCompositeOperation = "source-over";
@@ -128,7 +103,7 @@ function loop() {
     blob.clear();
   }
 
-  runForEveryPixel(smallCanvas, (pixelColour, x, y) => {
+  runForEveryPixel(smallCanvas, smallCtx, (pixelColour, x, y) => {
     const pixelMatchesTarget = TrackingBlob.isWithinTolerance(
       pixelColour,
       targetColour,
@@ -167,8 +142,8 @@ function loop() {
   window.requestAnimationFrame(loop);
 }
 
-function runForEveryPixel(canvas, callback) {
-  const ctx = canvas.getContext("2d", { willReadFrequently: true });
+function runForEveryPixel(canvas, ctx, callback) {
+  ctx.willReadFrequently = true;
   const imgData = ctx.getImageData(0, 0, canvas.width, canvas.height);
   const data = imgData.data;
 
