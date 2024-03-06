@@ -46,10 +46,14 @@ let currBlendMode = blendModes[1];
 canvas.width = 800;
 canvas.height = 600;
 
+const blobsCanvas = document.querySelector("#blobsCanvas");
 const smallCanvas = document.querySelector("#smallCanvas");
-smallCanvas.width = 320;
-smallCanvas.height = 240;
+smallCanvas.width = blobsCanvas.width = 320;
+smallCanvas.height = blobsCanvas.height = 240;
 const smallCtx = smallCanvas.getContext("2d");
+const blobCtx = blobsCanvas.getContext("2d");
+blobCtx.fillStyle = "rgb(255, 255, 255)";
+blobCtx.fillRect(0, 0, blobsCanvas.width, blobsCanvas.height);
 
 const scaleX = canvas.width / smallCanvas.width;
 const scaleY = canvas.height / smallCanvas.height;
@@ -73,7 +77,7 @@ smallCanvas.addEventListener("click", (e) => {
   targetColour = { r, g, b };
 });
 
-canvas.addEventListener("click", (e) => {
+blobsCanvas.addEventListener("click", (e) => {
   let nextIndex = blendModes.indexOf(currBlendMode) + 1;
   if (nextIndex > blendModes.length - 1) {
     nextIndex = 0;
@@ -87,6 +91,7 @@ function loop() {
   // draw webcam to small canvas to reduce pixel count
   drawVideoToCanvas(webcamVideo, smallCanvas);
 
+  // draw small canvas to display canvas
   ctx.drawImage(
     smallCanvas,
     0,
@@ -99,9 +104,25 @@ function loop() {
     canvas.height
   );
 
-  ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
-  // ctx.globalCompositeOperation = currBlendMode;
-  ctx.fillRect(0, 0, canvas.width, canvas.height);
+  // draw blob canvas to display canvas
+  ctx.drawImage(
+    blobsCanvas,
+    0,
+    0,
+    blobsCanvas.width,
+    blobsCanvas.height,
+    0,
+    0,
+    canvas.width,
+    canvas.height
+  );
+
+  // fade out the blob canvas trails
+  blobCtx.globalAlpha = 0.01; // fade rate
+  blobCtx.globalCompositeOperation = "destination-out"; // fade out destination pixels
+  blobCtx.fillRect(0, 0, blobsCanvas.width, blobsCanvas.height);
+  blobCtx.globalCompositeOperation = "source-over";
+  blobCtx.globalAlpha = 1; // reset alpha
 
   for (let blob of allBlobs) {
     blob.clear();
@@ -116,8 +137,8 @@ function loop() {
 
     if (pixelMatchesTarget) {
       let addedToBlob = false;
-      const xPos = x * scaleX;
-      const yPos = y * scaleY;
+      const xPos = x; // * scaleX;
+      const yPos = y; // * scaleY;
 
       for (let blob of allBlobs) {
         // if pixel is close to another blob add it to that blob
@@ -136,9 +157,10 @@ function loop() {
     }
   });
 
-  // draw blobs to
+  // draw blobs to blob canvas
   for (let blob of allBlobs) {
-    blob.display(ctx, scaleX);
+    blob.display(blobCtx, 1);
+    // blob.display(ctx, scaleX);
   }
 
   // keep the loop running

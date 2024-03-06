@@ -55,12 +55,12 @@ export class TrackingBlob {
     return yesAddToBlob;
   }
 
-  display(ctx) {
+  display(ctx, scale) {
     ctx.fillStyle = this.fill;
-    const x = this.left;
-    const y = this.top;
-    const w = this.width;
-    const h = this.height;
+    const x = this.left * scale;
+    const y = this.top * scale;
+    const w = this.width * scale;
+    const h = this.height * scale;
 
     if (w > 0) {
       ctx.fillRect(x, y, w, h);
