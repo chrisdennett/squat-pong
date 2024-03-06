@@ -20,7 +20,7 @@ smallCanvas.width = 320;
 smallCanvas.height = 240;
 
 const scaleX = canvas.width / smallCanvas.width;
-// const scaleY = canvas.height / smallCanvas.height;
+const scaleY = canvas.height / smallCanvas.height;
 const blob = new TrackingBlob();
 const allBlobs = [blob];
 
@@ -30,6 +30,7 @@ const params = initControls(controls);
 connectWebcam(webcamVideo, webcamSize.w, webcamSize.h);
 loop();
 
+// select colour
 canvas.addEventListener("click", (e) => {
   const imageData = ctx.getImageData(e.offsetX, e.offsetY, 1, 1).data;
   const r = imageData[0];
@@ -61,22 +62,27 @@ function loop() {
     blob.clear();
   }
 
-  runForEveryPixel(smallCanvas, (testColour, x, y) => {
-    if (
-      TrackingBlob.isWithinTolerance(testColour, targetColour, params.tolerance)
-    ) {
+  runForEveryPixel(smallCanvas, (pixelColour, x, y) => {
+    const pixelMatchesTarget = TrackingBlob.isWithinTolerance(
+      pixelColour,
+      targetColour,
+      params.tolerance
+    );
+
+    if (pixelMatchesTarget) {
       let addedToBlob = false;
       const xPos = x * scaleX;
-      const yPos = y * scaleX;
+      const yPos = y * scaleY;
 
       for (let blob of allBlobs) {
+        // if pixel is close to another blob add it to that blob
         addedToBlob = blob.addIfWithinRange(xPos, yPos, params.maxBlobRadius);
-
         if (addedToBlob) {
           break;
         }
       }
 
+      // otherwise create a new blob
       if (!addedToBlob) {
         const newBlob = new TrackingBlob();
         newBlob.addIfWithinRange(xPos, yPos, params.maxBlobRadius);
@@ -85,10 +91,12 @@ function loop() {
     }
   });
 
+  // draw blobs to
   for (let blob of allBlobs) {
     blob.display(ctx, scaleX);
   }
 
+  // keep the loop running
   window.requestAnimationFrame(loop);
 }
 
