@@ -11,8 +11,8 @@ const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
 // Settings
 const webcamSize = { w: 320, h: 240 };
-let target1Colour = { r: 210, g: 246, b: 132 }; // rgb(179,184,99)
-let target2Colour = { r: 24, g: 100, b: 65 };
+let target1Colour = { r: 255, g: 144, b: 105 };
+let target2Colour = { r: 192, g: 214, b: 130 };
 
 // Setup
 canvas.width = 800;
@@ -185,12 +185,15 @@ function loop() {
     // if(blob.x + blob.width)
 
     for (let colour2Blob of allBlobs2) {
-      if (colour2Blob.left - colour1Blob.right < 10) {
+      const maxGapSize = 10;
+      const gap = colour2Blob.left - colour1Blob.right;
+
+      if (gap <= maxGapSize && gap >= 0) {
         // found a pair
         blobCtx.strokeStyle = "yellow";
         blobCtx.strokeRect(
           colour1Blob.left,
-          colour1Blob.top,
+          Math.min(colour1Blob.top, colour2Blob.top),
           colour1Blob.width + colour2Blob.width,
           Math.max(colour1Blob.height, colour2Blob.height)
         );
