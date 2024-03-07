@@ -4,25 +4,15 @@ import { connectWebcam } from "./js/connectWebcam.js";
 import { drawVideoToCanvas } from "./js/drawVideoToCanvas.js";
 
 const webcamVideo = document.querySelector("#webcamVideo");
-const colour1 = document.querySelector("#colour1");
-const colour2 = document.querySelector("#colour2");
 const canvas = document.querySelector("#canvas");
 const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
 // Settings
 const webcamSize = { w: 320, h: 240 };
-let target1Colour = { r: 255, g: 144, b: 105 };
-let target2Colour = { r: 192, g: 214, b: 130 };
 
 // Setup
 canvas.width = 800;
 canvas.height = 600;
-colour1.style.width = "30px";
-colour1.style.height = "30px";
-colour1.style.backgroundColor = `rgb(${target1Colour.r},${target1Colour.g},${target1Colour.b})`;
-colour2.style.width = "30px";
-colour2.style.height = "30px";
-colour2.style.backgroundColor = `rgb(${target2Colour.r},${target2Colour.g},${target2Colour.b})`;
 
 const blobsCanvas = document.querySelector("#blobsCanvas");
 const smallCanvas = document.querySelector("#smallCanvas");
@@ -42,26 +32,10 @@ const allBlobs2 = [];
 const controls = document.querySelector("#controls");
 // const params = initControls(controls);
 const blob1Settings = new BlobSettingsPanel(controls, "blob1");
+const blob2Settings = new BlobSettingsPanel(controls, "blob2");
 
 connectWebcam(webcamVideo, webcamSize.w, webcamSize.h);
 loop();
-
-// select colour
-smallCanvas.addEventListener("click", (e) => {
-  const imageData = smallCtx.getImageData(e.offsetX, e.offsetY, 1, 1).data;
-  const r = imageData[0];
-  const g = imageData[1];
-  const b = imageData[2];
-  const rgbaColor = "rgb(" + r + "," + g + "," + b + ")";
-  console.log("rgbaColor: ", rgbaColor);
-  if (e.shiftKey) {
-    target2Colour = { r, g, b };
-    colour2.style.backgroundColor = `rgb(${r},${g},${b})`;
-  } else {
-    target1Colour = { r, g, b };
-    colour1.style.backgroundColor = `rgb(${r},${g},${b})`;
-  }
-});
 
 // Loop
 function loop() {
@@ -149,8 +123,8 @@ function loop() {
     else {
       const pixelMatchesTarget2 = TrackingBlob.isWithinTolerance(
         pixelColour,
-        target2Colour,
-        blob1Settings.tolerance
+        blob2Settings.targetColour,
+        blob2Settings.tolerance
       );
       if (pixelMatchesTarget2) {
         let addedToBlob = false;
@@ -162,7 +136,7 @@ function loop() {
           addedToBlob = blob.addIfWithinRange(
             xPos,
             yPos,
-            blob1Settings.maxBlobRadius
+            blob2Settings.maxBlobRadius
           );
           if (addedToBlob) {
             break;
@@ -172,7 +146,7 @@ function loop() {
         // otherwise create a new blob
         if (!addedToBlob) {
           const newBlob = new TrackingBlob("blue");
-          newBlob.addIfWithinRange(xPos, yPos, blob1Settings.maxBlobRadius);
+          newBlob.addIfWithinRange(xPos, yPos, blob2Settings.maxBlobRadius);
           allBlobs2.push(newBlob);
         }
       }

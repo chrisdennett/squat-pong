@@ -185,3 +185,20 @@ export class BlobSettingsPanel {
     return params;
   }
 }
+
+// // select colour
+// smallCanvas.addEventListener("click", (e) => {
+//   const imageData = smallCtx.getImageData(e.offsetX, e.offsetY, 1, 1).data;
+//   const r = imageData[0];
+//   const g = imageData[1];
+//   const b = imageData[2];
+//   const rgbaColor = "rgb(" + r + "," + g + "," + b + ")";
+//   console.log("rgbaColor: ", rgbaColor);
+//   if (e.shiftKey) {
+//     target2Colour = { r, g, b };
+//     colour2.style.backgroundColor = `rgb(${r},${g},${b})`;
+//   } else {
+//     target1Colour = { r, g, b };
+//     colour1.style.backgroundColor = `rgb(${r},${g},${b})`;
+//   }
+// });

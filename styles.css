@@ -16,6 +16,9 @@ body {
   background-color: gray;
 }
 
+#controls {
+  display: flex;
+}
 #info {
   display: flex;
 }
