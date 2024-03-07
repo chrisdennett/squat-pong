@@ -1,3 +1,4 @@
+import { BlobSettingsPanel } from "./js/BlobSettingsPanel.js";
 import { TrackingBlob } from "./js/TrackingBlob.js";
 import { connectWebcam } from "./js/connectWebcam.js";
 import { initControls } from "./js/controls.js";
@@ -40,7 +41,9 @@ const allBlobs2 = [];
 
 // kick things off
 const controls = document.querySelector("#controls");
-const params = initControls(controls);
+// const params = initControls(controls);
+const blob1Settings = new BlobSettingsPanel(controls, "blob1");
+
 connectWebcam(webcamVideo, webcamSize.w, webcamSize.h);
 loop();
 
@@ -117,7 +120,7 @@ function loop() {
     const pixelMatchesTarget1 = TrackingBlob.isWithinTolerance(
       pixelColour,
       target1Colour,
-      params.tolerance
+      blob1Settings.params.tolerance
     );
     if (pixelMatchesTarget1) {
       let addedToBlob = false;
@@ -126,7 +129,11 @@ function loop() {
 
       for (let blob of allBlobs) {
         // if pixel is close to another blob add it to that blob
-        addedToBlob = blob.addIfWithinRange(xPos, yPos, params.maxBlobRadius);
+        addedToBlob = blob.addIfWithinRange(
+          xPos,
+          yPos,
+          blob1Settings.params.maxBlobRadius
+        );
         if (addedToBlob) {
           break;
         }
@@ -135,7 +142,11 @@ function loop() {
       // otherwise create a new blob
       if (!addedToBlob) {
         const newBlob = new TrackingBlob("red");
-        newBlob.addIfWithinRange(xPos, yPos, params.maxBlobRadius);
+        newBlob.addIfWithinRange(
+          xPos,
+          yPos,
+          blob1Settings.params.maxBlobRadius
+        );
         allBlobs.push(newBlob);
       }
     }
@@ -144,7 +155,7 @@ function loop() {
       const pixelMatchesTarget2 = TrackingBlob.isWithinTolerance(
         pixelColour,
         target2Colour,
-        params.tolerance
+        blob1Settings.params.tolerance
       );
       if (pixelMatchesTarget2) {
         let addedToBlob = false;
@@ -153,7 +164,11 @@ function loop() {
 
         for (let blob of allBlobs2) {
           // if pixel is close to another blob add it to that blob
-          addedToBlob = blob.addIfWithinRange(xPos, yPos, params.maxBlobRadius);
+          addedToBlob = blob.addIfWithinRange(
+            xPos,
+            yPos,
+            blob1Settings.params.maxBlobRadius
+          );
           if (addedToBlob) {
             break;
           }
@@ -162,7 +177,11 @@ function loop() {
         // otherwise create a new blob
         if (!addedToBlob) {
           const newBlob = new TrackingBlob("blue");
-          newBlob.addIfWithinRange(xPos, yPos, params.maxBlobRadius);
+          newBlob.addIfWithinRange(
+            xPos,
+            yPos,
+            blob1Settings.params.maxBlobRadius
+          );
           allBlobs2.push(newBlob);
         }
       }
