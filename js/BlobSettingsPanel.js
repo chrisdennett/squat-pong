@@ -13,6 +13,10 @@ const defaultSettings = {
     step: 1,
     value: window.localStorage.getItem("maxBlobRadius") || 80,
   },
+  targetHexColour: {
+    type: "colour",
+    value: window.localStorage.getItem("targetHexColour") || "ff0000",
+  },
   // flipY: {
   //   type: "checkbox",
   //   value: window.localStorage.getItem("flipY") === "false" ? false : true,
@@ -22,27 +26,61 @@ const settings = JSON.parse(JSON.stringify(defaultSettings));
 
 export class BlobSettingsPanel {
   constructor(parent, id) {
-    this.maxBlobRadius = 10;
-    this.colour = "green";
     this.holder = document.createElement("div");
     this.holder.style.padding = "20px";
     this.holder.innerHTML = `ID: ${id}`;
     parent.appendChild(this.holder);
 
     this.params = this.initControls(this.holder);
-    this.tolerance = this.params.tolerance;
+    this.targetColour = this.getRGBColourObject(this.params.targetHexColour);
+  }
+
+  get tolerance() {
+    return this.params.tolerance;
+  }
+
+  get maxBlobRadius() {
+    return this.params.maxBlobRadius;
+  }
+
+  getRGBColourObject(hexColour) {
+    // convert from hex to rgb(0,0,0);
+    const { style } = new Option();
+    style.color = hexColour;
+    const colourStr = style.color;
+
+    // remove out=er bits
+    const rgbStr = colourStr.substring(4, colourStr.length - 1);
+    // split into values array
+    const [r, g, b] = rgbStr.split(",");
+
+    // return number object
+    return { r: parseInt(r), g: parseInt(g), b: parseInt(b) };
   }
 
   initControls(controlsElement) {
     const params = {};
     const keys = Object.keys(settings);
+
     for (let key of keys) {
-      params[key] = parseFloat(defaultSettings[key].value);
+      if (settings[key].type === "colour") {
+        params[key] = defaultSettings[key].value;
+      } else {
+        params[key] = parseFloat(defaultSettings[key].value);
+      }
     }
 
-    for (let key of Object.keys(settings)) {
+    for (let key of keys) {
       const c = settings[key];
 
+      // ADD values to params
+      if (c.type === "colour") {
+        params[key] = defaultSettings[key].value;
+      } else {
+        params[key] = parseFloat(defaultSettings[key].value);
+      }
+
+      // ADD/SETUP THE CONTROL ELEMENTS
       let holdingDiv = document.createElement("div");
       holdingDiv.classList = ["control"];
 
@@ -55,6 +93,7 @@ export class BlobSettingsPanel {
       let displayCurrentValue = true;
       let valueElement = document.createElement("span");
 
+      // RANGE SLICER
       if (c.type === "slider") {
         let inputElement = document.createElement("input");
         inputElement.style = "vertical-align: middle;";
@@ -72,7 +111,9 @@ export class BlobSettingsPanel {
         });
         inputElements.push(inputElement);
         //
-      } else if (c.type === "checkbox") {
+      }
+      // CHECKBOX
+      else if (c.type === "checkbox") {
         let inputElement = document.createElement("input");
         inputElement.type = "checkbox";
         inputElement.checked = c.value;
@@ -83,8 +124,9 @@ export class BlobSettingsPanel {
           window.localStorage.setItem(key, c.value);
         });
         inputElements.push(inputElement);
-        //
-      } else if (c.type === "radio") {
+      }
+      // RADIO
+      else if (c.type === "radio") {
         displayCurrentValue = false;
         for (let i = 0; i < c.options.length; i++) {
           let inputElement = document.createElement("input");
@@ -106,6 +148,20 @@ export class BlobSettingsPanel {
             window.localStorage.setItem(key, c.value);
           });
         }
+      }
+      // COLOUR
+      else if (c.type === "colour") {
+        let inputElement = document.createElement("input");
+        inputElement.type = "color";
+        inputElement.value = c.value;
+        inputElement.addEventListener("change", (e) => {
+          c.value = e.target.value;
+          params[key] = c.value;
+          this.targetColour = this.getRGBColourObject(params[key]);
+          valueElement.innerHTML = c.value;
+          window.localStorage.setItem(key, c.value);
+        });
+        inputElements.push(inputElement);
       }
 
       if (inputElements.length === 0) {
