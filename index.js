@@ -1,4 +1,5 @@
 import { BlobSettingsPanel } from "./js/BlobSettingsPanel.js";
+import { GlobalSettingsPanel } from "./js/GlobalSettingsPanel.js";
 import { TrackingBlob } from "./js/TrackingBlob.js";
 import { connectWebcam } from "./js/connectWebcam.js";
 import { drawVideoToCanvas } from "./js/drawVideoToCanvas.js";
@@ -33,6 +34,7 @@ const controls = document.querySelector("#controls");
 // const params = initControls(controls);
 const blob1Settings = new BlobSettingsPanel(controls, "blob1");
 const blob2Settings = new BlobSettingsPanel(controls, "blob2");
+const globalSettings = new GlobalSettingsPanel(controls, "global");
 
 connectWebcam(webcamVideo, webcamSize.w, webcamSize.h);
 loop();
@@ -172,7 +174,7 @@ function loop() {
       const maxGapSize = 10;
       const gap = colour2Blob.left - colour1Blob.right;
 
-      if (gap <= maxGapSize && gap >= 0) {
+      if (gap <= globalSettings.blobPairGap && gap >= 0) {
         // found a pair
         blobCtx.strokeStyle = "yellow";
         blobCtx.strokeRect(
