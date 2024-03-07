@@ -11,15 +11,15 @@ const ctx = canvas.getContext("2d", { willReadFrequently: true });
 
 // Settings
 const webcamSize = { w: 320, h: 240 };
-let targetColour = { r: 234, g: 255, b: 120 }; // rgb(179,184,99)
-let target2Colour = { r: 255, g: 229, b: 138 };
+let target1Colour = { r: 210, g: 246, b: 132 }; // rgb(179,184,99)
+let target2Colour = { r: 24, g: 100, b: 65 };
 
 // Setup
 canvas.width = 800;
 canvas.height = 600;
 colour1.style.width = "30px";
 colour1.style.height = "30px";
-colour1.style.backgroundColor = `rgb(${targetColour.r},${targetColour.g},${targetColour.b})`;
+colour1.style.backgroundColor = `rgb(${target1Colour.r},${target1Colour.g},${target1Colour.b})`;
 colour2.style.width = "30px";
 colour2.style.height = "30px";
 colour2.style.backgroundColor = `rgb(${target2Colour.r},${target2Colour.g},${target2Colour.b})`;
@@ -35,8 +35,8 @@ blobCtx.fillRect(0, 0, blobsCanvas.width, blobsCanvas.height);
 
 // const scaleX = canvas.width / smallCanvas.width;
 // const scaleY = canvas.height / smallCanvas.height;
-const blob = new TrackingBlob();
-const allBlobs = [blob];
+const allBlobs = [];
+const allBlobs2 = [];
 
 // kick things off
 const controls = document.querySelector("#controls");
@@ -56,7 +56,7 @@ smallCanvas.addEventListener("click", (e) => {
     target2Colour = { r, g, b };
     colour2.style.backgroundColor = `rgb(${r},${g},${b})`;
   } else {
-    targetColour = { r, g, b };
+    target1Colour = { r, g, b };
     colour1.style.backgroundColor = `rgb(${r},${g},${b})`;
   }
 });
@@ -93,24 +93,33 @@ function loop() {
   );
 
   // fade out the blob canvas trails
-  blobCtx.globalAlpha = 0.1; // fade rate
-  blobCtx.globalCompositeOperation = "destination-out"; // fade out destination pixels
-  blobCtx.fillRect(0, 0, blobsCanvas.width, blobsCanvas.height);
-  blobCtx.globalCompositeOperation = "source-over";
-  blobCtx.globalAlpha = 1; // reset alpha
+  const useGhosting = false;
+  if (useGhosting) {
+    blobCtx.globalAlpha = 0.1; // fade rate
+    blobCtx.globalCompositeOperation = "destination-out"; // fade out destination pixels
+    blobCtx.fillRect(0, 0, blobsCanvas.width, blobsCanvas.height);
+    blobCtx.globalCompositeOperation = "source-over";
+    blobCtx.globalAlpha = 1; // reset alpha
+  } else {
+    blobCtx.clearRect(0, 0, blobsCanvas.width, blobsCanvas.height);
+  }
 
   for (let blob of allBlobs) {
     blob.clear();
   }
 
+  for (let blob of allBlobs2) {
+    blob.clear();
+  }
+
   runForEveryPixel(smallCanvas, smallCtx, (pixelColour, x, y) => {
-    const pixelMatchesTarget = TrackingBlob.isWithinTolerance(
+    // check for target1 blobs
+    const pixelMatchesTarget1 = TrackingBlob.isWithinTolerance(
       pixelColour,
-      targetColour,
+      target1Colour,
       params.tolerance
     );
-
-    if (pixelMatchesTarget) {
+    if (pixelMatchesTarget1) {
       let addedToBlob = false;
       const xPos = x; // * scaleX;
       const yPos = y; // * scaleY;
@@ -125,9 +134,37 @@ function loop() {
 
       // otherwise create a new blob
       if (!addedToBlob) {
-        const newBlob = new TrackingBlob();
+        const newBlob = new TrackingBlob("red");
         newBlob.addIfWithinRange(xPos, yPos, params.maxBlobRadius);
         allBlobs.push(newBlob);
+      }
+    }
+    // check for target2 blobs
+    else {
+      const pixelMatchesTarget2 = TrackingBlob.isWithinTolerance(
+        pixelColour,
+        target2Colour,
+        params.tolerance
+      );
+      if (pixelMatchesTarget2) {
+        let addedToBlob = false;
+        const xPos = x; // * scaleX;
+        const yPos = y; // * scaleY;
+
+        for (let blob of allBlobs2) {
+          // if pixel is close to another blob add it to that blob
+          addedToBlob = blob.addIfWithinRange(xPos, yPos, params.maxBlobRadius);
+          if (addedToBlob) {
+            break;
+          }
+        }
+
+        // otherwise create a new blob
+        if (!addedToBlob) {
+          const newBlob = new TrackingBlob("blue");
+          newBlob.addIfWithinRange(xPos, yPos, params.maxBlobRadius);
+          allBlobs2.push(newBlob);
+        }
       }
     }
   });
@@ -136,6 +173,33 @@ function loop() {
   for (let blob of allBlobs) {
     blob.display(blobCtx, 1);
     // blob.display(ctx, scaleX);
+  }
+
+  for (let blob of allBlobs2) {
+    blob.display(blobCtx, 1);
+    // blob.display(ctx, scaleX);
+  }
+
+  let breakLoop = false;
+  for (let colour1Blob of allBlobs) {
+    // if(blob.x + blob.width)
+
+    for (let colour2Blob of allBlobs2) {
+      if (colour2Blob.left - colour1Blob.right < 10) {
+        // found a pair
+        blobCtx.strokeStyle = "yellow";
+        blobCtx.strokeRect(
+          colour1Blob.left,
+          colour1Blob.top,
+          colour1Blob.width + colour2Blob.width,
+          Math.max(colour1Blob.height, colour2Blob.height)
+        );
+
+        break;
+      }
+    }
+
+    if (breakLoop) break;
   }
 
   // keep the loop running

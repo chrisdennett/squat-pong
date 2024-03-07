@@ -1,5 +1,5 @@
 export class TrackingBlob {
-  constructor() {
+  constructor(colour) {
     this.left = 10000;
     this.top = 10000;
     this.right = 0;
@@ -9,8 +9,8 @@ export class TrackingBlob {
     this.centerX = 0;
     this.centerY = 0;
     const h = Math.round(Math.random() * 360);
-    this.fill = `hsl(${h},50%, 50%)`;
-    this.stroke = `hsl(${h},80%, 40%)`;
+    this.fill = colour || `hsl(${h},50%, 50%)`;
+    // this.stroke = `hsl(${h},80%, 40%)`;
   }
 
   clear() {
@@ -58,7 +58,7 @@ export class TrackingBlob {
 
   display(ctx, scale) {
     ctx.fillStyle = this.fill;
-    ctx.strokeStyle = this.stroke;
+    // ctx.strokeStyle = this.stroke;
     const x = this.left * scale;
     const y = this.top * scale;
     const w = this.width * scale;
@@ -66,7 +66,7 @@ export class TrackingBlob {
 
     if (w > 0) {
       ctx.fillRect(x, y, w, h);
-      ctx.strokeRect(x, y, w, h);
+      // ctx.strokeRect(x, y, w, h);
     }
   }
 
