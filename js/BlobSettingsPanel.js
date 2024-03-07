@@ -1,37 +1,35 @@
-const defaultSettings = {
-  tolerance: {
-    type: "slider",
-    min: 0,
-    max: 255,
-    step: 1,
-    value: window.localStorage.getItem("tolerance") || 12,
-  },
-  maxBlobRadius: {
-    type: "slider",
-    min: 1,
-    max: 300,
-    step: 1,
-    value: window.localStorage.getItem("maxBlobRadius") || 80,
-  },
-  targetHexColour: {
-    type: "colour",
-    value: window.localStorage.getItem("targetHexColour") || "ff0000",
-  },
-  // flipY: {
-  //   type: "checkbox",
-  //   value: window.localStorage.getItem("flipY") === "false" ? false : true,
-  // },
-};
-const settings = JSON.parse(JSON.stringify(defaultSettings));
-
 export class BlobSettingsPanel {
   constructor(parent, id) {
+    this.id = id;
     this.holder = document.createElement("div");
     this.holder.style.padding = "20px";
-    this.holder.innerHTML = `ID: ${id}`;
+    const heading = document.createElement("h2");
+    heading.innerHTML = `ID: ${id}`;
+    this.holder.appendChild(heading);
     parent.appendChild(this.holder);
 
-    this.params = this.initControls(this.holder);
+    const defaultSettings = {
+      [`tolerance`]: {
+        type: "slider",
+        min: 0,
+        max: 255,
+        step: 1,
+        value: window.localStorage.getItem(`tolerance_${id}`) || 12,
+      },
+      [`maxBlobRadius`]: {
+        type: "slider",
+        min: 1,
+        max: 300,
+        step: 1,
+        value: window.localStorage.getItem(`maxBlobRadius_${id}`) || 80,
+      },
+      [`targetHexColour`]: {
+        type: "colour",
+        value: window.localStorage.getItem(`targetHexColour_${id}`) || "ff0000",
+      },
+    };
+
+    this.params = this.initControls(this.holder, defaultSettings);
     this.targetColour = this.getRGBColourObject(this.params.targetHexColour);
   }
 
@@ -58,8 +56,11 @@ export class BlobSettingsPanel {
     return { r: parseInt(r), g: parseInt(g), b: parseInt(b) };
   }
 
-  initControls(controlsElement) {
+  saveToLocalStorage(settingName, value) {}
+
+  initControls(controlsElement, defaultSettings) {
     const params = {};
+    const settings = JSON.parse(JSON.stringify(defaultSettings));
     const keys = Object.keys(settings);
 
     for (let key of keys) {
@@ -107,7 +108,7 @@ export class BlobSettingsPanel {
           c.value = e.target.value;
           params[key] = parseFloat(c.value);
           valueElement.innerHTML = c.value;
-          window.localStorage.setItem(key, c.value);
+          window.localStorage.setItem(`${key}_${this.id}`, c.value);
         });
         inputElements.push(inputElement);
         //
@@ -159,7 +160,7 @@ export class BlobSettingsPanel {
           params[key] = c.value;
           this.targetColour = this.getRGBColourObject(params[key]);
           valueElement.innerHTML = c.value;
-          window.localStorage.setItem(key, c.value);
+          window.localStorage.setItem(`${key}_${this.id}`, c.value);
         });
         inputElements.push(inputElement);
       }

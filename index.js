@@ -1,7 +1,6 @@
 import { BlobSettingsPanel } from "./js/BlobSettingsPanel.js";
 import { TrackingBlob } from "./js/TrackingBlob.js";
 import { connectWebcam } from "./js/connectWebcam.js";
-// import { initControls } from "./js/controls.js";
 import { drawVideoToCanvas } from "./js/drawVideoToCanvas.js";
 
 const webcamVideo = document.querySelector("#webcamVideo");
