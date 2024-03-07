@@ -25,7 +25,7 @@ blobCtx.fillStyle = "rgb(255, 255, 255)";
 blobCtx.fillRect(0, 0, blobsCanvas.width, blobsCanvas.height);
 
 // const scaleX = canvas.width / smallCanvas.width;
-// const scaleY = canvas.height / smallCanvas.height;
+//const scaleY = canvas.height / smallCanvas.height;
 const allBlobs = [];
 const allBlobs2 = [];
 
@@ -36,51 +36,24 @@ const blob1Settings = new BlobSettingsPanel(controls, "blob1");
 const blob2Settings = new BlobSettingsPanel(controls, "blob2");
 const globalSettings = new GlobalSettingsPanel(controls, "global");
 
+let markerY = 0.5;
+
 connectWebcam(webcamVideo, webcamSize.w, webcamSize.h);
 loop();
 
 // Loop
 function loop() {
+  // update paddle based on marker input
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  const paddleH = 100;
+  const paddleY = markerY * (canvas.height - paddleH);
+  ctx.fillRect(10, paddleY, 30, paddleH);
+
   // draw webcam to small canvas to reduce pixel count
   drawVideoToCanvas(webcamVideo, smallCanvas);
 
   // draw small canvas to display canvas
-  ctx.drawImage(
-    smallCanvas,
-    0,
-    0,
-    smallCanvas.width,
-    smallCanvas.height,
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
-
-  // draw blob canvas to display canvas
-  ctx.drawImage(
-    blobsCanvas,
-    0,
-    0,
-    blobsCanvas.width,
-    blobsCanvas.height,
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
-
-  // fade out the blob canvas trails
-  const useGhosting = false;
-  if (useGhosting) {
-    blobCtx.globalAlpha = 0.1; // fade rate
-    blobCtx.globalCompositeOperation = "destination-out"; // fade out destination pixels
-    blobCtx.fillRect(0, 0, blobsCanvas.width, blobsCanvas.height);
-    blobCtx.globalCompositeOperation = "source-over";
-    blobCtx.globalAlpha = 1; // reset alpha
-  } else {
-    blobCtx.clearRect(0, 0, blobsCanvas.width, blobsCanvas.height);
-  }
+  blobCtx.drawImage(smallCanvas, 0, 0);
 
   for (let blob of allBlobs) {
     blob.clear();
@@ -158,32 +131,41 @@ function loop() {
   // draw blobs to blob canvas
   for (let blob of allBlobs) {
     blob.display(blobCtx, 1);
-    // blob.display(ctx, scaleX);
   }
 
   for (let blob of allBlobs2) {
     blob.display(blobCtx, 1);
-    // blob.display(ctx, scaleX);
   }
 
   let breakLoop = false;
   for (let colour1Blob of allBlobs) {
-    // if(blob.x + blob.width)
-
     for (let colour2Blob of allBlobs2) {
-      const maxGapSize = 10;
       const gap = colour2Blob.left - colour1Blob.right;
 
       if (gap <= globalSettings.blobPairGap && gap >= 0) {
         // found a pair
         blobCtx.strokeStyle = "yellow";
+
+        const marker = {
+          left: colour1Blob.left,
+          top: Math.min(colour1Blob.top, colour2Blob.top),
+          bottom: Math.max(colour1Blob.bottom, colour2Blob.bottom),
+          width: colour2Blob.right - colour1Blob.left,
+          height: Math.max(colour1Blob.height, colour2Blob.height),
+        };
+
         blobCtx.strokeRect(
-          colour1Blob.left,
-          Math.min(colour1Blob.top, colour2Blob.top),
-          colour1Blob.width + colour2Blob.width,
-          Math.max(colour1Blob.height, colour2Blob.height)
+          marker.left,
+          marker.top,
+          marker.width,
+          marker.height
         );
 
+        const blobPairMiddleY = marker.top + marker.height / 2;
+        const maxBlobY = blobsCanvas.height - marker.height;
+        markerY = blobPairMiddleY / maxBlobY;
+
+        breakLoop = true;
         break;
       }
     }
