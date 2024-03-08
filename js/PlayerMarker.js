@@ -17,6 +17,8 @@ export class PlayerMarker {
 
   display(ctx) {
     ctx.strokeStyle = "yellow";
+    ctx.fillStyle = "yellow";
     ctx.strokeRect(this.left, this.top, this.width, this.height);
+    ctx.fillRect(this.left, this.middleY - 1, this.width, 2);
   }
 }

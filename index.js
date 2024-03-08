@@ -7,7 +7,10 @@ import { drawVideoToCanvas } from "./js/drawVideoToCanvas.js";
 
 const webcamVideo = document.querySelector("#webcamVideo");
 const canvas = document.querySelector("#canvas");
-const ctx = canvas.getContext("2d", { willReadFrequently: true });
+const controls = document.querySelector("#controls");
+const info = document.querySelector("#info");
+const blobsCanvas = document.querySelector("#blobsCanvas");
+const smallCanvas = document.querySelector("#smallCanvas");
 
 // Settings
 const webcamSize = { w: 320, h: 240 };
@@ -15,11 +18,10 @@ const webcamSize = { w: 320, h: 240 };
 // Setup
 canvas.width = 800;
 canvas.height = 600;
-
-const blobsCanvas = document.querySelector("#blobsCanvas");
-const smallCanvas = document.querySelector("#smallCanvas");
 smallCanvas.width = blobsCanvas.width = 320;
 smallCanvas.height = blobsCanvas.height = 240;
+
+const ctx = canvas.getContext("2d", { willReadFrequently: true });
 const smallCtx = smallCanvas.getContext("2d", { willReadFrequently: true });
 const blobCtx = blobsCanvas.getContext("2d");
 blobCtx.fillStyle = "rgb(255, 255, 255)";
@@ -31,9 +33,7 @@ const allBlobs = [];
 const allBlobs2 = [];
 const playerOneMarker = new PlayerMarker();
 
-// kick things off
-const controls = document.querySelector("#controls");
-// const params = initControls(controls);
+// Settings controls
 const blob1Settings = new BlobSettingsPanel(controls, "blob1");
 const blob2Settings = new BlobSettingsPanel(controls, "blob2");
 const globalSettings = new GlobalSettingsPanel(controls, "global");
@@ -47,8 +47,10 @@ loop();
 function loop() {
   // update paddle based on marker input
   ctx.clearRect(0, 0, canvas.width, canvas.height);
-  const paddleH = 100;
-  const paddleY = markerY * (canvas.height - paddleH);
+  const paddleH = 50;
+  const halfPaddleH = paddleH / 2;
+  const paddleY = markerY * canvas.height - halfPaddleH;
+  info.innerHTML = markerY;
   ctx.fillRect(10, paddleY, 30, paddleH);
 
   // draw webcam to small canvas to reduce pixel count
@@ -150,7 +152,7 @@ function loop() {
         playerOneMarker.display(blobCtx);
 
         const blobPairMiddleY = playerOneMarker.middleY;
-        const maxBlobY = blobsCanvas.height - playerOneMarker.height;
+        const maxBlobY = blobsCanvas.height - playerOneMarker.height / 2;
         markerY = blobPairMiddleY / maxBlobY;
 
         breakLoop = true;
