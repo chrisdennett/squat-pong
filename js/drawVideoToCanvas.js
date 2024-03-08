@@ -4,8 +4,10 @@ export function drawVideoToCanvas(video, canvas) {
   ctx.save();
   ctx.translate(canvas.width, 0);
   ctx.scale(-1, 1);
-  //   ctx.filter = "invert(100%)";
-  //   ctx.globalAlpha = 0.1;
+  //  ctx.filter = "invert(100%)";
+  // ctx.globalAlpha = 0.1;
+  // ctx.globalCompositeOperation = "multiply";
+
   ctx.drawImage(
     video,
     0,

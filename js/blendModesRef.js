@@ -26,7 +26,9 @@ const blendModes = [
   "color",
   "luminosity",
 ];
-// let currBlendMode = blendModes[1];
+// let currBlendMode = blendModes[0];
+
+// ctx.globalCompositeOperation = currBlendMode;
 
 // blobsCanvas.addEventListener("click", (e) => {
 //     let nextIndex = blendModes.indexOf(currBlendMode) + 1;

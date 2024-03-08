@@ -1,5 +1,6 @@
 import { BlobSettingsPanel } from "./js/BlobSettingsPanel.js";
 import { GlobalSettingsPanel } from "./js/GlobalSettingsPanel.js";
+import { PlayerMarker } from "./js/PlayerMarker.js";
 import { TrackingBlob } from "./js/TrackingBlob.js";
 import { connectWebcam } from "./js/connectWebcam.js";
 import { drawVideoToCanvas } from "./js/drawVideoToCanvas.js";
@@ -28,6 +29,7 @@ blobCtx.fillRect(0, 0, blobsCanvas.width, blobsCanvas.height);
 //const scaleY = canvas.height / smallCanvas.height;
 const allBlobs = [];
 const allBlobs2 = [];
+const playerOneMarker = new PlayerMarker();
 
 // kick things off
 const controls = document.querySelector("#controls");
@@ -142,27 +144,13 @@ function loop() {
     for (let colour2Blob of allBlobs2) {
       const gap = colour2Blob.left - colour1Blob.right;
 
-      if (gap <= globalSettings.blobPairGap && gap >= 0) {
+      if (gap <= globalSettings.blobPairGap) {
         // found a pair
-        blobCtx.strokeStyle = "yellow";
+        playerOneMarker.update(colour1Blob, colour2Blob);
+        playerOneMarker.display(blobCtx);
 
-        const marker = {
-          left: colour1Blob.left,
-          top: Math.min(colour1Blob.top, colour2Blob.top),
-          bottom: Math.max(colour1Blob.bottom, colour2Blob.bottom),
-          width: colour2Blob.right - colour1Blob.left,
-          height: Math.max(colour1Blob.height, colour2Blob.height),
-        };
-
-        blobCtx.strokeRect(
-          marker.left,
-          marker.top,
-          marker.width,
-          marker.height
-        );
-
-        const blobPairMiddleY = marker.top + marker.height / 2;
-        const maxBlobY = blobsCanvas.height - marker.height;
+        const blobPairMiddleY = playerOneMarker.middleY;
+        const maxBlobY = blobsCanvas.height - playerOneMarker.height;
         markerY = blobPairMiddleY / maxBlobY;
 
         breakLoop = true;
