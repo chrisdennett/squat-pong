@@ -27,8 +27,6 @@ const blobCtx = blobsCanvas.getContext("2d");
 blobCtx.fillStyle = "rgb(255, 255, 255)";
 blobCtx.fillRect(0, 0, blobsCanvas.width, blobsCanvas.height);
 
-// const scaleX = canvas.width / smallCanvas.width;
-//const scaleY = canvas.height / smallCanvas.height;
 const allBlobs = [];
 const allBlobs2 = [];
 const playerOneMarker = new PlayerMarker();
@@ -38,8 +36,6 @@ const blob1Settings = new BlobSettingsPanel(controls, "blob1");
 const blob2Settings = new BlobSettingsPanel(controls, "blob2");
 const globalSettings = new GlobalSettingsPanel(controls, "global");
 
-let markerY = 0.5;
-
 connectWebcam(webcamVideo, webcamSize.w, webcamSize.h);
 loop();
 
@@ -48,9 +44,9 @@ function loop() {
   // update paddle based on marker input
   ctx.clearRect(0, 0, canvas.width, canvas.height);
   const paddleH = 50;
-  const halfPaddleH = paddleH / 2;
-  const paddleY = markerY * canvas.height - halfPaddleH;
-  info.innerHTML = markerY;
+  const range = canvas.height - paddleH;
+  const paddleY = playerOneMarker.y * range;
+  info.innerHTML = playerOneMarker.y;
   ctx.fillRect(10, paddleY, 30, paddleH);
 
   // draw webcam to small canvas to reduce pixel count
@@ -148,12 +144,8 @@ function loop() {
 
       if (gap <= globalSettings.blobPairGap) {
         // found a pair
-        playerOneMarker.update(colour1Blob, colour2Blob);
+        playerOneMarker.update(colour1Blob, colour2Blob, blobsCanvas.height);
         playerOneMarker.display(blobCtx);
-
-        const blobPairMiddleY = playerOneMarker.middleY;
-        const maxBlobY = blobsCanvas.height - playerOneMarker.height / 2;
-        markerY = blobPairMiddleY / maxBlobY;
 
         breakLoop = true;
         break;
