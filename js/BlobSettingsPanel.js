@@ -1,4 +1,5 @@
 import { SettingsPanel } from "./SettingsPanel.js";
+import { hexToHSL } from "./colourUtils.js";
 
 export class BlobSettingsPanel extends SettingsPanel {
   constructor(parent, id) {
@@ -27,7 +28,8 @@ export class BlobSettingsPanel extends SettingsPanel {
     };
 
     this.params = this.initControls(this.holder, defaultSettings);
-    this.targetColour = this.getRGBColourObject(this.params.targetHexColour);
+    this.targetColour = hexToHSL(this.params.targetHexColour);
+    // this.targetColour = this.getRGBColourObject(this.params.targetHexColour);
   }
 
   get tolerance() {

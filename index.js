@@ -2,11 +2,13 @@ import { BlobSettingsPanel } from "./js/BlobSettingsPanel.js";
 import { GlobalSettingsPanel } from "./js/GlobalSettingsPanel.js";
 import { PlayerMarker } from "./js/PlayerMarker.js";
 import { TrackingBlob } from "./js/TrackingBlob.js";
+import { rgbObjToHSL } from "./js/colourUtils.js";
 import { connectWebcam } from "./js/connectWebcam.js";
 import { drawVideoToCanvas } from "./js/drawVideoToCanvas.js";
 
 const webcamVideo = document.querySelector("#webcamVideo");
 const canvas = document.querySelector("#canvas");
+const controlPanel = document.querySelector("#controlPanel");
 const controls = document.querySelector("#controls");
 const info = document.querySelector("#info");
 const blobsCanvas = document.querySelector("#blobsCanvas");
@@ -14,6 +16,10 @@ const smallCanvas = document.querySelector("#smallCanvas");
 
 // Settings
 const webcamSize = { w: 320, h: 240 };
+
+// const testColour = { r: 0, g: 55, b: 55 };
+// const hslOut = rgbObjToHSL(testColour);
+// console.log("hslOut: ", hslOut);
 
 // Setup
 canvas.width = 800;
@@ -35,6 +41,18 @@ const playerOneMarker = new PlayerMarker();
 const blob1Settings = new BlobSettingsPanel(controls, "blob1");
 const blob2Settings = new BlobSettingsPanel(controls, "blob2");
 const globalSettings = new GlobalSettingsPanel(controls, "global");
+
+// controlPanel.style.display = "none";
+
+document.addEventListener("keyup", (e) => {
+  if (e.key === "b") {
+    if (controlPanel.style.display === "none") {
+      controlPanel.style.display = "inherit";
+    } else {
+      controlPanel.style.display = "none";
+    }
+  }
+});
 
 connectWebcam(webcamVideo, webcamSize.w, webcamSize.h);
 loop();
@@ -142,7 +160,10 @@ function loop() {
     for (let colour2Blob of allBlobs2) {
       const gap = colour2Blob.left - colour1Blob.right;
 
-      if (gap <= globalSettings.blobPairGap) {
+      if (
+        colour1Blob.left < colour2Blob.left &&
+        gap <= globalSettings.blobPairGap
+      ) {
         // found a pair
         playerOneMarker.update(colour1Blob, colour2Blob, blobsCanvas.height);
         playerOneMarker.display(blobCtx);
@@ -176,7 +197,9 @@ function runForEveryPixel(canvas, ctx, callback) {
       const g = data[i + 1];
       const b = data[i + 2];
 
-      callback({ r, g, b }, x, y);
+      const hsl = rgbObjToHSL({ r, g, b });
+
+      callback(hsl, x, y);
     }
   }
 }

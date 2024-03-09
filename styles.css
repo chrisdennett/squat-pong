@@ -16,9 +16,24 @@ body {
   background-color: gray;
 }
 
+#controlPanel {
+  position: fixed;
+  top: 0;
+  right: 0;
+}
+
+.settingsPanel {
+  padding: 5px;
+  border: 1px solid black;
+  background: rgba(0, 0, 0, 0.5);
+  color: white;
+}
+
 #controls {
   display: flex;
+  flex-direction: column;
 }
+
 #info {
   display: flex;
 }
@@ -30,7 +45,6 @@ body {
 
 #smallCanvas {
   image-rendering: pixelated;
-  /* width: 800px; */
 }
 
 video {

@@ -2,7 +2,8 @@ export class SettingsPanel {
   constructor(parent, id) {
     this.id = id;
     this.holder = document.createElement("div");
-    this.holder.style.padding = "20px";
+    // this.holder.style.padding = "10px";
+    this.holder.classList = ["settingsPanel"];
     const heading = document.createElement("h2");
     heading.innerHTML = `ID: ${id}`;
     this.holder.appendChild(heading);
@@ -133,15 +134,20 @@ export class SettingsPanel {
         let inputElement = document.createElement("input");
         inputElement.type = "color";
         inputElement.value = c.value;
-        inputElement.addEventListener("change", (e) => {
-          c.value = e.target.value;
-          params[key] = c.value;
-          if (c.callback) {
-            c.callback(c.value);
-          }
-          valueElement.innerHTML = c.value;
-          window.localStorage.setItem(`${key}_${this.id}`, c.value);
-        });
+        // inputElement.addEventListener("change", (e) => {
+        inputElement.addEventListener(
+          "input",
+          (e) => {
+            c.value = e.target.value;
+            params[key] = c.value;
+            if (c.callback) {
+              c.callback(c.value);
+            }
+            valueElement.innerHTML = c.value;
+            window.localStorage.setItem(`${key}_${this.id}`, c.value);
+          },
+          false
+        );
         inputElements.push(inputElement);
       }
 

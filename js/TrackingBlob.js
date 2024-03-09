@@ -71,24 +71,24 @@ export class TrackingBlob {
   }
 
   static isWithinTolerance(colour1, colour2, tolerance) {
-    // test red
-    const minR = colour1.r - tolerance;
-    const maxR = colour1.r + tolerance;
-    if (colour2.r < minR || colour2.r > maxR) {
+    // test hue
+    const minR = colour1.h - tolerance;
+    const maxR = colour1.h + tolerance;
+    if (colour2.h < minR || colour2.h > maxR) {
       return false;
     }
 
-    // if red matches test green
-    const minG = colour1.g - tolerance;
-    const maxG = colour1.g + tolerance;
-    if (colour2.g < minG || colour2.g > maxG) {
+    // test saturation
+    const minG = colour1.s - tolerance;
+    const maxG = colour1.s + tolerance;
+    if (colour2.s < minG || colour2.s > maxG) {
       return false;
     }
 
-    // if green matches test blue
-    const minB = colour1.b - tolerance;
-    const maxB = colour1.b + tolerance;
-    if (colour2.b < minB || colour2.b > maxB) {
+    // test lightness
+    const minB = colour1.l - tolerance;
+    const maxB = colour1.l + tolerance;
+    if (colour2.l < minB || colour2.l > maxB) {
       return false;
     }
 
