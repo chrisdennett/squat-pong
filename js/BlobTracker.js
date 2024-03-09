@@ -1,7 +1,7 @@
 import { SettingsPanel } from "./SettingsPanel.js";
 import { hexToHSL } from "./colourUtils.js";
 
-export class BlobSettingsPanel extends SettingsPanel {
+export class BlobTracker extends SettingsPanel {
   constructor(parent, id) {
     super(parent, id);
 
@@ -22,14 +22,37 @@ export class BlobSettingsPanel extends SettingsPanel {
       },
       [`targetHexColour`]: {
         type: "colour",
-        callback: (col) => (this.targetColour = this.getRGBColourObject(col)),
+        callback: (col) => (this.targetColour = hexToHSL(col)),
         value: window.localStorage.getItem(`targetHexColour_${id}`) || "ff0000",
       },
     };
 
     this.params = this.initControls(this.holder, defaultSettings);
     this.targetColour = hexToHSL(this.params.targetHexColour);
+    this.blobs = [];
+    this.filteredBlobs = [];
     // this.targetColour = this.getRGBColourObject(this.params.targetHexColour);
+  }
+
+  setFilteredBlobArray(minWidth, minHeight) {
+    this.filteredBlobs = [];
+    for (let b of this.blobs) {
+      if (b.width > minWidth && b.height > minHeight) {
+        this.filteredBlobs.push(b);
+      }
+    }
+  }
+
+  displayBlobs(ctx, colour) {
+    for (let b of this.blobs) {
+      b.display(ctx, this.params.targetHexColour);
+    }
+  }
+
+  clearBlobs() {
+    for (let b of this.blobs) {
+      b.clear();
+    }
   }
 
   get tolerance() {

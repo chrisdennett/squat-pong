@@ -1,7 +1,7 @@
-import { BlobSettingsPanel } from "./js/BlobSettingsPanel.js";
+import { BlobTracker } from "./js/BlobTracker.js";
 import { GlobalSettingsPanel } from "./js/GlobalSettingsPanel.js";
 import { PlayerMarker } from "./js/PlayerMarker.js";
-import { TrackingBlob } from "./js/TrackingBlob.js";
+import { Blob } from "./js/Blob.js";
 import { rgbObjToHSL } from "./js/colourUtils.js";
 import { connectWebcam } from "./js/connectWebcam.js";
 import { drawVideoToCanvas } from "./js/drawVideoToCanvas.js";
@@ -33,14 +33,14 @@ const blobCtx = blobsCanvas.getContext("2d");
 blobCtx.fillStyle = "rgb(255, 255, 255)";
 blobCtx.fillRect(0, 0, blobsCanvas.width, blobsCanvas.height);
 
-const allBlobs = [];
-const allBlobs2 = [];
 const playerOneMarker = new PlayerMarker();
 
 // Settings controls
-const blob1Settings = new BlobSettingsPanel(controls, "blob1");
-const blob2Settings = new BlobSettingsPanel(controls, "blob2");
 const globalSettings = new GlobalSettingsPanel(controls, "global");
+
+const blob1Tracker = new BlobTracker(controls, "blob1");
+const blob2Tracker = new BlobTracker(controls, "blob2");
+const blob3Tracker = new BlobTracker(controls, "blob3");
 
 // controlPanel.style.display = "none";
 
@@ -73,63 +73,31 @@ function loop() {
   // draw small canvas to display canvas
   blobCtx.drawImage(smallCanvas, 0, 0);
 
-  for (let blob of allBlobs) {
-    blob.clear();
-  }
+  blob1Tracker.clearBlobs();
+  blob2Tracker.clearBlobs();
+  blob3Tracker.clearBlobs();
 
-  for (let blob of allBlobs2) {
-    blob.clear();
-  }
+  const allBlobTrackers = [blob1Tracker, blob2Tracker, blob3Tracker];
 
   runForEveryPixel(smallCanvas, smallCtx, (pixelColour, x, y) => {
-    // check for target1 blobs
-    const pixelMatchesTarget1 = TrackingBlob.isWithinTolerance(
-      pixelColour,
-      blob1Settings.targetColour,
-      blob1Settings.tolerance
-    );
-    if (pixelMatchesTarget1) {
-      let addedToBlob = false;
-      const xPos = x; // * scaleX;
-      const yPos = y; // * scaleY;
-
-      for (let blob of allBlobs) {
-        // if pixel is close to another blob add it to that blob
-        addedToBlob = blob.addIfWithinRange(
-          xPos,
-          yPos,
-          blob1Settings.maxBlobRadius
-        );
-        if (addedToBlob) {
-          break;
-        }
-      }
-
-      // otherwise create a new blob
-      if (!addedToBlob) {
-        const newBlob = new TrackingBlob("red");
-        newBlob.addIfWithinRange(xPos, yPos, blob1Settings.maxBlobRadius);
-        allBlobs.push(newBlob);
-      }
-    }
-    // check for target2 blobs
-    else {
-      const pixelMatchesTarget2 = TrackingBlob.isWithinTolerance(
+    for (let tracker of allBlobTrackers) {
+      const pixelMatchesTarget = Blob.isWithinTolerance(
         pixelColour,
-        blob2Settings.targetColour,
-        blob2Settings.tolerance
+        tracker.targetColour,
+        tracker.tolerance
       );
-      if (pixelMatchesTarget2) {
+
+      if (pixelMatchesTarget) {
         let addedToBlob = false;
         const xPos = x; // * scaleX;
         const yPos = y; // * scaleY;
 
-        for (let blob of allBlobs2) {
+        for (let blob of tracker.blobs) {
           // if pixel is close to another blob add it to that blob
           addedToBlob = blob.addIfWithinRange(
             xPos,
             yPos,
-            blob2Settings.maxBlobRadius
+            tracker.maxBlobRadius
           );
           if (addedToBlob) {
             break;
@@ -138,38 +106,49 @@ function loop() {
 
         // otherwise create a new blob
         if (!addedToBlob) {
-          const newBlob = new TrackingBlob("blue");
-          newBlob.addIfWithinRange(xPos, yPos, blob2Settings.maxBlobRadius);
-          allBlobs2.push(newBlob);
+          const newBlob = new Blob("red");
+          newBlob.addIfWithinRange(xPos, yPos, tracker.maxBlobRadius);
+          tracker.blobs.push(newBlob);
         }
       }
     }
   });
 
-  // draw blobs to blob canvas
-  for (let blob of allBlobs) {
-    blob.display(blobCtx, 1);
+  const minWidth = 10;
+  const minHeight = 20;
+
+  for (let tracker of allBlobTrackers) {
+    tracker.setFilteredBlobArray(minWidth, minHeight);
+
+    // draw blobs to blob canvas
+    tracker.displayBlobs(blobCtx, "green");
   }
 
-  for (let blob of allBlobs2) {
-    blob.display(blobCtx, 1);
-  }
-
+  // MOVE THIS TO playerOneMarker
   let breakLoop = false;
-  for (let colour1Blob of allBlobs) {
-    for (let colour2Blob of allBlobs2) {
-      const gap = colour2Blob.left - colour1Blob.right;
+  const maxGap = globalSettings.blobPairGap;
 
-      if (
-        colour1Blob.left < colour2Blob.left &&
-        gap <= globalSettings.blobPairGap
-      ) {
-        // found a pair
-        playerOneMarker.update(colour1Blob, colour2Blob, blobsCanvas.height);
-        playerOneMarker.display(blobCtx);
+  for (let b1 of blob1Tracker.filteredBlobs) {
+    for (let b2 of blob2Tracker.filteredBlobs) {
+      let gapX = b2.left - b1.right;
+      let gapY = Math.abs(b2.top - b1.top);
 
-        breakLoop = true;
-        break;
+      if (b1.left < b2.left && gapX <= maxGap && gapY < maxGap) {
+        // found a pair, look for the third one.
+
+        for (let b3 of blob3Tracker.filteredBlobs) {
+          gapX = b3.left - b3.right;
+          gapY = Math.abs(b3.top - b2.top);
+
+          if (b2.left < b3.left && gapX <= maxGap && gapY < maxGap) {
+            playerOneMarker.update(b1, b3, blobsCanvas.height);
+            playerOneMarker.display(blobCtx);
+            breakLoop = true;
+            break;
+          }
+        }
+
+        if (breakLoop) break;
       }
     }
 

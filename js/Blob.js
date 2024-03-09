@@ -1,4 +1,4 @@
-export class TrackingBlob {
+export class Blob {
   constructor(colour) {
     this.left = 10000;
     this.top = 10000;
@@ -56,16 +56,16 @@ export class TrackingBlob {
     return yesAddToBlob;
   }
 
-  display(ctx, scale) {
-    ctx.fillStyle = this.fill;
+  display(ctx, colour) {
+    ctx.strokeStyle = colour || this.fill;
     // ctx.strokeStyle = this.stroke;
-    const x = this.left * scale;
-    const y = this.top * scale;
-    const w = this.width * scale;
-    const h = this.height * scale;
+    const x = this.left;
+    const y = this.top;
+    const w = this.width;
+    const h = this.height;
 
     if (w > 0) {
-      ctx.fillRect(x, y, w, h);
+      ctx.strokeRect(x, y, w, h);
       // ctx.strokeRect(x, y, w, h);
     }
   }
@@ -86,8 +86,8 @@ export class TrackingBlob {
     }
 
     // test lightness
-    const minB = colour1.l - tolerance;
-    const maxB = colour1.l + tolerance;
+    const minB = colour1.l - tolerance * 2;
+    const maxB = colour1.l + tolerance * 2;
     if (colour2.l < minB || colour2.l > maxB) {
       return false;
     }
