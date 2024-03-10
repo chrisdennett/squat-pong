@@ -37,7 +37,6 @@ const playerOneMarker = new PlayerMarker();
 
 // Settings controls
 const globalSettings = new GlobalSettingsPanel(controls, "global");
-
 const blob1Tracker = new BlobTracker(controls, "blob1");
 const blob2Tracker = new BlobTracker(controls, "blob2");
 const blob3Tracker = new BlobTracker(controls, "blob3");
