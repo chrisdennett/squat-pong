@@ -5,7 +5,7 @@ export class PlayerMarker {
     }
   }
 
-  update(blob1, blob2, canvasHeight) {
+  update(blob1, blob2, canvas) {
     this.left = Math.min(blob1.left, blob2.left);
     this.right = Math.max(blob1.right, blob2.right);
     this.top = Math.min(blob1.top, blob2.top);
@@ -15,9 +15,11 @@ export class PlayerMarker {
     const halfHeight = this.height / 2;
     this.middleY = this.top + halfHeight;
 
-    // set normalised value for y so can be used on diff sized canvases
-    const range = canvasHeight - this.height;
-    this.y = this.top / range;
+    // set normalised value for x, y so can be used on diff sized canvases
+    const verticalRange = canvas.height - this.height;
+    const horizontalRange = canvas.width - this.height;
+    this.y = this.top / verticalRange;
+    this.x = this.right / horizontalRange;
   }
 
   display(ctx) {
