@@ -12,8 +12,8 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   font-family: monospace;
-  padding: 10px;
   background-color: gray;
+  overflow: hidden;
 }
 
 #controlPanel {
@@ -45,10 +45,9 @@ body {
   display: flex;
 }
 
-#canvas {
+/* #canvas {
   outline: 1px solid black;
-  /* transform: scaleX(-1); */
-}
+} */
 
 #smallCanvas {
   image-rendering: pixelated;

@@ -1,7 +1,8 @@
-import { WebcamPlayerTracker } from "./js/WebcamPlayerTracker.js";
+import { BrushStrokeEffect } from "./js/growingBrushStrokes/BrushStrokeEffect.js";
+import { WebcamPlayerTracker } from "./js/playerTracking/WebcamPlayerTracker.js";
 
 const controlPanel = document.querySelector("#controlPanel");
-// controlPanel.style.display = "none";
+controlPanel.style.display = "none";
 
 /**
 this.canvas = document.querySelector("#canvas");
@@ -29,6 +30,7 @@ document.addEventListener("keyup", (e) => {
 });
 
 const playerTracker = new WebcamPlayerTracker();
+const brushStrokeEffect = new BrushStrokeEffect();
 
 function loop() {
   playerTracker.update();
