@@ -12,7 +12,7 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   font-family: monospace;
-  background-color: gray;
+  background-color: #83b7b5;
   overflow: hidden;
 }
 
@@ -45,9 +45,10 @@ body {
   display: flex;
 }
 
-/* #canvas {
-  outline: 1px solid black;
-} */
+#canvas {
+  /* border: 100px solid white; */
+  background: #83b7b5;
+}
 
 #smallCanvas {
   image-rendering: pixelated;

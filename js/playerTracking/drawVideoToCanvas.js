@@ -21,3 +21,10 @@ export function drawVideoToCanvas(video, canvas) {
   );
   ctx.restore();
 }
+
+// fade out the blob canvas trails
+// blobCtx.globalAlpha = 0.01; // fade rate
+// blobCtx.globalCompositeOperation = "destination-out"; // fade out destination pixels
+// blobCtx.fillRect(0, 0, blobsCanvas.width, blobsCanvas.height);
+// blobCtx.globalCompositeOperation = "source-over";
+// blobCtx.globalAlpha = 1; // reset alpha

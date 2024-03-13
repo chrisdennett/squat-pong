@@ -1,53 +1,73 @@
 /** @type {HTMLCanvasElement}  */
 
+import { Root } from "./Root.js";
+
 export class BrushStrokeEffect {
   constructor() {
     this.canvas = document.querySelector("#canvas");
-    canvas.width = window.innerWidth;
-    canvas.height = window.innerHeight;
-    const ctx = canvas.getContext("2d", { willReadFrequently: true });
+    this.canvas.width = window.innerWidth;
+    this.canvas.height = window.innerHeight;
+    this.canvasColour = "#83b7b5";
 
-    const root = new Root(this.canvas.width / 2, this.canvas.height / 2, ctx);
-    root.update();
+    this.ctx = this.canvas.getContext("2d", { willReadFrequently: true });
+    this.ctx.fillStyle = "white";
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+
+    this.rootsPerTrigger = 3;
+    // this.triggerRoot(this.canvas.width / 2, this.canvas.height / 2);
+    this.addAllEventListeners();
+  }
+
+  triggerRoot(x, y) {
+    for (let i = 0; i < this.rootsPerTrigger; i++) {
+      const root = new Root(x, y, this.ctx);
+      root.update();
+    }
+  }
+
+  fadeCanvas() {
+    this.ctx.globalAlpha = 0.01; // fade rate
+    this.ctx.globalCompositeOperation = "destination-out"; // fade out destination pixels
+    this.ctx.fillStyle = this.canvasColour;
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+    this.ctx.globalCompositeOperation = "source-over";
+    this.ctx.globalAlpha = 1; // reset alpha
+  }
+
+  //   loop() {
+  //     this.ctx.globalAlpha = 0.01; // fade rate
+  //     this.ctx.globalCompositeOperation = "destination-out"; // fade out destination pixels
+  //     this.ctx.fillStyle = this.canvasColour;
+  //     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+  //     this.ctx.globalCompositeOperation = "source-over";
+  //     this.ctx.globalAlpha = 1; // reset alpha
+
+  //     requestAnimationFrame(this.loop.bind(this));
+  //   }
+
+  clearCanvas() {
+    this.ctx.fillStyle = this.canvasColour;
+    this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
+  }
+
+  addAllEventListeners() {
+    this.mouseDown = false;
 
     window.addEventListener("mousemove", (e) => {
-      const root = new Root(e.offsetX, e.offsetY, ctx);
-      root.update();
+      if (this.mouseDown) {
+        this.triggerRoot(e.offsetX, e.offsetY);
+      }
     });
-  }
-}
 
-class Root {
-  constructor(x, y, ctx) {
-    this.x = x;
-    this.y = y;
-    this.ctx = ctx;
-    this.speedX = Math.random() * 4 - 2;
-    this.speedY = Math.random() * 4 - 2;
-    this.maxSize = Math.random() * 7 + 5;
-    this.size = Math.random() * 1 + 2;
-    this.vs = Math.random() * 0.2 + 0.05;
-    this.angleX = Math.random() * 6.2;
-    this.vaX = Math.random() * 0.6 - 0.3;
-    this.angleY = Math.random() * 6.2;
-    this.vaY = Math.random() * 0.6 - 0.3;
-  }
+    window.addEventListener("mousedown", (e) => {
+      this.mouseDown = true;
+      this.triggerRoot(e.offsetX, e.offsetY);
+    });
 
-  update() {
-    this.x += this.speedX + Math.sin(this.angleX);
-    this.y += this.speedY + Math.sin(this.angleY);
-    this.size += this.vs;
-    this.angleX += this.vaX;
-    this.angleY += this.vaY;
+    window.addEventListener("mouseup", (e) => {
+      this.mouseDown = false;
+    });
 
-    if (this.size < this.maxSize) {
-      this.ctx.beginPath();
-      this.ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-      this.ctx.fillStyle = `hsl(140, 100%, 50%)`;
-      this.ctx.fill();
-      this.ctx.stroke();
-
-      requestAnimationFrame(() => this.update());
-    }
+    // requestAnimationFrame(this.loop.bind(this));
   }
 }

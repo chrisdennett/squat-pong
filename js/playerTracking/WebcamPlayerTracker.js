@@ -51,6 +51,7 @@ export class WebcamPlayerTracker {
     const p1 = {
       x: this.playerOneMarker.x,
       y: this.playerOneMarker.y,
+      markerFound: this.playerOneMarker.markerFound,
     };
     return { p1 };
   }
