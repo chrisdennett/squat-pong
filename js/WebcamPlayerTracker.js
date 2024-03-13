@@ -106,11 +106,12 @@ export class WebcamPlayerTracker {
     const minWidth = 10;
     const minHeight = 20;
 
-    for (let tracker of allBlobTrackers) {
-      tracker.setFilteredBlobArray(minWidth, minHeight);
+    // draw all blob trackers to the canvas
+    for (let blobTracker of allBlobTrackers) {
+      blobTracker.setFilteredBlobArray(minWidth, minHeight);
 
       // draw blobs to blob canvas
-      tracker.displayBlobs(this.blobCtx, "green");
+      blobTracker.displayBlobs(this.blobCtx, "green");
     }
 
     this.playerOneMarker.findMarker(
