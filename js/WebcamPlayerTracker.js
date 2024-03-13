@@ -118,7 +118,7 @@ export class WebcamPlayerTracker {
           // found a pair, look for the third one.
 
           for (let b3 of this.blob3Tracker.filteredBlobs) {
-            gapX = b3.left - b3.right;
+            gapX = b3.left - b2.right;
             gapY = Math.abs(b3.top - b2.top);
 
             if (b2.left < b3.left && gapX <= maxGap && gapY < maxGap) {
