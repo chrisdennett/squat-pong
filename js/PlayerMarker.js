@@ -1,7 +1,38 @@
 export class PlayerMarker {
-  constructor(blob1, blob2) {
-    if (blob1 && blob2) {
-      this.update(blob1, blob2);
+  constructor(canvas, globalSettings) {
+    this.canvas = canvas;
+    this.globalSettings = globalSettings;
+  }
+
+  findMarker(blob1Tracker, blob2Tracker, blob3Tracker) {
+    // MOVE THIS TO playerOneMarker
+    let breakLoop = false;
+    const maxGap = this.globalSettings.blobPairGap;
+
+    for (let b1 of blob1Tracker.filteredBlobs) {
+      for (let b2 of blob2Tracker.filteredBlobs) {
+        let gapX = b2.left - b1.right;
+        let gapY = Math.abs(b2.top - b1.top);
+
+        if (b1.left < b2.left && gapX <= maxGap && gapY < maxGap) {
+          // found a pair, look for the third one.
+
+          for (let b3 of blob3Tracker.filteredBlobs) {
+            gapX = b3.left - b2.right;
+            gapY = Math.abs(b3.top - b2.top);
+
+            if (b2.left < b3.left && gapX <= maxGap && gapY < maxGap) {
+              this.update(b1, b3, this.canvas);
+              breakLoop = true;
+              break;
+            }
+          }
+
+          if (breakLoop) break;
+        }
+      }
+
+      if (breakLoop) break;
     }
   }
 

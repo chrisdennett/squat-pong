@@ -11,30 +11,38 @@ export class WebcamPlayerTracker {
     const webcamVideo = document.querySelector("#webcamVideo");
 
     const controls = document.querySelector("#controls");
-    const blobsCanvas = document.querySelector("#blobsCanvas");
+    this.blobsCanvas = document.querySelector("#blobsCanvas");
     this.smallCanvas = document.querySelector("#smallCanvas");
 
     // Settings
     const webcamSize = { w: 320, h: 240 };
 
     // Setup
-    this.smallCanvas.width = blobsCanvas.width = 320;
-    this.smallCanvas.height = blobsCanvas.height = 240;
+    this.smallCanvas.width = this.blobsCanvas.width = 320;
+    this.smallCanvas.height = this.blobsCanvas.height = 240;
 
     this.smallCtx = this.smallCanvas.getContext("2d", {
       willReadFrequently: true,
     });
-    this.blobCtx = blobsCanvas.getContext("2d");
+    this.blobCtx = this.blobsCanvas.getContext("2d");
     this.blobCtx.fillStyle = "rgb(255, 255, 255)";
-    this.blobCtx.fillRect(0, 0, blobsCanvas.width, blobsCanvas.height);
-
-    this.playerOneMarker = new PlayerMarker();
+    this.blobCtx.fillRect(
+      0,
+      0,
+      this.blobsCanvas.width,
+      this.blobsCanvas.height
+    );
 
     // Settings controls
     this.globalSettings = new GlobalSettingsPanel(controls, "global");
     this.blob1Tracker = new BlobTracker(controls, "blob1");
     this.blob2Tracker = new BlobTracker(controls, "blob2");
     this.blob3Tracker = new BlobTracker(controls, "blob3");
+
+    this.playerOneMarker = new PlayerMarker(
+      this.blobsCanvas,
+      this.globalSettings
+    );
 
     connectWebcam(webcamVideo, webcamSize.w, webcamSize.h);
   }
@@ -105,36 +113,13 @@ export class WebcamPlayerTracker {
       tracker.displayBlobs(this.blobCtx, "green");
     }
 
-    // MOVE THIS TO playerOneMarker
-    let breakLoop = false;
-    const maxGap = this.globalSettings.blobPairGap;
+    this.playerOneMarker.findMarker(
+      this.blob1Tracker,
+      this.blob2Tracker,
+      this.blob3Tracker
+    );
 
-    for (let b1 of this.blob1Tracker.filteredBlobs) {
-      for (let b2 of this.blob2Tracker.filteredBlobs) {
-        let gapX = b2.left - b1.right;
-        let gapY = Math.abs(b2.top - b1.top);
-
-        if (b1.left < b2.left && gapX <= maxGap && gapY < maxGap) {
-          // found a pair, look for the third one.
-
-          for (let b3 of this.blob3Tracker.filteredBlobs) {
-            gapX = b3.left - b2.right;
-            gapY = Math.abs(b3.top - b2.top);
-
-            if (b2.left < b3.left && gapX <= maxGap && gapY < maxGap) {
-              this.playerOneMarker.update(b1, b3, blobsCanvas);
-              this.playerOneMarker.display(this.blobCtx);
-              breakLoop = true;
-              break;
-            }
-          }
-
-          if (breakLoop) break;
-        }
-      }
-
-      if (breakLoop) break;
-    }
+    this.playerOneMarker.display(this.blobCtx);
   }
 
   get normalisedPlayerPositions() {
