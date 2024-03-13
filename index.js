@@ -33,8 +33,7 @@ const playerTracker = new WebcamPlayerTracker();
 function loop() {
   playerTracker.update();
 
-  const { p1 } = playerTracker.normalisedPlayerPositions;
-  console.log("p1.x, p1.y: ", p1.x, p1.y);
+  // const { p1 } = playerTracker.normalisedPlayerPositions;
   window.requestAnimationFrame(loop);
 }
 

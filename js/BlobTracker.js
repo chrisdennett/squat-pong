@@ -1,26 +1,26 @@
-import { SettingsPanel } from "./SettingsPanel.js";
+import { SettingsPanel } from "./settingsPanels/SettingsPanel.js";
 import { hexToHSL } from "./colourUtils.js";
 
 export class BlobTracker extends SettingsPanel {
-  constructor(parent, id) {
+  constructor(parent, id, globalSettings) {
     super(parent, id);
 
     const defaultSettings = {
-      [`tolerance`]: {
+      tolerance: {
         type: "slider",
         min: 0,
-        max: 255,
+        max: 50,
         step: 1,
         value: window.localStorage.getItem(`tolerance_${id}`) || 12,
       },
-      [`maxBlobRadius`]: {
+      maxBlobRadius: {
         type: "slider",
         min: 1,
-        max: 300,
+        max: 100,
         step: 1,
         value: window.localStorage.getItem(`maxBlobRadius_${id}`) || 80,
       },
-      [`targetHexColour`]: {
+      targetHexColour: {
         type: "colour",
         callback: (col) => (this.targetColour = hexToHSL(col)),
         value: window.localStorage.getItem(`targetHexColour_${id}`) || "ff0000",
@@ -31,20 +31,24 @@ export class BlobTracker extends SettingsPanel {
     this.targetColour = hexToHSL(this.params.targetHexColour);
     this.blobs = [];
     this.filteredBlobs = [];
+    this.globalSettings = globalSettings;
     // this.targetColour = this.getRGBColourObject(this.params.targetHexColour);
   }
 
-  setFilteredBlobArray(minWidth, minHeight) {
+  setFilteredBlobArray() {
     this.filteredBlobs = [];
     for (let b of this.blobs) {
-      if (b.width > minWidth && b.height > minHeight) {
+      if (
+        b.width > this.globalSettings.minBlobWidth &&
+        b.height > this.globalSettings.minBlobHeight
+      ) {
         this.filteredBlobs.push(b);
       }
     }
   }
 
-  displayBlobs(ctx, colour) {
-    for (let b of this.blobs) {
+  displayBlobs(ctx) {
+    for (let b of this.filteredBlobs) {
       b.display(ctx, this.params.targetHexColour);
     }
   }

@@ -1,5 +1,5 @@
 import { BlobTracker } from "./BlobTracker.js";
-import { GlobalSettingsPanel } from "./GlobalSettingsPanel.js";
+import { GlobalSettingsPanel } from "./settingsPanels/GlobalSettingsPanel.js";
 import { PlayerMarker } from "./PlayerMarker.js";
 import { Blob } from "./Blob.js";
 import { rgbObjToHSL } from "./colourUtils.js";
@@ -35,9 +35,9 @@ export class WebcamPlayerTracker {
 
     // Settings controls
     this.globalSettings = new GlobalSettingsPanel(controls, "global");
-    this.blob1Tracker = new BlobTracker(controls, "blob1");
-    this.blob2Tracker = new BlobTracker(controls, "blob2");
-    this.blob3Tracker = new BlobTracker(controls, "blob3");
+    this.blob1Tracker = new BlobTracker(controls, "blob1", this.globalSettings);
+    this.blob2Tracker = new BlobTracker(controls, "blob2", this.globalSettings);
+    this.blob3Tracker = new BlobTracker(controls, "blob3", this.globalSettings);
 
     this.playerOneMarker = new PlayerMarker(
       this.blobsCanvas,
