@@ -47,6 +47,14 @@ export class WebcamPlayerTracker {
     connectWebcam(webcamVideo, webcamSize.w, webcamSize.h);
   }
 
+  get normalisedPlayerPositions() {
+    const p1 = {
+      x: this.playerOneMarker.x,
+      y: this.playerOneMarker.y,
+    };
+    return { p1 };
+  }
+
   update() {
     // draw webcam to small canvas to reduce pixel count
     drawVideoToCanvas(webcamVideo, this.smallCanvas);
@@ -121,14 +129,6 @@ export class WebcamPlayerTracker {
     );
 
     this.playerOneMarker.display(this.blobCtx);
-  }
-
-  get normalisedPlayerPositions() {
-    const p1 = {
-      x: this.playerOneMarker.x,
-      y: this.playerOneMarker.y,
-    };
-    return { p1 };
   }
 
   runForEveryPixel(canvas, ctx, callback) {
