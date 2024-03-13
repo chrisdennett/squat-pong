@@ -19,8 +19,8 @@ body {
 #controlPanel {
   position: fixed;
   display: flex;
-  align-items: flex-start;
-  top: 0;
+  /* align-items: flex-start; */
+  bottom: 0;
   right: 0;
 }
 
@@ -46,12 +46,15 @@ body {
 }
 
 #canvas {
-  /* border: 100px solid white; */
+  border: 20px solid #83b7b5;
+  margin: 20px;
   background: #83b7b5;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
 }
 
 #smallCanvas {
   image-rendering: pixelated;
+  display: none;
 }
 
 video {
