@@ -48,7 +48,13 @@ export class WebcamPlayerTracker {
 
     this.playerOneMarker = new PlayerMarker(
       this.blobsCanvas,
-      this.globalSettings
+      this.globalSettings,
+      "PLAYER ONE"
+    );
+    this.playerTwoMarker = new PlayerMarker(
+      this.blobsCanvas,
+      this.globalSettings,
+      "PLAYER TWO"
     );
 
     connectWebcam(webcamVideo, webcamSize.w, webcamSize.h);
@@ -149,8 +155,13 @@ export class WebcamPlayerTracker {
     );
 
     if (playerBounds) {
-      this.playerOneMarker.update(playerBounds);
-      this.playerOneMarker.display(this.blobCtx);
+      if (playerBounds.left < this.playerOneAreaBounds.right) {
+        this.playerOneMarker.update(playerBounds);
+        this.playerOneMarker.display(this.blobCtx);
+      } else {
+        this.playerTwoMarker.update(playerBounds);
+        this.playerTwoMarker.display(this.blobCtx);
+      }
     }
   }
 

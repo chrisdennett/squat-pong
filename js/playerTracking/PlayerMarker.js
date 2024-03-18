@@ -3,9 +3,10 @@
  */
 
 export class PlayerMarker {
-  constructor(canvas, globalSettings) {
+  constructor(canvas, globalSettings, label) {
     this.canvas = canvas;
     this.globalSettings = globalSettings;
+    this.label = label;
   }
 
   static findMarkerBounds(
@@ -69,9 +70,9 @@ export class PlayerMarker {
     ctx.fillStyle = "yellow";
     ctx.strokeRect(this.left, this.top, this.width, this.height);
     ctx.fillRect(this.left, this.middleY - 1, this.width, 2);
-    ctx.strokeText("PLAYER ONE", this.left, this.top);
+    ctx.strokeText(this.label, this.left, this.top);
     ctx.fillStyle = "red";
     ctx.font = "20px Arial";
-    ctx.fillText("PLAYER ONE", this.left, this.top);
+    ctx.fillText(this.label, this.left, this.top);
   }
 }
