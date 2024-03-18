@@ -33,25 +33,32 @@ export class BlobTracker extends SettingsPanel {
     this.params = this.initControls(this.holder, defaultSettings);
     this.targetColour = hexToHSL(this.params.targetHexColour);
     this.blobs = [];
-    this.filteredBlobs = [];
     this.globalSettings = globalSettings;
+    this.p1Blobs = [];
+    this.p2Blobs = [];
+
     // this.targetColour = this.getRGBColourObject(this.params.targetHexColour);
   }
 
-  setFilteredBlobArray() {
-    this.filteredBlobs = [];
+  filterAndSeparateBlobTypes() {
+    this.p1Blobs = [];
+    this.p2Blobs = [];
     for (let b of this.blobs) {
       if (
         b.width > this.globalSettings.minBlobWidth &&
         b.height > this.globalSettings.minBlobHeight
       ) {
-        this.filteredBlobs.push(b);
+        if (b.type === "p1") {
+          this.p1Blobs.push(b);
+        } else {
+          this.p2Blobs.push(b);
+        }
       }
     }
   }
 
   displayBlobs(ctx) {
-    for (let b of this.filteredBlobs) {
+    for (let b of this.p1Blobs) {
       b.display(ctx, this.params.targetHexColour);
     }
   }

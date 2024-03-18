@@ -3,56 +3,51 @@
  */
 
 export class PlayerMarker {
-  constructor(canvas, globalSettings, label) {
+  constructor(canvas, globalSettings, type) {
     this.canvas = canvas;
     this.globalSettings = globalSettings;
-    this.label = label;
+    this.label = type === "p1" ? "PLAYER ONE" : "PLAYER TWO";
+    this.type = type;
+    this.isFound = false;
   }
 
-  static findMarkerBounds(
-    blob1Tracker,
-    blob2Tracker,
-    blob3Tracker,
-    globalSettings
-  ) {
+  update(blob1Tracker, blob2Tracker, blob3Tracker, globalSettings) {
     const maxGap = globalSettings.blobPairGap;
-    const markerBounds = { left: 0, right: 0, top: 0, bottom: 0 };
+    const targArr = `${this.type}Blobs`;
 
-    for (let b1 of blob1Tracker.filteredBlobs) {
-      for (let b2 of blob2Tracker.filteredBlobs) {
+    for (let b1 of blob1Tracker[targArr]) {
+      for (let b2 of blob2Tracker[targArr]) {
         let gapX = b2.left - b1.right;
         let gapY = Math.abs(b2.top - b1.top);
 
         if (b1.left < b2.left && gapX <= maxGap && gapY < maxGap) {
           // found a pair, look for the third one.
 
-          for (let b3 of blob3Tracker.filteredBlobs) {
+          for (let b3 of blob3Tracker[targArr]) {
             gapX = b3.left - b2.right;
             gapY = Math.abs(b3.top - b2.top);
 
             if (b2.left < b3.left && gapX <= maxGap && gapY < maxGap) {
               // If Meet all these criteria we've found our marker!
-              markerBounds.left = b1.left; //Math.min(b1.left, b2.left);
-              markerBounds.right = b3.right; //Math.max(b1.right, b2.right);
-              markerBounds.top = Math.min(b1.top, b2.top, b3.top);
-              markerBounds.bottom = Math.max(b1.bottom, b2.bottom, b2.bottom);
-
-              // this.update(b1, b3);
-              return markerBounds;
+              this.setBounds(b1, b2, b3);
+              this.isFound = true;
+              return;
             }
           }
         }
       }
     }
 
-    return null;
+    this.isFound = false;
   }
 
-  update(bounds) {
-    this.left = bounds.left;
-    this.right = bounds.right;
-    this.top = bounds.top;
-    this.bottom = bounds.bottom;
+  setBounds(b1, b2, b3) {
+    this.left = b1.left;
+    this.right = b3.right;
+    this.top = Math.min(b1.top, b2.top, b3.top);
+    this.bottom = Math.max(b1.bottom, b2.bottom, b2.bottom);
+
+    // derived helpful values
     this.width = this.right - this.left;
     this.height = this.bottom - this.top;
     const halfHeight = this.height / 2;

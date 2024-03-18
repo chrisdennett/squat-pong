@@ -49,12 +49,12 @@ export class WebcamPlayerTracker {
     this.playerOneMarker = new PlayerMarker(
       this.blobsCanvas,
       this.globalSettings,
-      "PLAYER ONE"
+      "p1"
     );
     this.playerTwoMarker = new PlayerMarker(
       this.blobsCanvas,
       this.globalSettings,
-      "PLAYER TWO"
+      "p2"
     );
 
     connectWebcam(webcamVideo, webcamSize.w, webcamSize.h);
@@ -107,25 +107,29 @@ export class WebcamPlayerTracker {
             );
 
             if (pixelMatchesTarget) {
+              const type = isInPlayerOneArea ? "p1" : "p2";
               let addedToBlob = false;
               const xPos = x; // * scaleX;
               const yPos = y; // * scaleY;
 
+              // if pixel is close to another blob add it to that blob
               for (let blob of tracker.blobs) {
-                // if pixel is close to another blob add it to that blob
                 addedToBlob = blob.addIfWithinRange(
                   xPos,
                   yPos,
                   tracker.maxBlobRadius
                 );
                 if (addedToBlob) {
+                  // just in case this blob spans the player areas????
+                  // this really shouldn't be needed.
+                  blob.type = type;
                   break;
                 }
               }
 
               // otherwise create a new blob
               if (!addedToBlob) {
-                const newBlob = new Blob("red");
+                const newBlob = new Blob("red", type);
                 newBlob.addIfWithinRange(xPos, yPos, tracker.maxBlobRadius);
                 tracker.blobs.push(newBlob);
               }
@@ -135,33 +139,34 @@ export class WebcamPlayerTracker {
       }
     );
 
-    const minWidth = 10;
-    const minHeight = 20;
-
     // draw all blob trackers to the canvas
     for (let blobTracker of allBlobTrackers) {
-      blobTracker.setFilteredBlobArray(minWidth, minHeight);
+      blobTracker.filterAndSeparateBlobTypes();
 
       // draw blobs to blob canvas
       blobTracker.displayBlobs(this.blobCtx, "green");
     }
 
     // if()
-    const playerBounds = PlayerMarker.findMarkerBounds(
+    this.playerOneMarker.update(
+      this.blob1Tracker,
+      this.blob2Tracker,
+      this.blob3Tracker,
+      this.globalSettings
+    );
+    this.playerTwoMarker.update(
       this.blob1Tracker,
       this.blob2Tracker,
       this.blob3Tracker,
       this.globalSettings
     );
 
-    if (playerBounds) {
-      if (playerBounds.left < this.playerOneAreaBounds.right) {
-        this.playerOneMarker.update(playerBounds);
-        this.playerOneMarker.display(this.blobCtx);
-      } else {
-        this.playerTwoMarker.update(playerBounds);
-        this.playerTwoMarker.display(this.blobCtx);
-      }
+    if (this.playerOneMarker.isFound) {
+      this.playerOneMarker.display(this.blobCtx);
+    }
+
+    if (this.playerTwoMarker.isFound) {
+      this.playerTwoMarker.display(this.blobCtx);
     }
   }
 

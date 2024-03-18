@@ -1,5 +1,5 @@
 export class Blob {
-  constructor(colour) {
+  constructor(colour, type) {
     this.left = 10000;
     this.top = 10000;
     this.right = 0;
@@ -9,6 +9,7 @@ export class Blob {
     this.centerX = 0;
     this.centerY = 0;
     const h = Math.round(Math.random() * 360);
+    this.type = type; // "p1" or "p2"
     this.fill = colour || `hsl(${h},50%, 50%)`;
     // this.stroke = `hsl(${h},80%, 40%)`;
   }
