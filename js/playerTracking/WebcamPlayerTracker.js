@@ -168,6 +168,19 @@ export class WebcamPlayerTracker {
     if (this.playerTwoMarker.isFound) {
       this.playerTwoMarker.display(this.blobCtx);
     }
+
+    // draw the play area
+    this.blobCtx.fillStyle = "rgba(0,0,0,0.5)";
+    const unwatchedCanvas = {
+      left: this.playerOneAreaBounds.right,
+      width: this.playerTwoAreaBounds.left - this.playerOneAreaBounds.right,
+    };
+    this.blobCtx.fillRect(
+      unwatchedCanvas.left,
+      0,
+      unwatchedCanvas.width,
+      this.blobsCanvas.height
+    );
   }
 
   runForEveryPixel(canvas, ctx, callback) {
