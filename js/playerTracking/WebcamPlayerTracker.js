@@ -1,10 +1,15 @@
-import { BlobTracker } from "./BlobTracker.js";
+import { BlobTracker } from "./settingsPanels/BlobTracker.js";
 import { GlobalSettingsPanel } from "./settingsPanels/GlobalSettingsPanel.js";
 import { PlayerMarker } from "./PlayerMarker.js";
 import { Blob } from "./Blob.js";
-import { rgbObjToHSL } from "./colourUtils.js";
-import { connectWebcam } from "./connectWebcam.js";
-import { drawVideoToCanvas } from "./drawVideoToCanvas.js";
+import { rgbObjToHSL } from "../utils/colourUtils.js";
+import { connectWebcam } from "../utils/connectWebcam.js";
+import { drawVideoToCanvas } from "../utils/drawVideoToCanvas.js";
+
+/**
+ * MAIN CLASS to produce to coordinate finding blobs and players
+ * and drawing the preview canvas.
+ */
 
 export class WebcamPlayerTracker {
   constructor() {
@@ -21,17 +26,19 @@ export class WebcamPlayerTracker {
     this.smallCanvas.width = this.blobsCanvas.width = 320;
     this.smallCanvas.height = this.blobsCanvas.height = 240;
 
+    // set up some helpful player zone.
+    // p1 first third, p2 last third
+    const canvasThird = this.blobsCanvas.width / 3;
+    this.playerOneAreaBounds = { left: 0, right: canvasThird };
+    this.playerTwoAreaBounds = {
+      left: canvasThird * 2,
+      right: canvasThird * 3,
+    };
+
     this.smallCtx = this.smallCanvas.getContext("2d", {
       willReadFrequently: true,
     });
     this.blobCtx = this.blobsCanvas.getContext("2d");
-    this.blobCtx.fillStyle = "rgb(255, 255, 255)";
-    this.blobCtx.fillRect(
-      0,
-      0,
-      this.blobsCanvas.width,
-      this.blobsCanvas.height
-    );
 
     // Settings controls
     this.globalSettings = new GlobalSettingsPanel(controls, "global");
@@ -78,34 +85,44 @@ export class WebcamPlayerTracker {
       this.smallCtx,
       (pixelColour, x, y) => {
         for (let tracker of allBlobTrackers) {
-          const pixelMatchesTarget = Blob.isWithinTolerance(
-            pixelColour,
-            tracker.targetColour,
-            tracker.tolerance
-          );
+          const isInPlayerOneArea =
+            x > this.playerOneAreaBounds.left &&
+            x < this.playerOneAreaBounds.right;
 
-          if (pixelMatchesTarget) {
-            let addedToBlob = false;
-            const xPos = x; // * scaleX;
-            const yPos = y; // * scaleY;
+          const isInPlayerTwoArea =
+            x > this.playerTwoAreaBounds.left &&
+            x < this.playerTwoAreaBounds.right;
 
-            for (let blob of tracker.blobs) {
-              // if pixel is close to another blob add it to that blob
-              addedToBlob = blob.addIfWithinRange(
-                xPos,
-                yPos,
-                tracker.maxBlobRadius
-              );
-              if (addedToBlob) {
-                break;
+          if (isInPlayerOneArea || isInPlayerTwoArea) {
+            const pixelMatchesTarget = Blob.isWithinTolerance(
+              pixelColour,
+              tracker.targetColour,
+              tracker.tolerance
+            );
+
+            if (pixelMatchesTarget) {
+              let addedToBlob = false;
+              const xPos = x; // * scaleX;
+              const yPos = y; // * scaleY;
+
+              for (let blob of tracker.blobs) {
+                // if pixel is close to another blob add it to that blob
+                addedToBlob = blob.addIfWithinRange(
+                  xPos,
+                  yPos,
+                  tracker.maxBlobRadius
+                );
+                if (addedToBlob) {
+                  break;
+                }
               }
-            }
 
-            // otherwise create a new blob
-            if (!addedToBlob) {
-              const newBlob = new Blob("red");
-              newBlob.addIfWithinRange(xPos, yPos, tracker.maxBlobRadius);
-              tracker.blobs.push(newBlob);
+              // otherwise create a new blob
+              if (!addedToBlob) {
+                const newBlob = new Blob("red");
+                newBlob.addIfWithinRange(xPos, yPos, tracker.maxBlobRadius);
+                tracker.blobs.push(newBlob);
+              }
             }
           }
         }

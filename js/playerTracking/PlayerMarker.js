@@ -1,3 +1,7 @@
+/*
+ * Find the three blobs that make up a Player Marker.
+ */
+
 export class PlayerMarker {
   constructor(canvas, globalSettings) {
     this.canvas = canvas;
@@ -6,7 +10,7 @@ export class PlayerMarker {
   }
 
   findMarker(blob1Tracker, blob2Tracker, blob3Tracker) {
-    // MOVE THIS TO playerOneMarker
+    // MOVE THIS TO playerOneMarker?
     this.markerFound = false;
     const maxGap = this.globalSettings.blobPairGap;
 

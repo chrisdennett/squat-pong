@@ -1,6 +1,9 @@
-import { SettingsPanel } from "./settingsPanels/SettingsPanel.js";
-import { hexToHSL } from "./colourUtils.js";
+import { SettingsPanel } from "./SettingsPanel.js";
+import { hexToHSL } from "../../utils/colourUtils.js";
 
+/*
+Combined Controls and blob store
+*/
 export class BlobTracker extends SettingsPanel {
   constructor(parent, id, globalSettings) {
     super(parent, id);

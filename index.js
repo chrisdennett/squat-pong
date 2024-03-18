@@ -1,10 +1,8 @@
-import { BrushStrokeEffect } from "./js/growingBrushStrokes/BrushStrokeEffect.js";
 import { WebcamPlayerTracker } from "./js/playerTracking/WebcamPlayerTracker.js";
 
 const controlPanel = document.querySelector("#controlPanel");
 // controlPanel.style.display = "none";
 const playerTracker = new WebcamPlayerTracker();
-const brushStrokeEffect = new BrushStrokeEffect();
 
 /**
 this.canvas = document.querySelector("#canvas");
@@ -29,22 +27,14 @@ document.addEventListener("keyup", (e) => {
       controlPanel.style.display = "none";
     }
   }
-
-  if (e.key === "c") {
-    brushStrokeEffect.clearCanvas();
-  }
 });
 
 function loop() {
-  brushStrokeEffect.fadeCanvas();
   playerTracker.update();
 
   const { p1 } = playerTracker.normalisedPlayerPositions;
   if (p1.markerFound) {
-    brushStrokeEffect.triggerRoot(
-      p1.x * brushStrokeEffect.canvas.width,
-      p1.y * brushStrokeEffect.canvas.height
-    );
+    // console.log("p1.y: ", p1.y);
   }
 
   window.requestAnimationFrame(loop);
