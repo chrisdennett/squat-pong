@@ -87,8 +87,8 @@ export class Blob {
     }
 
     // test lightness
-    const minB = colour1.l - tolerance * 2;
-    const maxB = colour1.l + tolerance * 2;
+    const minB = colour1.l - tolerance;
+    const maxB = colour1.l + tolerance;
     if (colour2.l < minB || colour2.l > maxB) {
       return false;
     }

@@ -169,7 +169,7 @@ export class WebcamPlayerTracker {
       this.playerTwoMarker.display(this.blobCtx);
     }
 
-    // draw the play area
+    // Show the canvas area that isn't included in the play area
     this.blobCtx.fillStyle = "rgba(0,0,0,0.5)";
     const unwatchedCanvas = {
       left: this.playerOneAreaBounds.right,
