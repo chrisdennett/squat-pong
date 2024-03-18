@@ -9,20 +9,6 @@ export class BlobTracker extends SettingsPanel {
     super(parent, id);
 
     const defaultSettings = {
-      tolerance: {
-        type: "slider",
-        min: 0,
-        max: 50,
-        step: 1,
-        value: window.localStorage.getItem(`tolerance_${id}`) || 12,
-      },
-      maxBlobRadius: {
-        type: "slider",
-        min: 1,
-        max: 100,
-        step: 1,
-        value: window.localStorage.getItem(`maxBlobRadius_${id}`) || 80,
-      },
       targetHexColour: {
         type: "colour",
         callback: (col) => (this.targetColour = hexToHSL(col)),
@@ -67,13 +53,5 @@ export class BlobTracker extends SettingsPanel {
     for (let b of this.blobs) {
       b.clear();
     }
-  }
-
-  get tolerance() {
-    return this.params.tolerance;
-  }
-
-  get maxBlobRadius() {
-    return this.params.maxBlobRadius;
   }
 }

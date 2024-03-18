@@ -19,12 +19,35 @@ export class GlobalSettingsPanel extends SettingsPanel {
         step: 1,
         value: window.localStorage.getItem(`minBlobWidth_${id}`) || 12,
       },
+      maxBlobWidth: {
+        type: "slider",
+        min: 1,
+        max: 100,
+        step: 1,
+        value: window.localStorage.getItem(`maxBlobWidth_${id}`) || 80,
+      },
+
       minBlobHeight: {
         type: "slider",
         min: 0,
         max: 50,
         step: 1,
         value: window.localStorage.getItem(`minBlobHeight_${id}`) || 12,
+      },
+      maxBlobHeight: {
+        type: "slider",
+        min: 1,
+        max: 100,
+        step: 1,
+        value: window.localStorage.getItem(`maxBlobHeight_${id}`) || 80,
+      },
+
+      tolerance: {
+        type: "slider",
+        min: 0,
+        max: 50,
+        step: 1,
+        value: window.localStorage.getItem(`tolerance_${id}`) || 12,
       },
     };
 
@@ -39,7 +62,19 @@ export class GlobalSettingsPanel extends SettingsPanel {
     return this.params.minBlobWidth;
   }
 
+  get maxBlobWidth() {
+    return this.params.maxBlobWidth;
+  }
+
   get minBlobHeight() {
     return this.params.minBlobHeight;
+  }
+
+  get maxBlobHeight() {
+    return this.params.maxBlobHeight;
+  }
+
+  get tolerance() {
+    return this.params.tolerance;
   }
 }

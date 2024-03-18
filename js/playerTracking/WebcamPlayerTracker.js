@@ -103,7 +103,7 @@ export class WebcamPlayerTracker {
             const pixelMatchesTarget = Blob.isWithinTolerance(
               pixelColour,
               tracker.targetColour,
-              tracker.tolerance
+              this.globalSettings.tolerance
             );
 
             if (pixelMatchesTarget) {
@@ -117,7 +117,8 @@ export class WebcamPlayerTracker {
                 addedToBlob = blob.addIfWithinRange(
                   xPos,
                   yPos,
-                  tracker.maxBlobRadius
+                  this.globalSettings.maxBlobWidth,
+                  this.globalSettings.maxBlobHeight
                 );
                 if (addedToBlob) {
                   // just in case this blob spans the player areas????
@@ -130,7 +131,11 @@ export class WebcamPlayerTracker {
               // otherwise create a new blob
               if (!addedToBlob) {
                 const newBlob = new Blob("red", type);
-                newBlob.addIfWithinRange(xPos, yPos, tracker.maxBlobRadius);
+                newBlob.addIfWithinRange(
+                  xPos,
+                  yPos,
+                  this.globalSettings.maxBlobWidth
+                );
                 tracker.blobs.push(newBlob);
               }
             }

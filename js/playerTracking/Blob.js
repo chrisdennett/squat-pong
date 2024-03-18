@@ -25,10 +25,9 @@ export class Blob {
     this.centerY = 0;
   }
 
-  addIfWithinRange(x, y, maxDistance) {
+  addIfWithinRange(x, y, maxW, maxH) {
     const isWithinRange =
-      Math.abs(x - this.centerX) <= maxDistance &&
-      Math.abs(y - this.centerY) <= maxDistance;
+      Math.abs(x - this.centerX) <= maxW && Math.abs(y - this.centerY) <= maxH;
 
     const yesAddToBlob = isWithinRange || this.centerX === 0;
 
