@@ -140,13 +140,18 @@ export class WebcamPlayerTracker {
       blobTracker.displayBlobs(this.blobCtx, "green");
     }
 
-    this.playerOneMarker.findMarker(
+    // if()
+    const playerBounds = PlayerMarker.findMarkerBounds(
       this.blob1Tracker,
       this.blob2Tracker,
-      this.blob3Tracker
+      this.blob3Tracker,
+      this.globalSettings
     );
 
-    this.playerOneMarker.display(this.blobCtx);
+    if (playerBounds) {
+      this.playerOneMarker.update(playerBounds);
+      this.playerOneMarker.display(this.blobCtx);
+    }
   }
 
   runForEveryPixel(canvas, ctx, callback) {

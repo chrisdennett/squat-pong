@@ -6,13 +6,16 @@ export class PlayerMarker {
   constructor(canvas, globalSettings) {
     this.canvas = canvas;
     this.globalSettings = globalSettings;
-    this.markerFound = false;
   }
 
-  findMarker(blob1Tracker, blob2Tracker, blob3Tracker) {
-    // MOVE THIS TO playerOneMarker?
-    this.markerFound = false;
-    const maxGap = this.globalSettings.blobPairGap;
+  static findMarkerBounds(
+    blob1Tracker,
+    blob2Tracker,
+    blob3Tracker,
+    globalSettings
+  ) {
+    const maxGap = globalSettings.blobPairGap;
+    const markerBounds = { left: 0, right: 0, top: 0, bottom: 0 };
 
     for (let b1 of blob1Tracker.filteredBlobs) {
       for (let b2 of blob2Tracker.filteredBlobs) {
@@ -27,25 +30,28 @@ export class PlayerMarker {
             gapY = Math.abs(b3.top - b2.top);
 
             if (b2.left < b3.left && gapX <= maxGap && gapY < maxGap) {
-              this.update(b1, b3);
-              this.markerFound = true;
-              break;
+              // If Meet all these criteria we've found our marker!
+              markerBounds.left = b1.left; //Math.min(b1.left, b2.left);
+              markerBounds.right = b3.right; //Math.max(b1.right, b2.right);
+              markerBounds.top = Math.min(b1.top, b2.top, b3.top);
+              markerBounds.bottom = Math.max(b1.bottom, b2.bottom, b2.bottom);
+
+              // this.update(b1, b3);
+              return markerBounds;
             }
           }
-
-          if (this.markerFound) break;
         }
       }
-
-      if (this.markerFound) break;
     }
+
+    return null;
   }
 
-  update(blob1, blob2) {
-    this.left = Math.min(blob1.left, blob2.left);
-    this.right = Math.max(blob1.right, blob2.right);
-    this.top = Math.min(blob1.top, blob2.top);
-    this.bottom = Math.max(blob1.bottom, blob2.bottom);
+  update(bounds) {
+    this.left = bounds.left;
+    this.right = bounds.right;
+    this.top = bounds.top;
+    this.bottom = bounds.bottom;
     this.width = this.right - this.left;
     this.height = this.bottom - this.top;
     const halfHeight = this.height / 2;
@@ -59,15 +65,13 @@ export class PlayerMarker {
   }
 
   display(ctx) {
-    if (this.markerFound) {
-      ctx.strokeStyle = "yellow";
-      ctx.fillStyle = "yellow";
-      ctx.strokeRect(this.left, this.top, this.width, this.height);
-      ctx.fillRect(this.left, this.middleY - 1, this.width, 2);
-      ctx.strokeText("PLAYER ONE", this.left, this.top);
-      ctx.fillStyle = "red";
-      ctx.font = "20px Arial";
-      ctx.fillText("PLAYER ONE", this.left, this.top);
-    }
+    ctx.strokeStyle = "yellow";
+    ctx.fillStyle = "yellow";
+    ctx.strokeRect(this.left, this.top, this.width, this.height);
+    ctx.fillRect(this.left, this.middleY - 1, this.width, 2);
+    ctx.strokeText("PLAYER ONE", this.left, this.top);
+    ctx.fillStyle = "red";
+    ctx.font = "20px Arial";
+    ctx.fillText("PLAYER ONE", this.left, this.top);
   }
 }
