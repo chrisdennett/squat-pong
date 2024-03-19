@@ -124,7 +124,6 @@ class TenPrintCanvas extends HTMLElement {
     this.cellSizeSlider.value = this.cols / this.maxCols;
     this.cellSizeSlider.addEventListener("input", (e) => {
       this.setCellSize(parseFloat(e.target.value));
-      this.createArt();
     });
 
     // randomness slider
@@ -135,8 +134,7 @@ class TenPrintCanvas extends HTMLElement {
 
     // hue randomness slider
     this.hueSlider.addEventListener("input", (e) => {
-      this.hue = parseFloat(e.target.value);
-      this.createArt();
+      this.setHue(parseFloat(e.target.value));
     });
 
     // saturation randomness slider
@@ -149,9 +147,25 @@ class TenPrintCanvas extends HTMLElement {
     this.createArt();
   }
 
+  /**
+   * @param {number} value
+   */
   set numTiles(value) {
     this.setCellSize(value);
     this.cellSizeSlider.value = value;
+  }
+
+  /**
+   * @param {number} value
+   */
+  set lineHue(value) {
+    this.setHue(value);
+    this.hueSlider.value = value;
+  }
+
+  setHue(normalisedValue) {
+    this.hue = normalisedValue;
+    this.createArt();
   }
 
   setCellSize(normalisedValue) {

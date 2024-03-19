@@ -28,11 +28,12 @@ export class WebcamPlayerTracker {
 
     // set up some helpful player zone.
     // p1 first third, p2 last third
-    const canvasThird = this.blobsCanvas.width / 3;
-    this.playerOneAreaBounds = { left: 0, right: canvasThird };
+    // const canvasThird = this.blobsCanvas.width / 3;
+    const playerAreaWidth = this.blobsCanvas.width / 2.1;
+    this.playerOneAreaBounds = { left: 0, right: playerAreaWidth };
     this.playerTwoAreaBounds = {
-      left: canvasThird * 2,
-      right: canvasThird * 3,
+      left: this.blobsCanvas.width - playerAreaWidth,
+      right: this.blobsCanvas.width,
     };
 
     this.smallCtx = this.smallCanvas.getContext("2d", {

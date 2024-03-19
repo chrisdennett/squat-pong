@@ -54,11 +54,13 @@ function loop() {
 
   const { p1, p2 } = playerTracker.normalisedPlayerPositions;
 
-  console.log("p1.markerFound: ", p1.isFound);
-
   if (p1.isFound) {
     // console.log("p1.y: ", p1.y);
     tenPrint.numTiles = p1.y;
+  }
+
+  if (p2.isFound) {
+    tenPrint.lineHue = p2.y;
   }
 
   window.requestAnimationFrame(loop);
