@@ -12,13 +12,20 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   font-family: monospace;
-  background-color: #83b7b5;
+  background-color: #abb4b4;
   overflow: hidden;
 }
 
-#controlPanel {
-  position: fixed;
+main {
   display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+#controlPanel {
+  /* position: fixed; */
+  display: inline-flex;
+  padding: 40px;
   /* align-items: flex-start; */
   bottom: 0;
   right: 0;

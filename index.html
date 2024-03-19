@@ -5,19 +5,26 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Squat Pong</title>
     <link rel="stylesheet" href="styles.css" />
+    <script src="js/TenPrintCanvas.js"></script>
+    <script src="./libs/tonal.min.js"></script>
+    <script src="./libs/Tone.js"></script>
+    <!-- <script src="./libs/howler.min.js"></script> -->
     <script defer src="index.js" type="module"></script>
   </head>
   <body>
-    <div id="controlPanel">
-      <div id="previewHolder">
-        <div id="controls"></div>
-        <canvas id="smallCanvas"></canvas>
-        <canvas id="blobsCanvas"></canvas>
-        <div id="info"></div>
+    <main>
+      <div id="controlPanel">
+        <div id="previewHolder">
+          <div id="controls"></div>
+          <canvas id="smallCanvas"></canvas>
+          <canvas id="blobsCanvas"></canvas>
+          <div id="info"></div>
+        </div>
+        <video id="webcamVideo" autoplay="true" muted></video>
       </div>
-      <video id="webcamVideo" autoplay="true" muted></video>
-    </div>
 
-    <canvas id="canvas"></canvas>
+      <ten-print></ten-print>
+    </main>
+    <!-- <canvas id="canvas"></canvas> -->
   </body>
 </html>
