@@ -23,12 +23,18 @@ main {
 }
 
 #controlPanel {
-  /* position: fixed; */
   display: inline-flex;
-  padding: 40px;
-  /* align-items: flex-start; */
+  margin: 40px;
+  padding: 0px;
+  border-radius: 10px;
   bottom: 0;
   right: 0;
+  border: 1px dashed rgba(0, 0, 0, 0.2);
+}
+
+#controlPanel canvas {
+  border-radius: 10px;
+  margin: 10px;
 }
 
 #previewHolder {
@@ -37,10 +43,12 @@ main {
 }
 
 .settingsPanel {
-  padding: 5px;
-  border: 1px solid black;
+  padding: 5px 10px;
+  /* border: 1px solid black; */
+  margin: 1px 0;
   background: rgba(0, 0, 0, 0.5);
   color: white;
+  border-radius: 10px;
 }
 
 #controls {

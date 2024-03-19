@@ -123,9 +123,7 @@ class TenPrintCanvas extends HTMLElement {
     this.range = this.maxCols - this.minCols;
     this.cellSizeSlider.value = this.cols / this.maxCols;
     this.cellSizeSlider.addEventListener("input", (e) => {
-      this.cols = this.minCols + parseFloat(e.target.value) * this.range;
-      this.rows = this.cols;
-      this.cellSize = this.canvasSize / this.cols;
+      this.setCellSize(parseFloat(e.target.value));
       this.createArt();
     });
 
@@ -148,6 +146,18 @@ class TenPrintCanvas extends HTMLElement {
     });
 
     // Run
+    this.createArt();
+  }
+
+  set numTiles(value) {
+    this.setCellSize(value);
+    this.cellSizeSlider.value = value;
+  }
+
+  setCellSize(normalisedValue) {
+    this.cols = this.minCols + normalisedValue * this.range;
+    this.rows = this.cols;
+    this.cellSize = this.canvasSize / this.cols;
     this.createArt();
   }
 

@@ -1,7 +1,9 @@
 import { WebcamPlayerTracker } from "./js/playerTracking/WebcamPlayerTracker.js";
 
+const tenPrint = document.querySelector("ten-print");
 const controlPanel = document.querySelector("#controlPanel");
 // controlPanel.style.display = "none";
+
 const playerTracker = new WebcamPlayerTracker();
 
 // SOUND STUFF
@@ -50,9 +52,13 @@ document.addEventListener("keyup", (e) => {
 function loop() {
   playerTracker.update();
 
-  const { p1 } = playerTracker.normalisedPlayerPositions;
-  if (p1.markerFound) {
+  const { p1, p2 } = playerTracker.normalisedPlayerPositions;
+
+  console.log("p1.markerFound: ", p1.isFound);
+
+  if (p1.isFound) {
     // console.log("p1.y: ", p1.y);
+    tenPrint.numTiles = p1.y;
   }
 
   window.requestAnimationFrame(loop);
