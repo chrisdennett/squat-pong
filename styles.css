@@ -24,7 +24,7 @@ main {
 
 #controlPanel {
   display: inline-flex;
-  margin: 40px;
+  margin: 70px 20px 40px 20px;
   padding: 0px;
   border-radius: 10px;
   bottom: 0;
