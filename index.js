@@ -5,34 +5,15 @@ const playerTracker = document.querySelector("#tracker");
 const pong = document.querySelector("#pong");
 const soundMachine = new SoundMachine();
 
-/**
-this.canvas = document.querySelector("#canvas");
-canvas.width = 800;
-canvas.height = 600;
-this.ctx = canvas.getContext("2d", { willReadFrequently: true });
-this.ctx.clearRect(0, 0, canvas.width, canvas.height);
-
-const paddleH = 50;
-    console.log("paddleH: ", paddleH);
-    const range = canvas.height - paddleH;
-    const paddleY = this.playerOneMarker.y * range;
-    info.innerHTML = this.playerOneMarker.y;
-    this.ctx.fillRect(10, paddleY, 30, paddleH);
-*/
-
 document.addEventListener("keyup", (e) => {
   if (e.key === "b") {
-    if (playerTracker.style.display === "none") {
-      playerTracker.style.display = "inherit";
+    if ((playerTracker.style.opacity = 0)) {
+      playerTracker.style.opacity = 1;
     } else {
-      playerTracker.style.display = "none";
+      playerTracker.style.width = 0;
     }
   }
 
-  if (e.key === "p") {
-    pong.setPaddleOneY(0.5);
-  }
-  1;
   if (pong.state === "gameOver") {
     pong.start();
   }
@@ -43,16 +24,12 @@ document.addEventListener("keyup", (e) => {
 function loop() {
   playerTracker.update();
 
-  console.log("pong.state: ", pong.state);
-
   pong.loop();
 
   const { p1, p2 } = playerTracker.normalisedPlayerPositions;
 
   if (p1.isFound) {
-    console.log("p1.y: ", p1.y);
     pong.setPaddleOneY(p1.y);
-    //
   }
 
   if (p2.isFound) {

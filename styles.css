@@ -32,3 +32,7 @@ main {
   align-items: center;
   justify-content: center;
 }
+
+#fpsCounter {
+  position: fixed;
+}

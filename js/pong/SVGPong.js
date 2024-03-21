@@ -1,6 +1,12 @@
 const template = document.createElement("template");
 template.innerHTML = /*html*/ `
     <style>
+
+        #svgPong{
+            width: 100%;
+            min-height: 100vh;
+        }
+
         #surround{
             padding: 5px;
             display: inline-block;
