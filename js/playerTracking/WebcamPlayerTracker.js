@@ -107,8 +107,8 @@ class WebcamPlayerTracker extends HTMLElement {
     const webcamSize = { w: 320, h: 240 };
 
     // Setup
-    this.smallCanvas.width = this.blobsCanvas.width = 320;
-    this.smallCanvas.height = this.blobsCanvas.height = 240;
+    this.smallCanvas.width = this.blobsCanvas.width = 160;
+    this.smallCanvas.height = this.blobsCanvas.height = 120;
 
     // set up some helpful player zone.
     // p1 first third, p2 last third
