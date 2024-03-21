@@ -14,7 +14,7 @@ class Pong extends HTMLElement {
     shadow.append(PongTemplate.content.cloneNode(true));
 
     this.defaultGameSettings = {
-      gameMode: "demo",
+      gameMode: "onePlayer",
       displayWidth: 350,
       delayAfterPoint: 1000,
       delayRestartAfterWin: 2000,
@@ -68,12 +68,20 @@ class Pong extends HTMLElement {
     this.svgPong = shadow.getElementById("svgPong");
   }
 
+  setPaddleOneY(y) {
+    this.dataPong.paddleLeft.setY(y);
+  }
+
   setup(customSettings) {
     this.dataPong = new DataPong({
       ...this.defaultGameSettings,
       ...customSettings,
     });
     this.svgPong.setup(this.dataPong);
+  }
+
+  get state() {
+    return this.dataPong.gameState;
   }
 
   get score() {

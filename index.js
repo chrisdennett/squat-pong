@@ -29,24 +29,35 @@ document.addEventListener("keyup", (e) => {
     }
   }
 
+  if (e.key === "p") {
+    pong.setPaddleOneY(0.5);
+  }
+  1;
+  if (pong.state === "gameOver") {
+    pong.start();
+  }
+
   soundMachine.playNote(parseInt(e.key));
 });
 
 function loop() {
   playerTracker.update();
 
+  console.log("pong.state: ", pong.state);
+
   pong.loop();
 
-  // const { p1, p2 } = playerTracker.normalisedPlayerPositions;
+  const { p1, p2 } = playerTracker.normalisedPlayerPositions;
 
-  // if (p1.isFound) {
-  //   // console.log("p1.y: ", p1.y);
-  //   //
-  // }
+  if (p1.isFound) {
+    console.log("p1.y: ", p1.y);
+    pong.setPaddleOneY(p1.y);
+    //
+  }
 
-  // if (p2.isFound) {
-  //   //
-  // }
+  if (p2.isFound) {
+    //
+  }
 
   // Calculate and display FPS
   calculateFPS();
