@@ -54,10 +54,7 @@ export class DataPong {
       return;
     }
 
-    console.log("this.paddleLeft: ", this.paddleLeft);
-
     this.checkPointScored();
-
     this.ball.update();
 
     if (this.gameMode === "demo") {
