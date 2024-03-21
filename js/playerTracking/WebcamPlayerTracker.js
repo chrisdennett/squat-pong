@@ -10,14 +10,98 @@ import { drawVideoToCanvas } from "../utils/drawVideoToCanvas.js";
  * MAIN CLASS to produce to coordinate finding blobs and players
  * and drawing the preview canvas.
  */
+const template = document.createElement("template");
+template.innerHTML = /*html*/ `
+    <style>
+      *,
+      *::before,
+      *::after {
+        box-sizing: border-box;
+      }
 
-export class WebcamPlayerTracker {
+      * {
+        margin: 0;
+      }
+
+      #controlPanel {
+        display: inline-flex;
+        margin: 70px 20px 40px 20px;
+        padding: 0px;
+        border-radius: 10px;
+        bottom: 0;
+        right: 0;
+        border: 1px dashed rgba(0, 0, 0, 0.2);
+      }
+
+      #controlPanel canvas {
+        border-radius: 10px;
+        margin: 10px;
+      }
+
+      #previewHolder {
+        display: flex;
+        flex-direction: column;
+      }
+
+      .settingsPanel {
+        padding: 5px 10px;
+        /* border: 1px solid black; */
+        margin: 1px 0;
+        background: rgba(0, 0, 0, 0.5);
+        color: white;
+        border-radius: 10px;
+      }
+
+      #controls {
+        display: flex;
+        flex-direction: column;
+      }
+
+      #info {
+        display: flex;
+      }
+
+      #smallCanvas {
+        border: 2px solid red;
+        image-rendering: pixelated;
+        display: none;
+      }
+
+      #blobsCanvas {
+        border: 2px solid blue;
+        image-rendering: pixelated;
+      }
+
+      video {
+        position: fixed;
+        top: 0;
+        right: 0;
+        opacity: 0;
+        width: 1px;
+      }
+    </style>
+    <div id="controlPanel">
+      <div id="previewHolder">
+        <div id="controls"></div>
+        <canvas id="smallCanvas"></canvas>
+        <canvas id="blobsCanvas"></canvas>
+        <div id="info"></div>
+      </div>
+      <video id="webcamVideo" autoplay="true" muted></video>
+    </div>
+`;
+
+class WebcamPlayerTracker extends HTMLElement {
   constructor() {
-    const webcamVideo = document.querySelector("#webcamVideo");
+    super();
+    const shadow = this.attachShadow({ mode: "open" });
+    shadow.append(template.content.cloneNode(true));
 
-    const controls = document.querySelector("#controls");
-    this.blobsCanvas = document.querySelector("#blobsCanvas");
-    this.smallCanvas = document.querySelector("#smallCanvas");
+    this.webcamVideo = shadow.querySelector("#webcamVideo");
+
+    const controls = shadow.querySelector("#controls");
+    this.blobsCanvas = shadow.querySelector("#blobsCanvas");
+    this.smallCanvas = shadow.querySelector("#smallCanvas");
 
     // Settings
     const webcamSize = { w: 320, h: 240 };
@@ -58,7 +142,7 @@ export class WebcamPlayerTracker {
       "p2"
     );
 
-    connectWebcam(webcamVideo, webcamSize.w, webcamSize.h);
+    connectWebcam(this.webcamVideo, webcamSize.w, webcamSize.h);
   }
 
   get normalisedPlayerPositions() {
@@ -77,7 +161,7 @@ export class WebcamPlayerTracker {
 
   update() {
     // draw webcam to small canvas to reduce pixel count
-    drawVideoToCanvas(webcamVideo, this.smallCanvas);
+    drawVideoToCanvas(this.webcamVideo, this.smallCanvas);
 
     // draw small canvas to display canvas
     this.blobCtx.drawImage(this.smallCanvas, 0, 0);
@@ -218,3 +302,5 @@ export class WebcamPlayerTracker {
     }
   }
 }
+
+customElements.define("webcam-player-tracker", WebcamPlayerTracker);

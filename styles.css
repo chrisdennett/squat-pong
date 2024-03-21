@@ -13,69 +13,11 @@ body {
   -webkit-font-smoothing: antialiased;
   font-family: monospace;
   background-color: #abb4b4;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 main {
   display: flex;
   align-items: center;
   justify-content: center;
-}
-
-#controlPanel {
-  display: inline-flex;
-  margin: 70px 20px 40px 20px;
-  padding: 0px;
-  border-radius: 10px;
-  bottom: 0;
-  right: 0;
-  border: 1px dashed rgba(0, 0, 0, 0.2);
-}
-
-#controlPanel canvas {
-  border-radius: 10px;
-  margin: 10px;
-}
-
-#previewHolder {
-  display: flex;
-  flex-direction: column;
-}
-
-.settingsPanel {
-  padding: 5px 10px;
-  /* border: 1px solid black; */
-  margin: 1px 0;
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  border-radius: 10px;
-}
-
-#controls {
-  display: flex;
-  flex-direction: column;
-}
-
-#info {
-  display: flex;
-}
-
-#canvas {
-  border: 20px solid #83b7b5;
-  margin: 20px;
-  background: #83b7b5;
-  box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
-}
-
-#smallCanvas {
-  image-rendering: pixelated;
-  display: none;
-}
-
-video {
-  position: fixed;
-  top: 0;
-  right: 0;
-  opacity: 0;
-  width: 1px;
 }

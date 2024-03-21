@@ -1,9 +1,6 @@
-import { WebcamPlayerTracker } from "./js/playerTracking/WebcamPlayerTracker.js";
-
 const controlPanel = document.querySelector("#controlPanel");
+const playerTracker = document.querySelector("#tracker");
 // controlPanel.style.display = "none";
-
-const playerTracker = new WebcamPlayerTracker();
 
 // SOUND STUFF
 let scale;
@@ -51,16 +48,16 @@ document.addEventListener("keyup", (e) => {
 function loop() {
   playerTracker.update();
 
-  const { p1, p2 } = playerTracker.normalisedPlayerPositions;
+  // const { p1, p2 } = playerTracker.normalisedPlayerPositions;
 
-  if (p1.isFound) {
-    // console.log("p1.y: ", p1.y);
-    //
-  }
+  // if (p1.isFound) {
+  //   // console.log("p1.y: ", p1.y);
+  //   //
+  // }
 
-  if (p2.isFound) {
-    //
-  }
+  // if (p2.isFound) {
+  //   //
+  // }
 
   window.requestAnimationFrame(loop);
 }
