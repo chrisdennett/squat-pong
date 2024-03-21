@@ -1,7 +1,8 @@
 import { SoundMachine } from "./js/sound/soundMachine.js";
+import { calculateFPS } from "./js/utils/fps.js";
 
-const controlPanel = document.querySelector("#controlPanel");
 const playerTracker = document.querySelector("#tracker");
+const pong = document.querySelector("#pong");
 const soundMachine = new SoundMachine();
 
 /**
@@ -21,10 +22,10 @@ const paddleH = 50;
 
 document.addEventListener("keyup", (e) => {
   if (e.key === "b") {
-    if (controlPanel.style.display === "none") {
-      controlPanel.style.display = "inherit";
+    if (playerTracker.style.display === "none") {
+      playerTracker.style.display = "inherit";
     } else {
-      controlPanel.style.display = "none";
+      playerTracker.style.display = "none";
     }
   }
 
@@ -33,6 +34,8 @@ document.addEventListener("keyup", (e) => {
 
 function loop() {
   playerTracker.update();
+
+  pong.loop();
 
   // const { p1, p2 } = playerTracker.normalisedPlayerPositions;
 
@@ -45,7 +48,13 @@ function loop() {
   //   //
   // }
 
+  // Calculate and display FPS
+  calculateFPS();
+
   window.requestAnimationFrame(loop);
 }
 
+// kick off
+pong.setup();
+pong.start();
 loop();
