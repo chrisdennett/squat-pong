@@ -23,7 +23,15 @@ template.innerHTML = /*html*/ `
         margin: 0;
       }
 
+      h2{
+        font-size: 14px;
+      }
+      label{
+        font-size: 12px;
+      }
+
       #controlPanel {
+        position: fixed;
         display: inline-flex;
         margin: 70px 20px 40px 20px;
         padding: 0px;
@@ -31,6 +39,7 @@ template.innerHTML = /*html*/ `
         bottom: 0;
         right: 0;
         border: 1px dashed rgba(0, 0, 0, 0.2);
+        font-family: Arial
       }
 
       #controlPanel canvas {
