@@ -14,10 +14,26 @@ document.addEventListener("keyup", (e) => {
     }
   }
 
+  // Game settings
+  if (e.key === "q") {
+    // set player one upper pos
+  }
+  if (e.key === "a") {
+    // set player one lower pos
+  }
+  if (e.key === "e") {
+    // set player one upper pos
+  }
+  if (e.key === "d") {
+    // set player one lower pos
+  }
+
+  // Restart game
   if (pong.state === "gameOver") {
     pong.start();
   }
 
+  // sound testing
   soundMachine.playNote(parseInt(e.key));
 });
 
@@ -33,7 +49,7 @@ function loop() {
   }
 
   if (p2.isFound) {
-    //
+    //pong.setPaddleTwoY(p1.y);
   }
 
   // Calculate and display FPS

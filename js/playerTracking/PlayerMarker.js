@@ -9,6 +9,8 @@ export class PlayerMarker {
     this.label = type === "p1" ? "PLAYER ONE" : "PLAYER TWO";
     this.type = type;
     this.isFound = false;
+    this.minY = 20;
+    this.maxY = 100;
   }
 
   update(blob1Tracker, blob2Tracker, blob3Tracker, globalSettings) {
@@ -44,7 +46,7 @@ export class PlayerMarker {
   setBounds(b1, b2, b3) {
     this.left = b1.left;
     this.right = b3.right;
-    this.top = Math.min(b1.top, b2.top, b3.top);
+    this.top = Math.min(b1.top, b2.top, b3.top); // top of marker
     this.bottom = Math.max(b1.bottom, b2.bottom, b2.bottom);
 
     // derived helpful values
@@ -54,9 +56,14 @@ export class PlayerMarker {
     this.middleY = this.top + halfHeight;
 
     // set normalised value for x, y so can be used on diff sized canvases
-    const verticalRange = this.canvas.height - this.height;
+    // use range between min and max y
+    const range = this.maxY - this.minY;
+    const verticalRange = range - this.height;
     const horizontalRange = this.canvas.width - this.height;
-    this.y = this.top / verticalRange;
+
+    const relativeTop = this.top - this.minY;
+
+    this.y = relativeTop / verticalRange;
     this.x = this.right / horizontalRange;
   }
 
@@ -69,5 +76,13 @@ export class PlayerMarker {
     ctx.fillStyle = "red";
     ctx.font = "20px Arial";
     ctx.fillText(this.label, this.left, this.top);
+
+    ctx.beginPath();
+    ctx.moveTo(0, this.minY);
+    ctx.lineTo(100, this.minY);
+
+    ctx.moveTo(0, this.maxY);
+    ctx.lineTo(100, this.maxY);
+    ctx.stroke();
   }
 }

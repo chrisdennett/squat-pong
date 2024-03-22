@@ -7,7 +7,7 @@ PongTemplate.innerHTML = /*html*/ `
 `;
 
 class Pong extends HTMLElement {
-  constructor(customGameSettings) {
+  constructor() {
     super();
 
     const shadow = this.attachShadow({ mode: "open" });
@@ -18,7 +18,7 @@ class Pong extends HTMLElement {
       displayWidth: 350,
       delayAfterPoint: 1000,
       delayRestartAfterWin: 2000,
-      winningScore: 11,
+      winningScore: 111,
       useGapBug: false,
       useScoreBasedPaddleSizes: false,
       palette: {
@@ -68,10 +68,6 @@ class Pong extends HTMLElement {
     this.svgPong = shadow.getElementById("svgPong");
   }
 
-  setPaddleOneY(y) {
-    this.dataPong.paddleLeft.setY(y);
-  }
-
   setup(customSettings) {
     this.dataPong = new DataPong({
       ...this.defaultGameSettings,
@@ -80,6 +76,14 @@ class Pong extends HTMLElement {
     this.svgPong.setup(this.dataPong);
   }
 
+  setPaddleOneY(y) {
+    this.dataPong.paddleLeft.setY(y);
+  }
+  setPaddleTwoY(y) {
+    this.dataPong.paddleRight.setY(y);
+  }
+
+  //  GETTERS
   get state() {
     return this.dataPong.gameState;
   }

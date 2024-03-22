@@ -154,18 +154,17 @@ class WebcamPlayerTracker extends HTMLElement {
     connectWebcam(this.webcamVideo, webcamSize.w, webcamSize.h);
   }
 
-  get normalisedPlayerPositions() {
-    const p1 = {
-      x: this.playerOneMarker.x,
-      y: this.playerOneMarker.y,
-      isFound: this.playerOneMarker.isFound,
-    };
-    const p2 = {
-      x: this.playerTwoMarker.x,
-      y: this.playerTwoMarker.y,
-      isFound: this.playerTwoMarker.isFound,
-    };
-    return { p1, p2 };
+  setPlayerOneMinY(y) {
+    this.playerOneMarker.minY = y;
+  }
+  setPlayerOneMaxY(y) {
+    this.playerOneMarker.maxY = y;
+  }
+  setPlayerTwoMinY(y) {
+    this.playerTwoMarker.minY = y;
+  }
+  setPlayerTwoMaxY(y) {
+    this.playerTwoMarker.maxY = y;
   }
 
   update() {
@@ -309,6 +308,21 @@ class WebcamPlayerTracker extends HTMLElement {
         callback(hsl, x, y);
       }
     }
+  }
+
+  // GETTERS
+  get normalisedPlayerPositions() {
+    const p1 = {
+      x: this.playerOneMarker.x,
+      y: this.playerOneMarker.y,
+      isFound: this.playerOneMarker.isFound,
+    };
+    const p2 = {
+      x: this.playerTwoMarker.x,
+      y: this.playerTwoMarker.y,
+      isFound: this.playerTwoMarker.isFound,
+    };
+    return { p1, p2 };
   }
 }
 
