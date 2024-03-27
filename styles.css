@@ -20,7 +20,7 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   font-family: monospace;
-  background-color: #abb4b4;
+  background-color: rgb(53, 132, 251);
   /* overflow: hidden; */
   font-family: "press_start_2pregular", Arial, sans-serif;
   font-weight: normal;
@@ -28,9 +28,9 @@ body {
 }
 
 main {
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* display: flex;
+  align-items: start;
+  justify-content: center; */
 }
 
 #fpsCounter {

@@ -154,17 +154,20 @@ class WebcamPlayerTracker extends HTMLElement {
     connectWebcam(this.webcamVideo, webcamSize.w, webcamSize.h);
   }
 
-  setPlayerOneMinY(y) {
-    this.playerOneMarker.minY = y;
+  // PLAYER ONE
+  setPlayerOneMinY() {
+    this.playerOneMarker.setCurrentYAsMin();
   }
   setPlayerOneMaxY(y) {
-    this.playerOneMarker.maxY = y;
+    this.playerOneMarker.setCurrentYAsMax();
   }
-  setPlayerTwoMinY(y) {
-    this.playerTwoMarker.minY = y;
+
+  // PLAYER TWO
+  setPlayerTwoMinY() {
+    this.playerTwoMarker.setCurrentYAsMin();
   }
-  setPlayerTwoMaxY(y) {
-    this.playerTwoMarker.maxY = y;
+  setPlayerTwoMaxY() {
+    this.playerTwoMarker.setCurrentYAsMax();
   }
 
   update() {
@@ -250,7 +253,6 @@ class WebcamPlayerTracker extends HTMLElement {
       blobTracker.displayBlobs(this.blobCtx, "green");
     }
 
-    // if()
     this.playerOneMarker.update(
       this.blob1Tracker,
       this.blob2Tracker,
@@ -284,6 +286,21 @@ class WebcamPlayerTracker extends HTMLElement {
       unwatchedCanvas.width,
       this.blobsCanvas.height
     );
+
+    // draw player one bounds
+    this.drawPlayerBounds(this.playerOneMarker, this.playerOneAreaBounds);
+    this.drawPlayerBounds(this.playerTwoMarker, this.playerTwoAreaBounds);
+  }
+
+  drawPlayerBounds(player, bounds) {
+    this.blobCtx.strokeStyle = "yellow";
+    this.blobCtx.beginPath();
+    this.blobCtx.moveTo(bounds.left, player.minY);
+    this.blobCtx.lineTo(bounds.right, player.minY);
+
+    this.blobCtx.moveTo(bounds.left, player.maxY);
+    this.blobCtx.lineTo(bounds.right, player.maxY);
+    this.blobCtx.stroke();
   }
 
   runForEveryPixel(canvas, ctx, callback) {

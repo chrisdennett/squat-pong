@@ -17,15 +17,19 @@ document.addEventListener("keyup", (e) => {
   // Game settings
   if (e.key === "q") {
     // set player one upper pos
+    playerTracker.setPlayerOneMinY();
   }
   if (e.key === "a") {
     // set player one lower pos
+    playerTracker.setPlayerOneMaxY();
   }
   if (e.key === "e") {
     // set player one upper pos
+    playerTracker.setPlayerTwoMinY();
   }
   if (e.key === "d") {
     // set player one lower pos
+    playerTracker.setPlayerTwoMaxY();
   }
 
   // Restart game
@@ -49,7 +53,7 @@ function loop() {
   }
 
   if (p2.isFound) {
-    //pong.setPaddleTwoY(p1.y);
+    pong.setPaddleTwoY(p2.y);
   }
 
   // Calculate and display FPS

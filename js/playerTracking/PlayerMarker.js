@@ -13,6 +13,14 @@ export class PlayerMarker {
     this.maxY = 100;
   }
 
+  setCurrentYAsMin() {
+    this.minY = this.top;
+  }
+
+  setCurrentYAsMax() {
+    this.maxY = this.bottom;
+  }
+
   update(blob1Tracker, blob2Tracker, blob3Tracker, globalSettings) {
     const maxGap = globalSettings.blobPairGap;
     const targArr = `${this.type}Blobs`;
@@ -77,12 +85,12 @@ export class PlayerMarker {
     ctx.font = "20px Arial";
     ctx.fillText(this.label, this.left, this.top);
 
-    ctx.beginPath();
-    ctx.moveTo(0, this.minY);
-    ctx.lineTo(100, this.minY);
+    // ctx.beginPath();
+    // ctx.moveTo(0, this.minY);
+    // ctx.lineTo(100, this.minY);
 
-    ctx.moveTo(0, this.maxY);
-    ctx.lineTo(100, this.maxY);
-    ctx.stroke();
+    // ctx.moveTo(0, this.maxY);
+    // ctx.lineTo(100, this.maxY);
+    // ctx.stroke();
   }
 }
