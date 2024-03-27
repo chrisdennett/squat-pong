@@ -6,11 +6,11 @@ export class PlayerMarker {
   constructor(canvas, globalSettings, type) {
     this.canvas = canvas;
     this.globalSettings = globalSettings;
-    this.label = type === "p1" ? "PLAYER ONE" : "PLAYER TWO";
+    this.label = type === "p1" ? "P1" : "P2";
     this.type = type;
     this.isFound = false;
-    this.minY = 20;
-    this.maxY = 100;
+    this.minY = this.type === "p1" ? 30 : 35;
+    this.maxY = this.type === "p1" ? 90 : 85;
   }
 
   setCurrentYAsMin() {

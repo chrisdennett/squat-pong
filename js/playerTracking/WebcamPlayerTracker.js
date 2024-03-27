@@ -38,13 +38,12 @@ template.innerHTML = /*html*/ `
         border-radius: 10px;
         bottom: 0;
         right: 0;
-        border: 1px dashed rgba(0, 0, 0, 0.2);
         font-family: Arial
       }
 
       #controlPanel canvas {
         border-radius: 10px;
-        margin: 10px;
+        margin: 0 0 5px 0;
       }
 
       #previewHolder {
@@ -77,7 +76,6 @@ template.innerHTML = /*html*/ `
       }
 
       #blobsCanvas {
-        border: 2px solid blue;
         image-rendering: pixelated;
       }
 
@@ -91,9 +89,9 @@ template.innerHTML = /*html*/ `
     </style>
     <div id="controlPanel">
       <div id="previewHolder">
+        <canvas id="blobsCanvas"></canvas>
         <div id="controls"></div>
         <canvas id="smallCanvas"></canvas>
-        <canvas id="blobsCanvas"></canvas>
         <div id="info"></div>
       </div>
       <video id="webcamVideo" autoplay="true" muted></video>

@@ -18,7 +18,7 @@ class Pong extends HTMLElement {
       displayWidth: 350,
       delayAfterPoint: 1000,
       delayRestartAfterWin: 2000,
-      winningScore: 111,
+      winningScore: 11,
       useGapBug: false,
       useScoreBasedPaddleSizes: false,
       palette: {
@@ -51,9 +51,9 @@ class Pong extends HTMLElement {
         left: 37,
       },
       ball: {
-        serveVx: 2,
+        serveVx: 1,
         serveVy: 1,
-        vx: 4,
+        vx: 3,
         maxVy: 3,
         size: 5,
       },
