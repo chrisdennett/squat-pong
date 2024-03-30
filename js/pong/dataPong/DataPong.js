@@ -171,7 +171,7 @@ export class DataPong extends EventTarget {
       this.dispatchEvent(
         new CustomEvent("paddleStrike", {
           bubbles: false,
-          detail: { detail: "player1" },
+          detail: { detail: "player1", offsetAsFraction },
         })
       );
     }

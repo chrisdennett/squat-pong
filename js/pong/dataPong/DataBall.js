@@ -1,5 +1,7 @@
-export class DataBall {
+export class DataBall extends EventTarget {
   constructor(params) {
+    super();
+
     this.params = params;
     this.colour = params.colour;
     this.bounds = params.bounds;
@@ -72,11 +74,28 @@ export class DataBall {
     if (this.y > this.bounds.bottom - this.size) {
       this.y = this.bounds.bottom - this.size;
       this.vy = -this.vy;
+
+      const offset = this.x / this.bounds.right;
+
+      this.dispatchEvent(
+        new CustomEvent("wallStrike", {
+          bubbles: true,
+          detail: { offset },
+        })
+      );
     }
 
     if (this.y < this.bounds.top) {
       this.y = this.bounds.top;
       this.vy = -this.vy;
+
+      const offset = this.x / this.bounds.right;
+      this.dispatchEvent(
+        new CustomEvent("wallStrike", {
+          bubbles: true,
+          detail: { offset },
+        })
+      );
     }
 
     // // only needed if want the ball to bound off the side walls

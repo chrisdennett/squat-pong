@@ -14,6 +14,10 @@ document.addEventListener("keyup", (e) => {
     }
   }
 
+  if (e.key === "v") {
+    soundMachine.muted = !soundMachine.muted;
+  }
+
   // Game settings
   if (e.key === "q") {
     // set player one upper pos
@@ -70,5 +74,15 @@ loop();
 
 // listeners
 pong.addEventListener("paddleStrike", (e) => {
-  soundMachine.playNote(9);
+  const fraction = (e.detail.offsetAsFraction + 1) / 2;
+  const inverse = 1 - fraction;
+
+  // 0 to 1 into int between 0 and 9 inclusive
+  const noteIndex = Math.round(inverse * 9);
+  soundMachine.playNote(noteIndex);
+});
+
+pong.addEventListener("wallStrike", (e) => {
+  const noteIndex = Math.round(e.detail.offset * 9);
+  soundMachine.playNote(noteIndex);
 });

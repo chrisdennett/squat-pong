@@ -4,15 +4,25 @@ export class SoundMachine {
     this.mixer;
     this.reverb;
     this.soundObjects = [];
+    this.muted = true;
 
     this.initializeAudio();
   }
 
   playNote(noteIndex) {
+    if (this.muted) return;
+
     if (isNaN(noteIndex) || noteIndex >= this.soundObjects.length) return;
 
     const { synth, note } = this.soundObjects[noteIndex];
     synth.triggerAttackRelease(note, 0.1);
+  }
+
+  playDrum() {
+    if (this.muted) return;
+
+    const synth = new Tone.MembraneSynth().toDestination();
+    synth.triggerAttackRelease("C2", "8n");
   }
 
   initializeAudio() {

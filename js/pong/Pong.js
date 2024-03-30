@@ -83,6 +83,10 @@ class Pong extends HTMLElement {
       this.dispatchEvent(new CustomEvent(e.type, { detail: e.detail }));
     });
 
+    this.dataPong.ball.addEventListener("wallStrike", (e) => {
+      this.dispatchEvent(new CustomEvent(e.type, { detail: e.detail }));
+    });
+
     this.svgPong.setup(this.dataPong);
   }
 
