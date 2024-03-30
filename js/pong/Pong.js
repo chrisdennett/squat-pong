@@ -14,7 +14,7 @@ class Pong extends HTMLElement {
     shadow.append(PongTemplate.content.cloneNode(true));
 
     this.defaultGameSettings = {
-      gameMode: "twoPlayer",
+      gameMode: "demo",
       displayWidth: 350,
       delayAfterPoint: 1000,
       delayRestartAfterWin: 2000,
@@ -69,11 +69,25 @@ class Pong extends HTMLElement {
   }
 
   setup(customSettings) {
-    this.dataPong = new DataPong({
-      ...this.defaultGameSettings,
-      ...customSettings,
+    this.dataPong = new DataPong(
+      {
+        ...this.defaultGameSettings,
+        ...customSettings,
+      },
+      this.onGameEvent
+    );
+
+    // even when set to true bubbling doesn't seem to work here
+    // so I'm simply passing on the event with a new one
+    this.dataPong.addEventListener("paddleStrike", (e) => {
+      this.dispatchEvent(new CustomEvent(e.type, { detail: e.detail }));
     });
+
     this.svgPong.setup(this.dataPong);
+  }
+
+  onGameEvent(event) {
+    console.log("event: ", event);
   }
 
   setPaddleOneY(y) {

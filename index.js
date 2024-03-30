@@ -41,6 +41,7 @@ document.addEventListener("keyup", (e) => {
   soundMachine.playNote(parseInt(e.key));
 });
 
+// game loop
 function loop() {
   playerTracker.update();
 
@@ -66,3 +67,8 @@ function loop() {
 pong.setup();
 pong.start();
 loop();
+
+// listeners
+pong.addEventListener("paddleStrike", (e) => {
+  soundMachine.playNote(9);
+});

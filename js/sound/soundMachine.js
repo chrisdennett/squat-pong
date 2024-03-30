@@ -9,12 +9,10 @@ export class SoundMachine {
   }
 
   playNote(noteIndex) {
-    console.log("index: ", noteIndex);
-
     if (isNaN(noteIndex) || noteIndex >= this.soundObjects.length) return;
 
     const { synth, note } = this.soundObjects[noteIndex];
-    synth.triggerAttackRelease(note, 1);
+    synth.triggerAttackRelease(note, 0.1);
   }
 
   initializeAudio() {
@@ -22,19 +20,20 @@ export class SoundMachine {
 
     this.mixer = new Tone.Gain();
 
-    this.reverb = new Tone.Reverb({
-      wet: 0.5, // half dry, half wet mix
-      decay: 10, // decay time in seconds
-    });
+    // this.reverb = new Tone.Reverb({
+    //   wet: 0.5, // half dry, half wet mix
+    //   decay: 10, // decay time in seconds
+    // });
 
     // setup the audio chain:
     // mixer -> reverb -> Tone.Master
     // note that the synth object inside each pendulum get
     // connected to the mixer, so our final chain will look like:
     // synth(s) -> mixer -> reverb -> Tone.Master
-    this.mixer.connect(this.reverb);
-    this.reverb.toDestination();
+    // this.mixer.connect(this.reverb);
+    // this.reverb.toDestination();
 
+    this.mixer.toDestination();
     // quick way to get more notes: just glue 3 scales together
     // other 'flavours' to try:
     // major

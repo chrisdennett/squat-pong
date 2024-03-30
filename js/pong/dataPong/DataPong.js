@@ -2,8 +2,10 @@ import { DataBall } from "./DataBall.js";
 import { DataInputs } from "./DataInputs.js";
 import { DataPaddle } from "./DataPaddle.js";
 
-export class DataPong {
+export class DataPong extends EventTarget {
   constructor(params) {
+    super();
+
     const {
       bounds,
       paddle,
@@ -165,6 +167,13 @@ export class DataPong {
 
       // gives value between -1 and 1
       offsetAsFraction = strikeYRelaiveToPaddle / maxOffset;
+
+      this.dispatchEvent(
+        new CustomEvent("paddleStrike", {
+          bubbles: false,
+          detail: { detail: "player1" },
+        })
+      );
     }
 
     return { contact, offset: offsetAsFraction };
