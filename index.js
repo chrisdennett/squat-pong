@@ -32,6 +32,8 @@ const handsfree = new Handsfree({
   },
 });
 
+console.log("handsfree: ", handsfree);
+
 handsfree.enablePlugins("browser");
 handsfree.start();
 
@@ -76,18 +78,51 @@ document.addEventListener("keyup", (e) => {
 });
 
 // From an event
-document.addEventListener("handsfree-data", (event) => {
-  const data = event.detail;
+// document.addEventListener("handsfree-data", (event) => {
+//   const data = event.detail;
+//   if (!data.pose) return;
+//   const img = data.pose.image;
+//   poseCtx.drawImage(img, 0, 0, img.width, img.height, 0, 0, 320, 240);
+
+//   const marks = data.pose.poseLandmarks;
+
+//   for (let i = 0; i < marks.length; i++) {
+//     let colour = i === 0 ? "red" : "black";
+//     const m = marks[i];
+//     poseCtx.fillStyle = colour;
+//     poseCtx.fillRect(m.x * 320, m.y * 240, 7, 7);
+//   }
+
+//   // console.log(data.pose.poseLandmarks);
+// });
+
+function drawPose() {
+  const data = handsfree.data;
   if (!data.pose) return;
+  const img = data.pose.image;
+  poseCtx.drawImage(img, 0, 0, img.width, img.height, 0, 0, 320, 240);
 
-  poseCtx.drawImage(data.pose.image, 0, 0);
+  const marks = data.pose.poseLandmarks;
 
-  for (let m of data.pose.poseLandmarks) {
-    poseCtx.fillRect(m.x * 320, m.y * 240, 10, 10);
+  for (let i = 0; i < marks.length; i++) {
+    let colour = i === 0 ? "red" : "black";
+    const m = marks[i];
+    poseCtx.fillStyle = colour;
+    poseCtx.fillRect(m.x * 320, m.y * 240, 7, 7);
+  }
+}
+
+function getNosePos() {
+  if (
+    !handsfree.data ||
+    !handsfree.data.pose ||
+    !handsfree.data.pose.poseLandmarks
+  ) {
+    return { x: 0, y: 0 };
   }
 
-  // console.log(data.pose.poseLandmarks);
-});
+  return handsfree.data.pose.poseLandmarks[0];
+}
 
 // game loop
 function loop() {
@@ -96,9 +131,10 @@ function loop() {
   pong.loop();
 
   // const { p1, p2 } = playerTracker.normalisedPlayerPositions;
+  const p1 = getNosePos();
 
   // if (p1.isFound) {
-  //   pong.setPaddleOneY(p1.y);
+  pong.setPaddleOneY(p1.y);
   // }
 
   // if (p2.isFound) {
