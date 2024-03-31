@@ -103,6 +103,9 @@ function drawPose() {
   poseCtx.drawImage(img, 0, 0, img.width, img.height, 0, 0, 320, 240);
 
   const marks = data.pose.poseLandmarks;
+  if (!marks || marks.length === 0) {
+    return;
+  }
 
   for (let i = 0; i < marks.length; i++) {
     let colour = i === 0 ? "red" : "black";
@@ -127,7 +130,7 @@ function getNosePos() {
 // game loop
 function loop() {
   // playerTracker.update();
-
+  drawPose();
   pong.loop();
 
   // const { p1, p2 } = playerTracker.normalisedPlayerPositions;
