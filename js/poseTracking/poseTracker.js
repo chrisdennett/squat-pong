@@ -4,111 +4,106 @@ import {
   DrawingUtils,
 } from "https://cdn.skypack.dev/@mediapipe/tasks-vision@0.10.0";
 
-let poseLandmarker = undefined;
-let runningMode = "IMAGE";
-let enableWebcamButton;
-let webcamRunning = false;
-const videoHeight = "360px";
-const videoWidth = "480px";
+export class PoseTracker {
+  constructor() {
+    this.lastVideoTime = -1;
 
-// Before we can use PoseLandmarker class we must wait for it to finish
-// loading. Machine Learning models can be large and take a moment to
-// get everything needed to run.
-const createPoseLandmarker = async () => {
-  const vision = await FilesetResolver.forVisionTasks(
-    "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
-  );
-  poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
-    baseOptions: {
-      modelAssetPath: `https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task`,
-      delegate: "GPU",
-    },
-    runningMode: runningMode,
-    numPoses: 2,
-  });
-};
-createPoseLandmarker();
+    this.poseLandmarker = undefined;
+    this.runningMode = "VIDEO";
+    this.webcamRunning = false;
+    this.videoHeight = "360px";
+    this.videoWidth = "480px";
+    this.video = document.getElementById("webcam");
+    this.canvasElement = document.getElementById("output_canvas");
+    this.canvasCtx = this.canvasElement.getContext("2d");
+    this.drawingUtils = new DrawingUtils(this.canvasCtx);
 
-/********************************************************************
-  // Demo 2: Continuously grab image from webcam stream and detect it.
-  ********************************************************************/
-
-const video = document.getElementById("webcam");
-const canvasElement = document.getElementById("output_canvas");
-const canvasCtx = canvasElement.getContext("2d");
-const drawingUtils = new DrawingUtils(canvasCtx);
-
-// Check if webcam access is supported.
-const hasGetUserMedia = () => !!navigator.mediaDevices?.getUserMedia;
-
-// If webcam supported, add event listener to button for when user
-// wants to activate it.
-if (hasGetUserMedia()) {
-  enableWebcamButton = document.getElementById("webcamButton");
-  enableWebcamButton.addEventListener("click", enableCam);
-} else {
-  console.warn("getUserMedia() is not supported by your browser");
-}
-
-// Enable the live webcam view and start detection.
-function enableCam(event) {
-  console.log("event: ", event);
-  if (!poseLandmarker) {
-    console.log("Wait! poseLandmaker not loaded yet.");
-    return;
-  }
-
-  if (webcamRunning === true) {
-    webcamRunning = false;
-    enableWebcamButton.innerText = "ENABLE PREDICTIONS";
-  } else {
-    webcamRunning = true;
-    enableWebcamButton.innerText = "DISABLE PREDICTIONS";
-  }
-
-  // getUsermedia parameters.
-  const constraints = {
-    video: true,
-  };
-
-  // Activate the webcam stream.
-  navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
-    video.srcObject = stream;
-    video.addEventListener("loadeddata", predictWebcam);
-  });
-}
-
-let lastVideoTime = -1;
-async function predictWebcam() {
-  canvasElement.style.height = videoHeight;
-  video.style.height = videoHeight;
-  canvasElement.style.width = videoWidth;
-  video.style.width = videoWidth;
-  // Now let's start detecting the stream.
-  if (runningMode === "IMAGE") {
-    runningMode = "VIDEO";
-    await poseLandmarker.setOptions({ runningMode: "VIDEO", numPoses: 2 });
-  }
-  let startTimeMs = performance.now();
-  if (lastVideoTime !== video.currentTime) {
-    lastVideoTime = video.currentTime;
-    poseLandmarker.detectForVideo(video, startTimeMs, (result) => {
-      canvasCtx.save();
-      canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-
-      for (const landmark of result.landmarks) {
-        drawingUtils.drawLandmarks(landmark, {
-          radius: (data) => DrawingUtils.lerp(data.from.z, -0.15, 0.1, 5, 1),
-        });
-        drawingUtils.drawConnectors(landmark, PoseLandmarker.POSE_CONNECTIONS);
-      }
-
-      canvasCtx.restore();
+    // Before we can use PoseLandmarker class we must wait for it to finish
+    // loading. Machine Learning models can be large and take a moment to
+    // get everything needed to run.
+    this.createPoseLandmarker((pl) => {
+      this.poseLandmarker = pl;
+      this.enableCam();
     });
   }
 
-  // Call this function again to keep predicting when the browser is ready.
-  if (webcamRunning === true) {
-    window.requestAnimationFrame(predictWebcam);
+  createPoseLandmarker = async (callback) => {
+    const vision = await FilesetResolver.forVisionTasks(
+      "https://cdn.jsdelivr.net/npm/@mediapipe/tasks-vision@0.10.0/wasm"
+    );
+
+    const poseLandmarker = await PoseLandmarker.createFromOptions(vision, {
+      baseOptions: {
+        modelAssetPath: `https://storage.googleapis.com/mediapipe-models/pose_landmarker/pose_landmarker_lite/float16/1/pose_landmarker_lite.task`,
+        delegate: "GPU",
+      },
+      runningMode: this.runningMode,
+      numPoses: 2,
+    });
+
+    callback(poseLandmarker);
+  };
+
+  // Enable the live webcam view and start detection.
+  enableCam() {
+    if (!this.poseLandmarker) {
+      console.log("Wait! poseLandmaker not loaded yet.");
+      return;
+    }
+
+    if (this.webcamRunning === true) {
+      this.webcamRunning = false;
+    } else {
+      this.webcamRunning = true;
+    }
+
+    // getUsermedia parameters.
+    const constraints = {
+      video: true,
+    };
+
+    // Activate the webcam stream.
+    navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
+      this.video.srcObject = stream;
+      this.video.addEventListener("loadeddata", this.predictWebcam.bind(this));
+    });
+  }
+
+  async predictWebcam() {
+    this.canvasElement.style.height = this.videoHeight;
+    this.video.style.height = this.videoHeight;
+    this.canvasElement.style.width = this.videoWidth;
+    this.video.style.width = this.videoWidth;
+
+    let startTimeMs = performance.now();
+    if (this.lastVideoTime !== this.video.currentTime) {
+      this.lastVideoTime = this.video.currentTime;
+      this.poseLandmarker.detectForVideo(this.video, startTimeMs, (result) => {
+        this.canvasCtx.save();
+        this.canvasCtx.clearRect(
+          0,
+          0,
+          this.canvasElement.width,
+          this.canvasElement.height
+        );
+
+        for (const landmark of result.landmarks) {
+          this.drawingUtils.drawLandmarks(landmark, {
+            radius: (data) => DrawingUtils.lerp(data.from.z, -0.15, 0.1, 5, 1),
+          });
+          this.drawingUtils.drawConnectors(
+            landmark,
+            PoseLandmarker.POSE_CONNECTIONS
+          );
+        }
+
+        this.canvasCtx.restore();
+      });
+    }
+
+    // Call this function again to keep predicting when the browser is ready.
+    if (this.webcamRunning === true) {
+      window.requestAnimationFrame(this.predictWebcam.bind(this));
+    }
   }
 }

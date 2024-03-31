@@ -1,3 +1,4 @@
+import { PoseTracker } from "./js/poseTracking/poseTracker.js";
 import { SoundMachine } from "./js/sound/soundMachine.js";
 import { calculateFPS } from "./js/utils/fps.js";
 
@@ -10,7 +11,7 @@ poseCanvas.width = 320;
 poseCanvas.height = 240;
 poseCanvas.style.border = "1px solid yellow";
 const poseCtx = poseCanvas.getContext("2d");
-//const poseTracker =
+const poseTracker = new PoseTracker();
 
 document.addEventListener("keyup", (e) => {
   if (e.key === "b") {
