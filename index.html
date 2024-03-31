@@ -9,20 +9,38 @@
     <script src="./libs/Tone.js"></script>
     <!-- <script src="./libs/howler.min.js"></script> -->
     <script src="js/pong/SVGPong.js"></script>
+    <script
+      type="module"
+      src="js/poseTracking/poseTracker.js
+    "
+    ></script>
     <script type="module" src="js/pong/Pong.js"></script>
     <!-- <script
       src="js/playerTracking/WebcamPlayerTracker.js"
       type="module"
     ></script> -->
-    <!-- Include Handsfree.js -->
-    <link
-      rel="stylesheet"
-      href="https://unpkg.com/handsfree@8.5.1/build/lib/assets/handsfree.css"
-    />
-    <script src="https://unpkg.com/handsfree@8.5.1/build/lib/handsfree.js"></script>
     <script defer src="index.js" type="module"></script>
   </head>
   <body>
+    <button id="webcamButton" class="mdc-button mdc-button--raised">
+      <span class="mdc-button__ripple"></span>
+      <span class="mdc-button__label">ENABLE WEBCAM</span>
+    </button>
+    <div style="position: relative">
+      <video
+        id="webcam"
+        style="width: 1280px; height: 720px; position: absolute"
+        autoplay
+        playsinline
+      ></video>
+      <canvas
+        class="output_canvas"
+        id="output_canvas"
+        width="1280"
+        height="720"
+        style="position: absolute; left: 0px; top: 0px"
+      ></canvas>
+    </div>
     <canvas id="poseCanvas"></canvas>
     <div id="fpsCounter"></div>
     <main>

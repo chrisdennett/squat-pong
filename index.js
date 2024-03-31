@@ -10,32 +10,7 @@ poseCanvas.width = 320;
 poseCanvas.height = 240;
 poseCanvas.style.border = "1px solid yellow";
 const poseCtx = poseCanvas.getContext("2d");
-
-const handsfree = new Handsfree({
-  pose: {
-    enabled: true,
-
-    // Outputs only the top 25 pose landmarks if true,
-    // otherwise shows all 33 full body pose landmarks
-    // - Note: Setting this to true may result in better accuracy
-    upperBodyOnly: true,
-
-    // Helps reduce jitter over multiple frames if true
-    smoothLandmarks: true,
-
-    // Minimum confidence [0 - 1] for a person detection to be considered detected
-    minDetectionConfidence: 0.5,
-
-    // Minimum confidence [0 - 1] for the pose tracker to be considered detected
-    // Higher values are more robust at the expense of higher latency
-    minTrackingConfidence: 0.5,
-  },
-});
-
-console.log("handsfree: ", handsfree);
-
-handsfree.enablePlugins("browser");
-handsfree.start();
+//const poseTracker =
 
 document.addEventListener("keyup", (e) => {
   if (e.key === "b") {
@@ -77,14 +52,16 @@ document.addEventListener("keyup", (e) => {
   soundMachine.playNote(parseInt(e.key));
 });
 
-// From an event
-// document.addEventListener("handsfree-data", (event) => {
-//   const data = event.detail;
+// function drawPose() {
+//   const data = handsfree.data;
 //   if (!data.pose) return;
 //   const img = data.pose.image;
 //   poseCtx.drawImage(img, 0, 0, img.width, img.height, 0, 0, 320, 240);
 
 //   const marks = data.pose.poseLandmarks;
+//   if (!marks || marks.length === 0) {
+//     return;
+//   }
 
 //   for (let i = 0; i < marks.length; i++) {
 //     let colour = i === 0 ? "red" : "black";
@@ -92,52 +69,30 @@ document.addEventListener("keyup", (e) => {
 //     poseCtx.fillStyle = colour;
 //     poseCtx.fillRect(m.x * 320, m.y * 240, 7, 7);
 //   }
+// }
 
-//   // console.log(data.pose.poseLandmarks);
-// });
+// function getNosePos() {
+//   if (
+//     !handsfree.data ||
+//     !handsfree.data.pose ||
+//     !handsfree.data.pose.poseLandmarks
+//   ) {
+//     return { x: 0, y: 0 };
+//   }
 
-function drawPose() {
-  const data = handsfree.data;
-  if (!data.pose) return;
-  const img = data.pose.image;
-  poseCtx.drawImage(img, 0, 0, img.width, img.height, 0, 0, 320, 240);
-
-  const marks = data.pose.poseLandmarks;
-  if (!marks || marks.length === 0) {
-    return;
-  }
-
-  for (let i = 0; i < marks.length; i++) {
-    let colour = i === 0 ? "red" : "black";
-    const m = marks[i];
-    poseCtx.fillStyle = colour;
-    poseCtx.fillRect(m.x * 320, m.y * 240, 7, 7);
-  }
-}
-
-function getNosePos() {
-  if (
-    !handsfree.data ||
-    !handsfree.data.pose ||
-    !handsfree.data.pose.poseLandmarks
-  ) {
-    return { x: 0, y: 0 };
-  }
-
-  return handsfree.data.pose.poseLandmarks[0];
-}
+//   return handsfree.data.pose.poseLandmarks[0];
+// }
 
 // game loop
 function loop() {
   // playerTracker.update();
-  drawPose();
   pong.loop();
 
   // const { p1, p2 } = playerTracker.normalisedPlayerPositions;
-  const p1 = getNosePos();
+  // const p1 = getNosePos();
 
   // if (p1.isFound) {
-  pong.setPaddleOneY(p1.y);
+  // pong.setPaddleOneY(p1.y);
   // }
 
   // if (p2.isFound) {
