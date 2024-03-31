@@ -1,9 +1,39 @@
 import { SoundMachine } from "./js/sound/soundMachine.js";
 import { calculateFPS } from "./js/utils/fps.js";
 
-const playerTracker = document.querySelector("#tracker");
+// const playerTracker = document.querySelector("#tracker");
 const pong = document.querySelector("#pong");
 const soundMachine = new SoundMachine();
+
+const poseCanvas = document.getElementById("poseCanvas");
+poseCanvas.width = 320;
+poseCanvas.height = 240;
+poseCanvas.style.border = "1px solid yellow";
+const poseCtx = poseCanvas.getContext("2d");
+
+const handsfree = new Handsfree({
+  pose: {
+    enabled: true,
+
+    // Outputs only the top 25 pose landmarks if true,
+    // otherwise shows all 33 full body pose landmarks
+    // - Note: Setting this to true may result in better accuracy
+    upperBodyOnly: true,
+
+    // Helps reduce jitter over multiple frames if true
+    smoothLandmarks: true,
+
+    // Minimum confidence [0 - 1] for a person detection to be considered detected
+    minDetectionConfidence: 0.5,
+
+    // Minimum confidence [0 - 1] for the pose tracker to be considered detected
+    // Higher values are more robust at the expense of higher latency
+    minTrackingConfidence: 0.5,
+  },
+});
+
+handsfree.enablePlugins("browser");
+handsfree.start();
 
 document.addEventListener("keyup", (e) => {
   if (e.key === "b") {
@@ -45,21 +75,35 @@ document.addEventListener("keyup", (e) => {
   soundMachine.playNote(parseInt(e.key));
 });
 
+// From an event
+document.addEventListener("handsfree-data", (event) => {
+  const data = event.detail;
+  if (!data.pose) return;
+
+  poseCtx.drawImage(data.pose.image, 0, 0);
+
+  for (let m of data.pose.poseLandmarks) {
+    poseCtx.fillRect(m.x * 320, m.y * 240, 10, 10);
+  }
+
+  // console.log(data.pose.poseLandmarks);
+});
+
 // game loop
 function loop() {
-  playerTracker.update();
+  // playerTracker.update();
 
   pong.loop();
 
-  const { p1, p2 } = playerTracker.normalisedPlayerPositions;
+  // const { p1, p2 } = playerTracker.normalisedPlayerPositions;
 
-  if (p1.isFound) {
-    pong.setPaddleOneY(p1.y);
-  }
+  // if (p1.isFound) {
+  //   pong.setPaddleOneY(p1.y);
+  // }
 
-  if (p2.isFound) {
-    pong.setPaddleTwoY(p2.y);
-  }
+  // if (p2.isFound) {
+  //   pong.setPaddleTwoY(p2.y);
+  // }
 
   // Calculate and display FPS
   calculateFPS();
