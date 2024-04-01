@@ -87,6 +87,9 @@ document.addEventListener("keyup", (e) => {
 // game loop
 function loop() {
   // playerTracker.update();
+  poseTracker.detectLandmarks();
+  // poseTracker.drawLandmarks();
+
   pong.loop();
 
   // const { p1, p2 } = playerTracker.normalisedPlayerPositions;

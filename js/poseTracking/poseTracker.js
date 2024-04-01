@@ -65,19 +65,21 @@ export class PoseTracker {
     // Activate the webcam stream.
     navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
       this.video.srcObject = stream;
-      this.video.addEventListener("loadeddata", this.predictWebcam.bind(this));
+      this.video.addEventListener("loadeddata", this.drawLandmarks.bind(this));
     });
   }
 
-  async predictWebcam() {
+  drawLandmarks() {
     this.canvasElement.style.height = this.videoHeight;
     this.video.style.height = this.videoHeight;
     this.canvasElement.style.width = this.videoWidth;
     this.video.style.width = this.videoWidth;
 
     let startTimeMs = performance.now();
+
     if (this.lastVideoTime !== this.video.currentTime) {
       this.lastVideoTime = this.video.currentTime;
+
       this.poseLandmarker.detectForVideo(this.video, startTimeMs, (result) => {
         this.canvasCtx.save();
         this.canvasCtx.clearRect(
@@ -103,7 +105,7 @@ export class PoseTracker {
 
     // Call this function again to keep predicting when the browser is ready.
     if (this.webcamRunning === true) {
-      window.requestAnimationFrame(this.predictWebcam.bind(this));
+      window.requestAnimationFrame(this.drawLandmarks.bind(this));
     }
   }
 }
