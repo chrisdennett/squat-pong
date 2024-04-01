@@ -27,7 +27,6 @@ document.addEventListener("keyup", (e) => {
   if (e.key === "q") {
     // set player one upper pos
     poseTracker.p1Tracker.setMinY();
-    console.log("poseTracker.p1Tracker.minY: ", poseTracker.p1Tracker.minY);
   }
   if (e.key === "a") {
     // set player one lower pos
