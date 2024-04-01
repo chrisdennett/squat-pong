@@ -85,6 +85,7 @@ export class PoseTracker {
       this.lastVideoTime = this.video.currentTime;
       this.poseLandmarker.detectForVideo(this.video, startTimeMs, (result) => {
         this.landmarks = result.landmarks;
+
         if (this.landmarks.length > 0) {
           this.p1Tracker.setLandmarks(this.landmarks[0]);
         } else {

@@ -26,19 +26,20 @@ document.addEventListener("keyup", (e) => {
   // Game settings
   if (e.key === "q") {
     // set player one upper pos
-    playerTracker.setPlayerOneMinY();
+    poseTracker.p1Tracker.setMinY();
+    console.log("poseTracker.p1Tracker.minY: ", poseTracker.p1Tracker.minY);
   }
   if (e.key === "a") {
     // set player one lower pos
-    playerTracker.setPlayerOneMaxY();
+    poseTracker.p1Tracker.setMaxY();
   }
   if (e.key === "e") {
     // set player one upper pos
-    playerTracker.setPlayerTwoMinY();
+    poseTracker.p2Tracker.setMinY();
   }
   if (e.key === "d") {
     // set player one lower pos
-    playerTracker.setPlayerTwoMaxY();
+    poseTracker.p2Tracker.setMaxY();
   }
 
   // Restart game
@@ -72,6 +73,25 @@ function drawPose(video, p1Tracker, p2Tracker) {
       poseCtx.fillRect(m.x * poseCanvas.width, m.y * poseCanvas.height, 7, 7);
     }
   }
+
+  // draw boundaries
+  poseCtx.fillStyle = "yellow";
+  const halfX = poseCanvas.width / 2;
+  poseCtx.fillRect(0, poseTracker.p1Tracker.minY * poseCanvas.height, halfX, 2);
+  poseCtx.fillRect(0, poseTracker.p1Tracker.maxY * poseCanvas.height, halfX, 2);
+
+  poseCtx.fillRect(
+    halfX,
+    poseTracker.p2Tracker.minY * poseCanvas.height,
+    halfX,
+    2
+  );
+  poseCtx.fillRect(
+    halfX,
+    poseTracker.p2Tracker.maxY * poseCanvas.height,
+    halfX,
+    2
+  );
 }
 
 // game loop
