@@ -6,12 +6,10 @@ import { calculateFPS } from "./js/utils/fps.js";
 const pong = document.querySelector("#pong");
 const soundMachine = new SoundMachine();
 
-const poseCanvas = document.getElementById("poseCanvas");
-poseCanvas.width = 320;
-poseCanvas.height = 240;
-poseCanvas.style.border = "1px solid yellow";
-const poseCtx = poseCanvas.getContext("2d");
 const poseTracker = new PoseTracker();
+const poseCanvas = document.getElementById("poseCanvas");
+
+const poseCtx = poseCanvas.getContext("2d");
 
 document.addEventListener("keyup", (e) => {
   if (e.key === "b") {
@@ -53,52 +51,35 @@ document.addEventListener("keyup", (e) => {
   soundMachine.playNote(parseInt(e.key));
 });
 
-// function drawPose() {
-//   const data = handsfree.data;
-//   if (!data.pose) return;
-//   const img = data.pose.image;
-//   poseCtx.drawImage(img, 0, 0, img.width, img.height, 0, 0, 320, 240);
+function drawPose(video, landmarks) {
+  poseCanvas.width = poseTracker.width;
+  poseCanvas.height = poseTracker.height;
+  poseCtx.drawImage(video, 0, 0);
 
-//   const marks = data.pose.poseLandmarks;
-//   if (!marks || marks.length === 0) {
-//     return;
-//   }
+  if (landmarks.landmarks === 0) return;
 
-//   for (let i = 0; i < marks.length; i++) {
-//     let colour = i === 0 ? "red" : "black";
-//     const m = marks[i];
-//     poseCtx.fillStyle = colour;
-//     poseCtx.fillRect(m.x * 320, m.y * 240, 7, 7);
-//   }
-// }
+  const { p1 } = poseTracker;
 
-// function getNosePos() {
-//   if (
-//     !handsfree.data ||
-//     !handsfree.data.pose ||
-//     !handsfree.data.pose.poseLandmarks
-//   ) {
-//     return { x: 0, y: 0 };
-//   }
-
-//   return handsfree.data.pose.poseLandmarks[0];
-// }
+  for (let i = 0; i < p1.length; i++) {
+    let colour = i === 0 ? "red" : "black";
+    const m = p1[i];
+    poseCtx.fillStyle = colour;
+    poseCtx.fillRect(m.x * poseCanvas.width, m.y * poseCanvas.height, 7, 7);
+  }
+}
 
 // game loop
 function loop() {
   // playerTracker.update();
   poseTracker.detectLandmarks();
-  poseTracker.drawLandmarks();
+  // poseTracker.drawLandmarks();
   // poseTracker.update();
+
+  drawPose(poseTracker.getVideo(), poseTracker.landmarks);
 
   pong.loop();
 
-  // const { p1, p2 } = playerTracker.normalisedPlayerPositions;
-  // const p1 = getNosePos();
-
-  // if (p1.isFound) {
-  // pong.setPaddleOneY(p1.y);
-  // }
+  pong.setPaddleOneY(poseTracker.nose1Pos.y);
 
   // if (p2.isFound) {
   //   pong.setPaddleTwoY(p2.y);

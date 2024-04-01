@@ -28,9 +28,23 @@ body {
 }
 
 main {
-  /* display: flex;
+  display: flex;
   align-items: start;
-  justify-content: center; */
+  justify-content: center;
+}
+
+#poseCanvas {
+  position: fixed;
+  opacity: 0.3;
+}
+
+.hidden {
+  width: 1px;
+  height: 1px;
+  position: fixed;
+  overflow: hidden;
+  bottom: 0;
+  right: 0;
 }
 
 #fpsCounter {
