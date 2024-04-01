@@ -36,6 +36,7 @@ main {
 #poseCanvas {
   position: fixed;
   opacity: 0.3;
+  transform: scale(-1, 1);
 }
 
 .hidden {

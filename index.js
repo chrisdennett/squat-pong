@@ -58,11 +58,18 @@ function drawPose(video, landmarks) {
 
   if (landmarks.landmarks === 0) return;
 
-  const { p1 } = poseTracker;
+  const { p1, p2 } = poseTracker;
 
   for (let i = 0; i < p1.length; i++) {
     let colour = i === 0 ? "red" : "black";
     const m = p1[i];
+    poseCtx.fillStyle = colour;
+    poseCtx.fillRect(m.x * poseCanvas.width, m.y * poseCanvas.height, 7, 7);
+  }
+
+  for (let i = 0; i < p2.length; i++) {
+    let colour = i === 0 ? "red" : "black";
+    const m = p2[i];
     poseCtx.fillStyle = colour;
     poseCtx.fillRect(m.x * poseCanvas.width, m.y * poseCanvas.height, 7, 7);
   }
@@ -80,10 +87,7 @@ function loop() {
   pong.loop();
 
   pong.setPaddleOneY(poseTracker.nose1Pos.y);
-
-  // if (p2.isFound) {
-  //   pong.setPaddleTwoY(p2.y);
-  // }
+  pong.setPaddleTwoY(poseTracker.nose2Pos.y);
 
   // Calculate and display FPS
   calculateFPS();
