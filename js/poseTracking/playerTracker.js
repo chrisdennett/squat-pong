@@ -25,6 +25,9 @@ export class PlayerTracker {
       pos = this.landmarks[0];
     }
 
-    return pos.y;
+    const range = this.maxY - this.minY;
+    const yPos = pos.y - this.minY;
+
+    return yPos / range;
   }
 }
