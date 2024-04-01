@@ -88,7 +88,8 @@ document.addEventListener("keyup", (e) => {
 function loop() {
   // playerTracker.update();
   poseTracker.detectLandmarks();
-  // poseTracker.drawLandmarks();
+  poseTracker.drawLandmarks();
+  // poseTracker.update();
 
   pong.loop();
 

@@ -10,13 +10,13 @@ export class PoseTracker {
 
     this.poseLandmarker = undefined;
     this.runningMode = "VIDEO";
-    this.webcamRunning = false;
     this.videoHeight = "360px";
     this.videoWidth = "480px";
     this.video = document.getElementById("webcam");
     this.canvasElement = document.getElementById("output_canvas");
     this.canvasCtx = this.canvasElement.getContext("2d");
     this.drawingUtils = new DrawingUtils(this.canvasCtx);
+    this.videoRunning = false;
 
     // Before we can use PoseLandmarker class we must wait for it to finish
     // loading. Machine Learning models can be large and take a moment to
@@ -25,6 +25,8 @@ export class PoseTracker {
       this.poseLandmarker = pl;
       this.enableCam();
     });
+
+    this.landmarks = [];
   }
 
   createPoseLandmarker = async (callback) => {
@@ -51,61 +53,57 @@ export class PoseTracker {
       return;
     }
 
-    if (this.webcamRunning === true) {
-      this.webcamRunning = false;
-    } else {
-      this.webcamRunning = true;
-    }
-
-    // getUsermedia parameters.
-    const constraints = {
-      video: true,
-    };
-
     // Activate the webcam stream.
-    navigator.mediaDevices.getUserMedia(constraints).then((stream) => {
-      this.video.srcObject = stream;
-      this.video.addEventListener("loadeddata", this.drawLandmarks.bind(this));
-    });
+    navigator.mediaDevices
+      .getUserMedia({
+        video: true,
+      })
+      .then((stream) => {
+        this.video.srcObject = stream;
+        this.video.addEventListener("loadeddata", () => {
+          this.videoRunning = true;
+        });
+      });
   }
 
-  drawLandmarks() {
-    this.canvasElement.style.height = this.videoHeight;
+  detectLandmarks() {
+    if (!this.poseLandmarker || !this.videoRunning) return;
+
     this.video.style.height = this.videoHeight;
-    this.canvasElement.style.width = this.videoWidth;
     this.video.style.width = this.videoWidth;
 
     let startTimeMs = performance.now();
 
     if (this.lastVideoTime !== this.video.currentTime) {
       this.lastVideoTime = this.video.currentTime;
-
       this.poseLandmarker.detectForVideo(this.video, startTimeMs, (result) => {
-        this.canvasCtx.save();
-        this.canvasCtx.clearRect(
-          0,
-          0,
-          this.canvasElement.width,
-          this.canvasElement.height
-        );
-
-        for (const landmark of result.landmarks) {
-          this.drawingUtils.drawLandmarks(landmark, {
-            radius: (data) => DrawingUtils.lerp(data.from.z, -0.15, 0.1, 5, 1),
-          });
-          this.drawingUtils.drawConnectors(
-            landmark,
-            PoseLandmarker.POSE_CONNECTIONS
-          );
-        }
-
-        this.canvasCtx.restore();
+        this.landmarks = result.landmarks;
       });
     }
+  }
 
-    // Call this function again to keep predicting when the browser is ready.
-    if (this.webcamRunning === true) {
-      window.requestAnimationFrame(this.drawLandmarks.bind(this));
+  drawLandmarks() {
+    this.canvasElement.style.height = this.videoHeight;
+    this.canvasElement.style.width = this.videoWidth;
+
+    this.canvasCtx.save();
+    this.canvasCtx.clearRect(
+      0,
+      0,
+      this.canvasElement.width,
+      this.canvasElement.height
+    );
+
+    for (const landmark of this.landmarks) {
+      this.drawingUtils.drawLandmarks(landmark, {
+        radius: (data) => DrawingUtils.lerp(data.from.z, -0.15, 0.1, 5, 1),
+      });
+      this.drawingUtils.drawConnectors(
+        landmark,
+        PoseLandmarker.POSE_CONNECTIONS
+      );
     }
+
+    this.canvasCtx.restore();
   }
 }
