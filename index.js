@@ -2,7 +2,6 @@ import { PoseTracker } from "./js/poseTracking/poseTracker.js";
 import { SoundMachine } from "./js/sound/soundMachine.js";
 import { calculateFPS } from "./js/utils/fps.js";
 
-// const playerTracker = document.querySelector("#tracker");
 const pong = document.querySelector("#pong");
 const soundMachine = new SoundMachine();
 
@@ -51,43 +50,40 @@ document.addEventListener("keyup", (e) => {
   soundMachine.playNote(parseInt(e.key));
 });
 
-function drawPose(video, landmarks) {
+function drawPose(video, p1Tracker, p2Tracker) {
   poseCanvas.width = poseTracker.width;
   poseCanvas.height = poseTracker.height;
   poseCtx.drawImage(video, 0, 0);
 
-  if (landmarks.landmarks === 0) return;
-
-  const { p1, p2 } = poseTracker;
-
-  for (let i = 0; i < p1.length; i++) {
-    let colour = i === 0 ? "red" : "black";
-    const m = p1[i];
-    poseCtx.fillStyle = colour;
-    poseCtx.fillRect(m.x * poseCanvas.width, m.y * poseCanvas.height, 7, 7);
+  if (p1Tracker.landmarks.length > 0) {
+    for (let i = 0; i < p1Tracker.landmarks.length; i++) {
+      let colour = i === 0 ? "red" : "black";
+      const m = p1Tracker.landmarks[i];
+      poseCtx.fillStyle = colour;
+      poseCtx.fillRect(m.x * poseCanvas.width, m.y * poseCanvas.height, 7, 7);
+    }
   }
 
-  for (let i = 0; i < p2.length; i++) {
-    let colour = i === 0 ? "red" : "black";
-    const m = p2[i];
-    poseCtx.fillStyle = colour;
-    poseCtx.fillRect(m.x * poseCanvas.width, m.y * poseCanvas.height, 7, 7);
+  if (p2Tracker.landmarks.length > 0) {
+    for (let i = 0; i < p2Tracker.landmarks.length; i++) {
+      let colour = i === 0 ? "red" : "black";
+      const m = p2Tracker.landmarks[i];
+      poseCtx.fillStyle = colour;
+      poseCtx.fillRect(m.x * poseCanvas.width, m.y * poseCanvas.height, 7, 7);
+    }
   }
 }
 
 // game loop
 function loop() {
-  // playerTracker.update();
   poseTracker.detectLandmarks();
-  // poseTracker.drawLandmarks();
-  // poseTracker.update();
-
-  drawPose(poseTracker.getVideo(), poseTracker.landmarks);
+  const { p1Tracker, p2Tracker } = poseTracker;
+  drawPose(poseTracker.getVideo(), p1Tracker, p2Tracker);
 
   pong.loop();
 
-  pong.setPaddleOneY(poseTracker.nose1Pos.y);
-  pong.setPaddleTwoY(poseTracker.nose2Pos.y);
+  pong.setPaddleOneY(p1Tracker.y);
+  pong.setPaddleTwoY(p2Tracker.y);
 
   // Calculate and display FPS
   calculateFPS();

@@ -3,6 +3,7 @@
 // https://josephwritescode.substack.com/p/realtime-web-motion-detection-with-mediapipe
 // https://developers.google.com/mediapipe/solutions/vision/pose_landmarker/index#models
 import * as Vision from "../../libs/@mediapipe/tasks-vision/vision_bundle.mjs";
+import { PlayerTracker } from "./playerTracker.js";
 const { PoseLandmarker, FilesetResolver, DrawingUtils } = Vision;
 
 export class PoseTracker {
@@ -26,24 +27,8 @@ export class PoseTracker {
     });
 
     this.landmarks = [];
-    this.p1 = [];
-    this.p2 = [];
-  }
-
-  get nose1Pos() {
-    let pos = { x: 0, y: 0, z: 0 };
-    if (this.p1 && this.p1.length > 0) {
-      pos = this.p1[0];
-    }
-    return pos;
-  }
-
-  get nose2Pos() {
-    let pos = { x: 0, y: 0, z: 0 };
-    if (this.p2 && this.p2.length > 0) {
-      pos = this.p2[0];
-    }
-    return pos;
+    this.p1Tracker = new PlayerTracker();
+    this.p2Tracker = new PlayerTracker();
   }
 
   get width() {
@@ -101,11 +86,15 @@ export class PoseTracker {
       this.poseLandmarker.detectForVideo(this.video, startTimeMs, (result) => {
         this.landmarks = result.landmarks;
         if (this.landmarks.length > 0) {
-          this.p1 = this.landmarks[0];
+          this.p1Tracker.setLandmarks(this.landmarks[0]);
+        } else {
+          this.p1Tracker.setLandmarks([]);
         }
 
         if (this.landmarks.length > 1) {
-          this.p2 = this.landmarks[1];
+          this.p2Tracker.setLandmarks(this.landmarks[1]);
+        } else {
+          this.p2Tracker.setLandmarks([]);
         }
       });
     }
