@@ -1,8 +1,8 @@
-import {
-  PoseLandmarker,
-  FilesetResolver,
-  DrawingUtils,
-} from "https://cdn.skypack.dev/@mediapipe/tasks-vision@0.10.0";
+// https://josephwritescode.substack.com/p/realtime-web-motion-detection-with-mediapipe
+// https://developers.google.com/mediapipe/solutions/vision/pose_landmarker/index#models
+
+import * as Vision from "../../libs/@mediapipe/tasks-vision/vision_bundle.mjs";
+const { PoseLandmarker, FilesetResolver, DrawingUtils } = Vision;
 
 export class PoseTracker {
   constructor() {
@@ -10,13 +10,16 @@ export class PoseTracker {
 
     this.poseLandmarker = undefined;
     this.runningMode = "VIDEO";
-    this.videoHeight = "360px";
-    this.videoWidth = "480px";
+    this.videoHeight = 360;
+    this.videoWidth = 480;
     this.video = document.getElementById("webcam");
     this.canvasElement = document.getElementById("output_canvas");
     this.canvasCtx = this.canvasElement.getContext("2d");
     this.drawingUtils = new DrawingUtils(this.canvasCtx);
     this.videoRunning = false;
+
+    this.video.style.height = this.videoHeight + "px";
+    this.video.style.width = this.videoWidth + "px";
 
     // Before we can use PoseLandmarker class we must wait for it to finish
     // loading. Machine Learning models can be large and take a moment to
@@ -69,9 +72,6 @@ export class PoseTracker {
   detectLandmarks() {
     if (!this.poseLandmarker || !this.videoRunning) return;
 
-    this.video.style.height = this.videoHeight;
-    this.video.style.width = this.videoWidth;
-
     let startTimeMs = performance.now();
 
     if (this.lastVideoTime !== this.video.currentTime) {
@@ -83,27 +83,25 @@ export class PoseTracker {
   }
 
   drawLandmarks() {
-    this.canvasElement.style.height = this.videoHeight;
-    this.canvasElement.style.width = this.videoWidth;
-
-    this.canvasCtx.save();
-    this.canvasCtx.clearRect(
-      0,
-      0,
-      this.canvasElement.width,
-      this.canvasElement.height
-    );
+    this.canvasElement.height = this.videoHeight;
+    this.canvasElement.width = this.videoWidth;
+    let isLogged = false;
 
     for (const landmark of this.landmarks) {
-      this.drawingUtils.drawLandmarks(landmark, {
-        radius: (data) => DrawingUtils.lerp(data.from.z, -0.15, 0.1, 5, 1),
-      });
+      //   const radius = DrawingUtils.lerp(landmark[0].z, -0.15, 0.1, 5, 1);
+      const radius = DrawingUtils.lerp(landmark[0].z, -0.15, 0.1, 5, 1);
+
+      if (!isLogged) {
+        isLogged = true;
+        console.log("radius: ", radius);
+      }
+
+      this.drawingUtils.drawLandmarks(landmark, { radius });
+
       this.drawingUtils.drawConnectors(
         landmark,
         PoseLandmarker.POSE_CONNECTIONS
       );
     }
-
-    this.canvasCtx.restore();
   }
 }
