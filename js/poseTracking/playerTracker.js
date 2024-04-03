@@ -17,7 +17,7 @@ export class PlayerTracker {
     this.landmarks = landmarks;
   }
 
-  draw(ctx, w, h, isPlayerTwo) {
+  drawLandmarks(ctx, w, h) {
     if (this.landmarks.length > 0) {
       for (let i = 0; i < this.landmarks.length; i++) {
         let colour = i === 0 ? "red" : "black";
@@ -26,7 +26,9 @@ export class PlayerTracker {
         ctx.fillRect(m.x * w, m.y * h, 7, 7);
       }
     }
+  }
 
+  drawMinMax(ctx, w, h, isPlayerTwo) {
     ctx.fillStyle = "yellow";
     const halfW = w / 2;
     const startX = isPlayerTwo ? halfW : 0;

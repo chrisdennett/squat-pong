@@ -32,16 +32,18 @@ export class PoseTracker {
     this.p2Tracker = new PlayerTracker();
   }
 
-  drawPlayers(canvas) {
-    this.drawLandmarks();
+  drawPlayers(outCanvas) {
+    if (this.width > 0) {
+      outCanvas.width = this.canvas.width = this.width;
+      outCanvas.height = this.canvas.height = this.height;
+      this.drawLandmarks();
+      const ctx = outCanvas.getContext("2d");
+      ctx.drawImage(this.video, 0, 0);
+      ctx.drawImage(this.canvas, 0, 0);
 
-    // canvas.width = this.width;
-    // canvas.height = this.height;
-    // const ctx = canvas.getContext("2d");
-    // ctx.drawImage(this.video, 0, 0);
-
-    // this.p1Tracker.draw(ctx, canvas.width, canvas.height, false);
-    // this.p2Tracker.draw(ctx, canvas.width, canvas.height, true);
+      this.p1Tracker.drawMinMax(ctx, outCanvas.width, outCanvas.height, false);
+      this.p2Tracker.drawMinMax(ctx, outCanvas.width, outCanvas.height, true);
+    }
   }
 
   get width() {
@@ -129,12 +131,10 @@ export class PoseTracker {
   }
 
   drawLandmarks() {
-    this.canvas.width = this.width;
-    this.canvas.height = this.height;
-    const ctx = this.canvas.getContext("2d");
-    ctx.globalAlpha = 0.4;
-    ctx.drawImage(this.video, 0, 0);
-    ctx.globalAlpha = 1;
+    // const ctx = this.canvas.getContext("2d");
+    // ctx.globalAlpha = 0.4;
+    // ctx.drawImage(this.video, 0, 0);
+    // ctx.globalAlpha = 1;
 
     // if (this.segmentationMasks.length > 0) {
     //   const offscreenCanvas = this.segmentationMasks[0].canvas;
