@@ -11,19 +11,20 @@ export class PoseTracker {
     this.lastVideoTime = -1;
 
     this.poseLandmarker = undefined;
-    this.runningMode = "VIDEO";
     this.video = document.getElementById("webcam");
-    this.canvasElement = document.getElementById("output_canvas");
-    this.canvasCtx = this.canvasElement.getContext("2d");
+    this.canvas = document.getElementById("poseTrackerCanvas");
+    this.canvasCtx = this.canvas.getContext("2d");
     this.drawingUtils = new DrawingUtils(this.canvasCtx);
     this.videoRunning = false;
+    this.logged = false;
+    this.segmentationMasks = [];
 
     // Before we can use PoseLandmarker class we must wait for it to finish
     // loading. Machine Learning models can be large and take a moment to
     // get everything needed to run.
     this.createPoseLandmarker((pl) => {
       this.poseLandmarker = pl;
-      this.enableCam();
+      this.enableWebcam();
     });
 
     this.landmarks = [];
@@ -32,13 +33,15 @@ export class PoseTracker {
   }
 
   drawPlayers(canvas) {
-    canvas.width = this.width;
-    canvas.height = this.height;
-    const ctx = canvas.getContext("2d");
-    ctx.drawImage(this.video, 0, 0);
+    this.drawLandmarks();
 
-    this.p1Tracker.draw(ctx, canvas.width, canvas.height, false);
-    this.p2Tracker.draw(ctx, canvas.width, canvas.height, true);
+    // canvas.width = this.width;
+    // canvas.height = this.height;
+    // const ctx = canvas.getContext("2d");
+    // ctx.drawImage(this.video, 0, 0);
+
+    // this.p1Tracker.draw(ctx, canvas.width, canvas.height, false);
+    // this.p2Tracker.draw(ctx, canvas.width, canvas.height, true);
   }
 
   get width() {
@@ -59,15 +62,19 @@ export class PoseTracker {
         modelAssetPath: "../../libs/@mediapipe/pose_landmarker_lite.task",
         delegate: "GPU",
       },
-      runningMode: this.runningMode,
+      runningMode: "VIDEO",
       numPoses: 2,
+      minPoseDetectionConfidence: 0.8,
+      minPosePresenceConfidence: 0.5,
+      minTrackingConfidence: 0.5,
+      outputSegmentationMasks: false,
     });
 
     callback(poseLandmarker);
   };
 
   // Enable the live webcam view and start detection.
-  enableCam() {
+  enableWebcam() {
     if (!this.poseLandmarker) {
       console.log("Wait! poseLandmaker not loaded yet.");
       return;
@@ -96,6 +103,12 @@ export class PoseTracker {
       this.poseLandmarker.detectForVideo(this.video, startTimeMs, (result) => {
         this.landmarks = result.landmarks;
 
+        // if (!this.logged && result.segmentationMasks.length > 0) {
+        //   this.logged = true;
+        //   console.log("result: ", result);
+        // }
+        // this.segmentationMasks = result.segmentationMasks;
+
         if (this.landmarks.length > 0) {
           this.p1Tracker.setLandmarks(this.landmarks[0]);
         } else {
@@ -116,12 +129,25 @@ export class PoseTracker {
   }
 
   drawLandmarks() {
-    this.canvasElement.height = this.videoHeight;
-    this.canvasElement.width = this.videoWidth;
+    this.canvas.width = this.width;
+    this.canvas.height = this.height;
+    const ctx = this.canvas.getContext("2d");
+    ctx.globalAlpha = 0.4;
+    ctx.drawImage(this.video, 0, 0);
+    ctx.globalAlpha = 1;
+
+    // if (this.segmentationMasks.length > 0) {
+    //   const offscreenCanvas = this.segmentationMasks[0].canvas;
+
+    //   const bitmapOne =
+    //     this.segmentationMasks[0].canvas.transferToImageBitmap();
+
+    //   ctx.drawImage(bitmapOne, 0, 0);
+    // }
 
     for (const landmark of this.landmarks) {
-      //   const radius = DrawingUtils.lerp(landmark[0].z, -0.15, 0.1, 5, 1);
       const radius = DrawingUtils.lerp(landmark[0].z, -0.15, 0.1, 5, 1);
+      // const radius = 10;
       this.drawingUtils.drawLandmarks(landmark, { radius });
 
       this.drawingUtils.drawConnectors(
