@@ -31,6 +31,16 @@ export class PoseTracker {
     this.p2Tracker = new PlayerTracker();
   }
 
+  drawPlayers(canvas) {
+    canvas.width = this.width;
+    canvas.height = this.height;
+    const ctx = canvas.getContext("2d");
+    ctx.drawImage(this.video, 0, 0);
+
+    this.p1Tracker.draw(ctx, canvas.width, canvas.height, false);
+    this.p2Tracker.draw(ctx, canvas.width, canvas.height, true);
+  }
+
   get width() {
     return this.video.videoWidth;
   }

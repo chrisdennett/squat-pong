@@ -17,6 +17,23 @@ export class PlayerTracker {
     this.landmarks = landmarks;
   }
 
+  draw(ctx, w, h, isPlayerTwo) {
+    if (this.landmarks.length > 0) {
+      for (let i = 0; i < this.landmarks.length; i++) {
+        let colour = i === 0 ? "red" : "black";
+        const m = this.landmarks[i];
+        ctx.fillStyle = colour;
+        ctx.fillRect(m.x * w, m.y * h, 7, 7);
+      }
+    }
+
+    ctx.fillStyle = "yellow";
+    const halfW = w / 2;
+    const startX = isPlayerTwo ? halfW : 0;
+    ctx.fillRect(startX, this.minY * h, halfW, 2);
+    ctx.fillRect(startX, this.maxY * h, halfW, 2);
+  }
+
   get y() {
     const noseY = this.getNoseY();
     const range = this.maxY - this.minY;
