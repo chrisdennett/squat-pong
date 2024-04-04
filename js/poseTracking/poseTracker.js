@@ -121,27 +121,39 @@ export class PoseTracker {
         // }
         // this.segmentationMasks = result.segmentationMasks;
 
-        let foundPlayerOneTracker = false;
+        let p1Landmarks = [];
+        let p2Landmarks = [];
 
-        // found player 1
-        if (this.landmarks.length > 0) {
-          const nosePos = this.landmarks[0][0];
-          if (nosePos.x < this.width / 2) {
-            this.p1Tracker.setLandmarks(this.landmarks[0]);
-            foundPlayerOneTracker = true;
+        // order find poses might not be same as player 1 then player 2
+        const firstPoseFound = this.landmarks.length > 0;
+        const secondPoseFound = this.landmarks.length > 1;
+
+        console.log("firstPoseFound: ", firstPoseFound);
+
+        // set first pose to p1 or p2 depending on side found
+        if (firstPoseFound) {
+          const noseX = this.landmarks[0][0].x * this.width;
+          // if on left set it to p1
+          if (noseX < this.width / 2) {
+            p2Landmarks = this.landmarks[0];
           } else {
-            this.p1Tracker.setLandmarks(this.landmarks[0]);
-            foundPlayerOneTracker = true;
+            p1Landmarks = this.landmarks[0];
           }
-        } else {
-          this.p1Tracker.setLandmarks([]);
         }
 
-        if (this.landmarks.length > 1) {
-          this.p2Tracker.setLandmarks(this.landmarks[1]);
-        } else {
-          this.p2Tracker.setLandmarks([]);
+        // set second pose to p1 or p2 depending on side found
+        if (secondPoseFound) {
+          const noseX = this.landmarks[1][0].x * this.width;
+          // if on left set it to p1
+          if (noseX < this.width / 2) {
+            p2Landmarks = this.landmarks[1];
+          } else {
+            p1Landmarks = this.landmarks[1];
+          }
         }
+
+        this.p1Tracker.setLandmarks(p1Landmarks);
+        this.p2Tracker.setLandmarks(p2Landmarks);
       });
     }
   }
