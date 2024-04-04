@@ -121,8 +121,18 @@ export class PoseTracker {
         // }
         // this.segmentationMasks = result.segmentationMasks;
 
+        let foundPlayerOneTracker = false;
+
+        // found player 1
         if (this.landmarks.length > 0) {
-          this.p1Tracker.setLandmarks(this.landmarks[0]);
+          const nosePos = this.landmarks[0][0];
+          if (nosePos.x < this.width / 2) {
+            this.p1Tracker.setLandmarks(this.landmarks[0]);
+            foundPlayerOneTracker = true;
+          } else {
+            this.p1Tracker.setLandmarks(this.landmarks[0]);
+            foundPlayerOneTracker = true;
+          }
         } else {
           this.p1Tracker.setLandmarks([]);
         }

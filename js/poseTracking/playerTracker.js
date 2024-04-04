@@ -30,10 +30,8 @@ export class PlayerTracker {
 
   drawMinMax(ctx, w, h, isPlayerTwo) {
     ctx.fillStyle = "yellow";
-    const halfW = w / 2;
-    const startX = isPlayerTwo ? halfW : 0;
-    ctx.fillRect(startX, this.minY * h, halfW, 2);
-    ctx.fillRect(startX, this.maxY * h, halfW, 2);
+    ctx.fillRect(0, this.minY * h, w, 2);
+    ctx.fillRect(0, this.maxY * h, w, 2);
   }
 
   get y() {
