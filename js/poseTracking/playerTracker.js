@@ -1,8 +1,8 @@
 export class PlayerTracker {
   constructor() {
     this.landmarks = [];
-    this.minY = 0.2;
-    this.maxY = 0.8;
+    this.minY = 0.35;
+    this.maxY = 0.6;
   }
 
   setMinY() {

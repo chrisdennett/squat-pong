@@ -14,7 +14,7 @@ class Pong extends HTMLElement {
     shadow.append(PongTemplate.content.cloneNode(true));
 
     this.defaultGameSettings = {
-      gameMode: "twoPlayer" /*demo, onePlayer, twoPlayer*/,
+      gameMode: "onePlayer" /*demo, onePlayer, twoPlayer*/,
       displayWidth: 350,
       delayAfterPoint: 1000,
       delayRestartAfterWin: 2000,
@@ -64,6 +64,8 @@ class Pong extends HTMLElement {
         computerSpeed: 5,
       },
     };
+
+    this.gameMode = this.defaultGameSettings.gameMode;
 
     this.svgPong = shadow.getElementById("svgPong");
   }

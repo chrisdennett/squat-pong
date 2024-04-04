@@ -1,6 +1,6 @@
 import { PoseTracker } from "./js/poseTracking/poseTracker.js";
 import { SoundMachine } from "./js/sound/soundMachine.js";
-import { calculateFPS } from "./js/utils/fps.js";
+// import { calculateFPS } from "./js/utils/fps.js";
 
 const pong = document.querySelector("#pong");
 const soundMachine = new SoundMachine();
@@ -56,11 +56,16 @@ function loop() {
 
   pong.loop();
 
-  pong.setPaddleOneY(p1Tracker.y);
-  pong.setPaddleTwoY(p2Tracker.y);
+  if (pong.gameMode !== "demo") {
+    pong.setPaddleOneY(p1Tracker.y);
+  }
+
+  if (pong.gameMode === "twoPlayer") {
+    pong.setPaddleTwoY(p2Tracker.y);
+  }
 
   // Calculate and display FPS
-  calculateFPS();
+  // calculateFPS();
 
   window.requestAnimationFrame(loop);
 }

@@ -21,7 +21,7 @@ body {
   -webkit-font-smoothing: antialiased;
   font-family: monospace;
   background-color: rgb(53, 132, 251);
-  /* overflow: hidden; */
+  overflow: hidden;
   font-family: "press_start_2pregular", Arial, sans-serif;
   font-weight: normal;
   font-style: normal;
@@ -30,13 +30,19 @@ body {
 main {
   display: flex;
   align-items: start;
-  justify-content: center;
+  justify-content: flex-end;
 }
 
 #poseCanvas {
   position: fixed;
-  opacity: 0.3;
+  opacity: 0.5;
   transform: scale(-1, 1);
+  border-radius: 30px;
+  top: 200px;
+  left: 20px;
+  mix-blend-mode: color-burn;
+  overflow: hidden;
+  width: 500px;
 }
 
 .hidden {
