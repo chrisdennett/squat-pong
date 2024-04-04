@@ -6,7 +6,8 @@ const pong = document.querySelector("#pong");
 const soundMachine = new SoundMachine();
 
 const poseTracker = new PoseTracker();
-const poseCanvas = document.getElementById("poseCanvas");
+const pose1Canvas = document.getElementById("pose1Canvas");
+const pose2Canvas = document.getElementById("pose2Canvas");
 
 document.addEventListener("keyup", (e) => {
   if (e.key === "b") {
@@ -52,7 +53,7 @@ document.addEventListener("keyup", (e) => {
 function loop() {
   poseTracker.detectLandmarks();
   const { p1Tracker, p2Tracker } = poseTracker;
-  poseTracker.drawPlayers(poseCanvas);
+  poseTracker.drawPlayers(pose1Canvas, pose2Canvas);
 
   pong.loop();
 

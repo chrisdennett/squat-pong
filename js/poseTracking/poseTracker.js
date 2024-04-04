@@ -32,17 +32,27 @@ export class PoseTracker {
     this.p2Tracker = new PlayerTracker();
   }
 
-  drawPlayers(outCanvas) {
+  drawPlayers(canvas1, canvas2) {
     if (this.width > 0) {
-      outCanvas.width = this.canvas.width = this.width;
-      outCanvas.height = this.canvas.height = this.height;
-      this.drawLandmarks();
-      const ctx = outCanvas.getContext("2d");
-      ctx.drawImage(this.video, 0, 0);
-      ctx.drawImage(this.canvas, 0, 0);
+      const w = this.width / 2;
+      const h = this.height;
 
-      this.p1Tracker.drawMinMax(ctx, outCanvas.width, outCanvas.height, false);
-      this.p2Tracker.drawMinMax(ctx, outCanvas.width, outCanvas.height, true);
+      this.canvas.width = this.width;
+      canvas1.width = canvas2.width = w;
+      canvas1.height = canvas2.height = this.canvas.height = h;
+
+      this.drawLandmarks();
+      const ctx1 = canvas1.getContext("2d");
+      const ctx2 = canvas2.getContext("2d");
+
+      ctx1.drawImage(this.video, w, 0, w, h, 0, 0, w, h);
+      ctx1.drawImage(this.canvas, w, 0, w, h, 0, 0, w, h);
+
+      ctx2.drawImage(this.video, 0, 0, w, h, 0, 0, w, h);
+      ctx2.drawImage(this.canvas, 0, 0, w, h, 0, 0, w, h);
+
+      this.p1Tracker.drawMinMax(ctx1, canvas1.width, canvas1.height, false);
+      this.p2Tracker.drawMinMax(ctx2, canvas2.width, canvas2.height, true);
     }
   }
 
