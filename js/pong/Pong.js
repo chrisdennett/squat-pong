@@ -14,7 +14,7 @@ class Pong extends HTMLElement {
     shadow.append(PongTemplate.content.cloneNode(true));
 
     this.defaultGameSettings = {
-      gameMode: "twoPlayer" /*demo, onePlayer, twoPlayer*/,
+      gameMode: "onePlayer" /*demo, onePlayer, twoPlayer*/,
       displayWidth: 350,
       delayAfterPoint: 1000,
       delayRestartAfterWin: 2000,
@@ -101,6 +101,14 @@ class Pong extends HTMLElement {
   }
   setPaddleTwoY(y) {
     this.dataPong.paddleRight.setY(y);
+  }
+
+  get paddleOneY() {
+    return this.dataPong.paddleLeft.yAsFraction;
+  }
+
+  get paddleTwoY() {
+    return this.dataPong.paddleRight.yAsFraction;
   }
 
   //  GETTERS

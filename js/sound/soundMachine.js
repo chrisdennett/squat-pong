@@ -1,12 +1,21 @@
+// https://www.youtube.com/watch?v=hgg3ZBLRH58
+
 export class SoundMachine {
   constructor() {
     this.scale;
     this.mixer;
     this.reverb;
     this.soundObjects = [];
-    this.muted = true;
+    this.muted = false;
+    this.osc1;
+    // this.osc2;
+
+    this.frequencyMin = 110;
+    this.frequencyMax = 280;
+    this.frequencyRange = this.frequencyMax - this.frequencyMin;
 
     this.initializeAudio();
+    this.initializeOscillators();
   }
 
   playNote(noteIndex) {
@@ -15,7 +24,7 @@ export class SoundMachine {
     if (isNaN(noteIndex) || noteIndex >= this.soundObjects.length) return;
 
     const { synth, note } = this.soundObjects[noteIndex];
-    synth.triggerAttackRelease(note, 0.1);
+    synth.triggerAttackRelease(note, 0.5);
   }
 
   playDrum() {
@@ -23,6 +32,57 @@ export class SoundMachine {
 
     const synth = new Tone.MembraneSynth().toDestination();
     synth.triggerAttackRelease("C2", "8n");
+  }
+
+  set frequency1(fraction) {
+    if (!this.osc1) return;
+
+    let f = fraction;
+    if (f < 0) f = 0;
+    if (f > 1) f = 1;
+
+    this.osc1.frequency.value = this.frequencyMin + f * this.frequencyRange;
+  }
+
+  set frequency2(fraction) {
+    if (!this.osc2) return;
+    let f = fraction;
+    if (f < 0) f = 0;
+    if (f > 1) f = 1;
+
+    this.osc2.frequency.value = this.frequencyMin + f * this.frequencyRange;
+  }
+
+  initializeOscillators() {
+    this.osc1 = new Tone.Oscillator();
+    this.osc1.type = "triangle"; // triangle, square or sawtooth
+    this.osc1.frequency.value = 220; // hz
+    this.osc1.volume.value = -15;
+    this.osc1.start();
+    this.osc1.toDestination(); // connect the oscillator to the audio output
+
+    this.osc2 = new Tone.Oscillator();
+    this.osc2.type = "sine"; // triangle, square or sawtooth
+    this.osc2.frequency.value = 220; // hz
+    this.osc2.volume.value = -15;
+    this.osc2.start();
+    this.osc2.toDestination(); // connect the oscillator to the audio output
+
+    // let lfo = new Tone.LFO(0.1, 200, 240);
+    // lfo.connect(osc2.frequency);
+    // lfo.start();
+
+    this.waveform = new Tone.Waveform();
+    Tone.Master.connect(this.waveform);
+    // Tone.Master.volume.value = -15; // -9 decibels
+
+    // let oscType = ["sine", "triangle", "square", "sawtooth"];
+
+    // gui = new dat.GUI();
+    // gui.add(osc.frequency, "value", 110, 330).step(0.1).name("frequency");
+    // gui.add(osc2.frequency, "value", 110, 330).step(0.1).name("frequency2");
+    // gui.add(osc, "type", oscType).name("osc1 type");
+    // gui.add(osc2, "type", oscType).name("osc2 type");
   }
 
   initializeAudio() {
@@ -65,7 +125,8 @@ export class SoundMachine {
 
     // create as many pendulums as we have notes in the scale[] array
     for (let i = 0; i < this.scale.length; i++) {
-      let synth = new Tone.Synth();
+      // let synth = new Tone.Synth();
+      let synth = new Tone.MembraneSynth();
       synth.connect(this.mixer);
 
       this.soundObjects.push({

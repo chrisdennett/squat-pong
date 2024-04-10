@@ -24,6 +24,10 @@ export class DataPaddle {
     this.randomPaddleOffset = 0.5;
   }
 
+  get yAsFraction() {
+    return this.y / this.range;
+  }
+
   reset() {
     this.y = this.params.bounds.bottom / 2;
   }

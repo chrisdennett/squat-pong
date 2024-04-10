@@ -65,6 +65,9 @@ function loop() {
     pong.setPaddleTwoY(p2Tracker.y);
   }
 
+  soundMachine.frequency1 = pong.paddleOneY;
+  soundMachine.frequency2 = pong.paddleTwoY;
+
   // Calculate and display FPS
   // calculateFPS();
 

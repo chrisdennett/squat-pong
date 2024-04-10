@@ -38,12 +38,12 @@ main {
   opacity: 0.5;
   transform: scale(-1, 1);
   border-radius: 30px;
-  top: 200px;
-  left: 20px;
+  top: 300px;
+  left: 10px;
   mix-blend-mode: color-burn;
   border: blue 1px solid;
   overflow: hidden;
-  width: 300px;
+  width: 250px;
 }
 
 #pose2Canvas {
@@ -52,11 +52,11 @@ main {
   border: red 1px solid;
   transform: scale(-1, 1);
   border-radius: 30px;
-  top: 200px;
-  right: 20px;
+  top: 300px;
+  right: 10px;
   mix-blend-mode: color-burn;
   overflow: hidden;
-  width: 300px;
+  width: 250px;
 }
 
 .hidden {

@@ -128,8 +128,6 @@ export class PoseTracker {
         const firstPoseFound = this.landmarks.length > 0;
         const secondPoseFound = this.landmarks.length > 1;
 
-        console.log("firstPoseFound: ", firstPoseFound);
-
         // set first pose to p1 or p2 depending on side found
         if (firstPoseFound) {
           const noseX = this.landmarks[0][0].x * this.width;
