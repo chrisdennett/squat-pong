@@ -20,7 +20,8 @@ body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
   font-family: monospace;
-  background-color: rgb(53, 132, 251);
+
+  /* background-color: rgb(53, 132, 251); */
   /* overflow: hidden; */
   font-family: "press_start_2pregular", Arial, sans-serif;
   font-weight: normal;
@@ -31,6 +32,8 @@ main {
   display: flex;
   align-items: start;
   justify-content: center;
+  /* filter: hue-rotate(72deg); */
+  background-color: rgb(53, 132, 251);
 }
 
 #pose1Canvas {

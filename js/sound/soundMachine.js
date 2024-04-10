@@ -12,8 +12,8 @@ export class SoundMachine {
 
     this.oscillatorType = "sine"; // sine, triangle, square or sawtooth
 
-    this.frequencyMin = 110;
-    this.frequencyMax = 280;
+    this.frequencyMin = 100;
+    this.frequencyMax = 300;
     this.frequencyRange = this.frequencyMax - this.frequencyMin;
 
     this.initializeAudio();
@@ -33,7 +33,8 @@ export class SoundMachine {
     if (this.muted) return;
 
     const synth = new Tone.MembraneSynth().toDestination();
-    synth.triggerAttackRelease("C2", "8n");
+    synth.triggerAttackRelease("C2", 1);
+    // synth.triggerAttackRelease("C2", "8n");
   }
 
   set frequency1(fraction) {
