@@ -10,6 +10,8 @@ export class SoundMachine {
     this.osc1;
     // this.osc2;
 
+    this.oscillatorType = "sine"; // sine, triangle, square or sawtooth
+
     this.frequencyMin = 110;
     this.frequencyMax = 280;
     this.frequencyRange = this.frequencyMax - this.frequencyMin;
@@ -53,20 +55,30 @@ export class SoundMachine {
     this.osc2.frequency.value = this.frequencyMin + f * this.frequencyRange;
   }
 
+  useSawtooth() {
+    this.oscillatorType = "sawtooth";
+    this.osc1.type = this.oscillatorType;
+  }
+
+  useSine() {
+    this.oscillatorType = "sine";
+    this.osc1.type = this.oscillatorType;
+  }
+
   initializeOscillators() {
     this.osc1 = new Tone.Oscillator();
-    this.osc1.type = "triangle"; // triangle, square or sawtooth
+    this.osc1.type = this.oscillatorType; // sine, triangle, square or sawtooth
     this.osc1.frequency.value = 220; // hz
     this.osc1.volume.value = -15;
     this.osc1.start();
     this.osc1.toDestination(); // connect the oscillator to the audio output
 
-    this.osc2 = new Tone.Oscillator();
-    this.osc2.type = "sine"; // triangle, square or sawtooth
-    this.osc2.frequency.value = 220; // hz
-    this.osc2.volume.value = -15;
-    this.osc2.start();
-    this.osc2.toDestination(); // connect the oscillator to the audio output
+    // this.osc2 = new Tone.Oscillator();
+    // this.osc2.type = "sine"; // triangle, square or sawtooth
+    // this.osc2.frequency.value = 220; // hz
+    // this.osc2.volume.value = -15;
+    // this.osc2.start();
+    // this.osc2.toDestination(); // connect the oscillator to the audio output
 
     // let lfo = new Tone.LFO(0.1, 200, 240);
     // lfo.connect(osc2.frequency);

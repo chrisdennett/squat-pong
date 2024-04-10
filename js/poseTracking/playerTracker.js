@@ -42,6 +42,24 @@ export class PlayerTracker {
     return yPos / range;
   }
 
+  get leftHandY() {
+    let pos = { x: 0, y: 0, z: 0 };
+    if (this.landmarks && this.landmarks.length >= 17) {
+      pos = this.landmarks[17];
+    }
+
+    return pos.y;
+  }
+
+  get rightHandY() {
+    let pos = { x: 0, y: 0, z: 0 };
+    if (this.landmarks && this.landmarks.length >= 18) {
+      pos = this.landmarks[18];
+    }
+
+    return pos.y;
+  }
+
   getNoseY() {
     let pos = { x: 0, y: 0, z: 0 };
     if (this.landmarks && this.landmarks.length > 0) {

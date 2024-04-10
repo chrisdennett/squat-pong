@@ -65,6 +65,13 @@ function loop() {
     pong.setPaddleTwoY(p2Tracker.y);
   }
 
+  if (p1Tracker.leftHandY < p1Tracker.y || p1Tracker.rightHandY < p1Tracker.y) {
+    console.log("left hand up");
+    soundMachine.useSawtooth();
+  } else {
+    soundMachine.useSine();
+  }
+
   soundMachine.frequency1 = pong.paddleOneY;
   soundMachine.frequency2 = pong.paddleTwoY;
 
