@@ -8,9 +8,8 @@ const soundMachine = new SoundMachine();
 const poseTracker = new PoseTracker();
 const pose1Canvas = document.getElementById("pose1Canvas");
 const pose2Canvas = document.getElementById("pose2Canvas");
-const mainElement = document.getElementsByTagName("main")[0];
-
-let hueRotate = 0;
+// const mainElement = document.getElementsByTagName("main")[0];
+// let hueRotate = 0;
 
 document.addEventListener("keyup", (e) => {
   if (e.key === "b") {
@@ -80,8 +79,8 @@ function loop() {
 
   // Calculate and display FPS
   // calculateFPS();
-  hueRotate += 0.3;
-  mainElement.style.filter = `hue-rotate(${hueRotate}deg)`;
+  // hueRotate += 0.3;
+  // mainElement.style.filter = `hue-rotate(${hueRotate}deg)`;
 
   window.requestAnimationFrame(loop);
 }

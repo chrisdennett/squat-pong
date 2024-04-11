@@ -14,7 +14,7 @@ class Pong extends HTMLElement {
     shadow.append(PongTemplate.content.cloneNode(true));
 
     this.defaultGameSettings = {
-      gameMode: "onePlayer" /*demo, onePlayer, twoPlayer*/,
+      gameMode: "demo" /*demo, onePlayer, twoPlayer*/,
       displayWidth: 350,
       delayAfterPoint: 1000,
       delayRestartAfterWin: 2000,
@@ -22,8 +22,8 @@ class Pong extends HTMLElement {
       useGapBug: false,
       useScoreBasedPaddleSizes: false,
       palette: {
-        surround: "#3584fb",
-        inset: "#3783fa",
+        surround: "#7d7d7d",
+        inlay: "#4d4d4d",
         screen: "#3584fb",
         paddleLeft: "white",
         paddleRight: "white",

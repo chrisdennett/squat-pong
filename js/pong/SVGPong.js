@@ -17,6 +17,14 @@ template.innerHTML = /*html*/ `
             opacity: 0.5;
         }
 
+        #stop1{
+            stop-color: green;
+        }
+
+        #stop2{
+            stop-color: yellow;
+        }
+
         #gradientOverlay::before {
             content: "";
             position: absolute;
@@ -83,6 +91,11 @@ template.innerHTML = /*html*/ `
                     <stop offset="100%" stop-color="rgba(0,0,0,0.5)" />
                 </linearGradient>
 
+                <linearGradient id="screenGradient" x1="0" x2="1" y1="1" y2="1" >
+                    <stop id="stopColour1" offset="0%" stop-color="red" />
+                    <stop id="stopColour2" offset="100%" stop-color="blue" />
+                </linearGradient>
+
                 <!-- <filter
                     style="color-interpolation-filters:sRGB"
                     id="a"
@@ -116,7 +129,7 @@ template.innerHTML = /*html*/ `
             <!-- INNER SCREEN AREA -->
             <path
                 id="screen"
-                fill="#3584fb"
+                fill="url(#screenGradient)"
                 stroke="none"
                 d="M34.6 17.3c11.4-1.5 47.3-7 104.4-7 63.7 0 87.9 3 104 5.6 16 2.5 18.2 6.3 20.5 16.9 1.5 7.1 4.8 44.9 4.5 82.8-.3 36.4-1.5 60.8-3.9 71.4-2.3 10.5-4.6 14.5-21.6 16.8-17 2.3-49 6-107.3 6-58.2 0-85.3-4.3-100-6-14.8-1.7-18.5-5.8-21-16.7a373 373 0 0 1-5.3-68.6 835 835 0 0 1 4.6-85.8c1.7-10.3 9.7-14 21.1-15.4Z"
             />
@@ -340,6 +353,9 @@ class SvgPong extends HTMLElement {
     this.surround = shadow.getElementById("surround");
     this.inlay = shadow.getElementById("inlay");
     this.screen = shadow.getElementById("screen");
+
+    this.stopColour1 = shadow.getElementById("stopColour1");
+    this.stopColour2 = shadow.getElementById("stopColour2");
   }
 
   setup(dataPong) {
@@ -386,7 +402,7 @@ class SvgPong extends HTMLElement {
 
     // screen colours
     this.inlay.style.fill = dataPong.palette.inlay;
-    this.screen.style.fill = dataPong.palette.screen;
+    // this.screen.style.fill = dataPong.palette.screen;
     this.surround.style.background = dataPong.palette.surround;
 
     // this.hideGameOverScreen();
@@ -432,6 +448,12 @@ class SvgPong extends HTMLElement {
         this.dataPong.paddleRight.y
       );
     }
+
+    const hue1 = 90 + this.dataPong.paddleLeft.yAsFraction * 120;
+    this.stopColour1.style.stopColor = `hsl(${hue1}deg, 48%, 42%)`;
+
+    const hue2 = 90 + this.dataPong.paddleRight.yAsFraction * 120;
+    this.stopColour2.style.stopColor = `hsl(${hue2}deg, 42%, 48%)`;
 
     this.scoreLeft.innerHTML = this.dataPong.score.p1;
     this.scoreRight.innerHTML = this.dataPong.score.p2;
