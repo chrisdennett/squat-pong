@@ -14,7 +14,7 @@ class Pong extends HTMLElement {
     shadow.append(PongTemplate.content.cloneNode(true));
 
     this.defaultGameSettings = {
-      gameMode: "demo" /*demo, onePlayer, twoPlayer*/,
+      gameMode: "onePlayer" /*demo, onePlayer, twoPlayer*/,
       displayWidth: 350,
       delayAfterPoint: 1000,
       delayRestartAfterWin: 2000,
@@ -61,7 +61,7 @@ class Pong extends HTMLElement {
         width: 5,
         height: 20,
         speed: 5,
-        computerSpeed: 5,
+        computerSpeed: 2,
       },
     };
 
@@ -125,9 +125,9 @@ class Pong extends HTMLElement {
     this.svgPong.draw();
   }
 
-  loop() {
+  loop(p1HandsUp, p2HandsUp) {
     this.dataPong.update();
-    this.svgPong.draw();
+    this.svgPong.draw(p1HandsUp, p2HandsUp);
   }
 }
 

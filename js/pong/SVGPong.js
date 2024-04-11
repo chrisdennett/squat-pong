@@ -422,7 +422,7 @@ class SvgPong extends HTMLElement {
     this.gameOverContent.style.display = "none";
   }
 
-  draw() {
+  draw(p1HandsUp, p2HandsUp) {
     this.ballElem.style.fill = this.dataPong.ball.colour;
 
     if (this.dataPong.gameState === "gameOver") {
@@ -449,10 +449,12 @@ class SvgPong extends HTMLElement {
       );
     }
 
-    const hue1 = 90 + this.dataPong.paddleLeft.yAsFraction * 120;
+    let hue1 = 90 + this.dataPong.paddleLeft.yAsFraction * 120;
+    if (p1HandsUp) hue1 = 0;
     this.stopColour1.style.stopColor = `hsl(${hue1}deg, 48%, 42%)`;
 
-    const hue2 = 90 + this.dataPong.paddleRight.yAsFraction * 120;
+    let hue2 = 90 + this.dataPong.paddleRight.yAsFraction * 120;
+    if (p2HandsUp) hue2 = 0;
     this.stopColour2.style.stopColor = `hsl(${hue2}deg, 42%, 48%)`;
 
     this.scoreLeft.innerHTML = this.dataPong.score.p1;

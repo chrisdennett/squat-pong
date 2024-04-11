@@ -57,7 +57,16 @@ function loop() {
   const { p1Tracker, p2Tracker } = poseTracker;
   poseTracker.drawPlayers(pose1Canvas, pose2Canvas);
 
-  pong.loop();
+  let p1HandsUp = p1Tracker.leftHandY < p1Tracker.y;
+  let p2HandsUp = p1Tracker.rightHandY < p1Tracker.y;
+
+  if (p1HandsUp || p2HandsUp) {
+    soundMachine.useSawtooth();
+  } else {
+    soundMachine.useSine();
+  }
+
+  pong.loop(p1HandsUp, p2HandsUp);
 
   if (pong.gameMode !== "demo") {
     pong.setPaddleOneY(p1Tracker.y);
@@ -65,13 +74,6 @@ function loop() {
 
   if (pong.gameMode === "twoPlayer") {
     pong.setPaddleTwoY(p2Tracker.y);
-  }
-
-  if (p1Tracker.leftHandY < p1Tracker.y || p1Tracker.rightHandY < p1Tracker.y) {
-    console.log("left hand up");
-    soundMachine.useSawtooth();
-  } else {
-    soundMachine.useSine();
   }
 
   soundMachine.frequency1 = pong.paddleOneY;
