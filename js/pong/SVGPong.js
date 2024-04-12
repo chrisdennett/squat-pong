@@ -434,13 +434,18 @@ class SvgPong extends HTMLElement {
       const barX = this.dataPong.bounds.left + i * barWidth;
       const newBeatBar = new BeatBar(
         this.beatBarsGrp,
+        i,
         barX,
         barY,
         barWidth,
         barHeight
       );
       this.beatBars.push(newBeatBar);
+      newBeatBar.addEventListener("beatBarHit", (e) => {
+        this.dispatchEvent(new CustomEvent(e.type, { detail: e.detail }));
+      });
     }
+
     // <path id="paddleLeftPath" stroke="none" d="M0 0 h5 v20 h-5z" />
   }
 

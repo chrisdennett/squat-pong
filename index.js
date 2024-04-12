@@ -56,17 +56,6 @@ document.addEventListener("keyup", (e) => {
   soundMachine.playNote(parseInt(e.key));
 });
 
-const fpsCounter = document.getElementById("fpsCounter");
-
-let fps = 0;
-let avFps = 0;
-const avCount = 50;
-const valuesToAverage = [];
-let lastFrameTime = performance.now();
-
-const beatBar = document.createElementNS("http://www.w3.org/2000/svg", "path");
-beatBar.setAttribute("fill", "rgba(255,0,0,0.5)");
-
 // game loop
 function loop() {
   calculateFPS();
@@ -108,10 +97,15 @@ pong.addEventListener("paddleStrike", (e) => {
 
   // 0 to 1 into int between 0 and 9 inclusive
   const noteIndex = Math.round(inverse * 9);
-  soundMachine.playNote(noteIndex);
+  // soundMachine.playNote(noteIndex);
 });
 
 pong.addEventListener("wallStrike", (e) => {
   const noteIndex = Math.round(e.detail.offset * 9);
-  soundMachine.playNote(noteIndex);
+  // soundMachine.playNote(noteIndex);
+});
+
+pong.svgPong.addEventListener("beatBarHit", (e) => {
+  // const i = e.target.detail.index;
+  soundMachine.playNote(e.detail.index);
 });
