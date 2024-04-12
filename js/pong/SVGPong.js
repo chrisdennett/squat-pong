@@ -423,7 +423,7 @@ class SvgPong extends HTMLElement {
   }
 
   addBeatBars() {
-    const totalBars = 8;
+    const totalBars = 6;
     let boundsWidth = this.dataPong.bounds.right - this.dataPong.bounds.left;
     boundsWidth -=
       this.dataPong.paddleLeft.width + this.dataPong.paddleRight.width;
