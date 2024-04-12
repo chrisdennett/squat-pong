@@ -1,12 +1,21 @@
 // https://www.youtube.com/watch?v=hgg3ZBLRH58
 
+// this one looks really promising (code: https://jsfiddle.net/dirklo/m30n1w6c/) article below.
+// https://medium.com/geekculture/building-a-modular-synth-with-web-audio-api-and-javascript-d38ccdeca9ea
+
+// Theremin
+//medium.com/jit-team/how-to-create-a-musical-instrument-with-no-notes-using-javascript-ec6a83333aa4
+
+// tone.js squelchy sound
+// https://medium.com/dev-red/tutorial-lets-make-music-with-javascript-and-tone-js-f6ac39d95b8c
+
 export class SoundMachine {
   constructor() {
     this.scale;
     this.mixer;
     this.reverb;
     this.soundObjects = [];
-    this.muted = false;
+    this.muted = true;
     this.osc1;
     // this.osc2;
 
@@ -17,7 +26,7 @@ export class SoundMachine {
     this.frequencyRange = this.frequencyMax - this.frequencyMin;
 
     this.initializeAudio();
-    this.initializeOscillators();
+    // this.initializeOscillators();
   }
 
   playNote(noteIndex) {
@@ -37,6 +46,9 @@ export class SoundMachine {
     // synth.triggerAttackRelease("C2", "8n");
   }
 
+  /**
+   * @param {float} fraction
+   */
   set frequency1(fraction) {
     if (!this.osc1) return;
 
@@ -57,11 +69,13 @@ export class SoundMachine {
   }
 
   useSawtooth() {
+    if (!this.osc1) return;
     this.oscillatorType = "sawtooth";
     this.osc1.type = this.oscillatorType;
   }
 
   useSine() {
+    if (!this.osc1) return;
     this.oscillatorType = "sine";
     this.osc1.type = this.oscillatorType;
   }
