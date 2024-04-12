@@ -1,7 +1,9 @@
 export class BeatBar extends EventTarget {
-  constructor(parentElement, index, x, y, w, h) {
+  constructor(parentElement, index, x, y, w, h, isOnLeft, isOnRight) {
     super();
 
+    this.isOnLeft = isOnLeft;
+    this.isOnRight = isOnRight;
     this.beatBarElement = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "path"
@@ -20,7 +22,11 @@ export class BeatBar extends EventTarget {
   }
 
   checkCollision(ball) {
-    if (ball.x > this.x && ball.x < this.right) {
+    const insideLeftEdge = this.isOnLeft || ball.x + ball.radius >= this.x;
+    const insideRightEdge =
+      this.isOnRight || ball.x + ball.radius <= this.right;
+
+    if (insideLeftEdge && insideRightEdge) {
       this.beatBarElement.style.opacity = 0.1;
 
       if (this.isLastHit === false) {

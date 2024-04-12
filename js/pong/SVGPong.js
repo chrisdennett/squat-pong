@@ -424,26 +424,46 @@ class SvgPong extends HTMLElement {
 
   addBeatBars() {
     const totalBars = 8;
-    const boundsWidth = this.dataPong.bounds.right - this.dataPong.bounds.left;
-    const barWidth = boundsWidth / totalBars;
+    let boundsWidth = this.dataPong.bounds.right - this.dataPong.bounds.left;
+    boundsWidth -=
+      this.dataPong.paddleLeft.width + this.dataPong.paddleRight.width;
+    const fullBarWidth = boundsWidth / (totalBars - 1);
+    const halfBarWidth = fullBarWidth / 2;
     const boundsHeight = this.dataPong.bounds.bottom - this.dataPong.bounds.top;
     const barHeight = boundsHeight;
     const barY = this.dataPong.bounds.top;
 
+    // make first and last bars half width because ball
+    // bouncing both ways over them so will be on them
+    // twice as long.
+
+    let currX = this.dataPong.bounds.left + this.dataPong.paddleLeft.width;
+
     for (let i = 0; i < totalBars; i++) {
-      const barX = this.dataPong.bounds.left + i * barWidth;
+      let barWidth = fullBarWidth;
+      const onLeft = i === 0;
+      const onRight = i === totalBars - 1;
+      if (onLeft || onRight) {
+        barWidth = halfBarWidth;
+      }
+
+      const barX = currX;
       const newBeatBar = new BeatBar(
         this.beatBarsGrp,
         i,
         barX,
         barY,
         barWidth,
-        barHeight
+        barHeight,
+        onLeft,
+        onRight
       );
       this.beatBars.push(newBeatBar);
       newBeatBar.addEventListener("beatBarHit", (e) => {
         this.dispatchEvent(new CustomEvent(e.type, { detail: e.detail }));
       });
+
+      currX += barWidth;
     }
 
     // <path id="paddleLeftPath" stroke="none" d="M0 0 h5 v20 h-5z" />

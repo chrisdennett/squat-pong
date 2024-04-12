@@ -15,7 +15,7 @@ export class SoundMachine {
     this.mixer;
     this.reverb;
     this.soundObjects = [];
-    this.muted = true;
+    this.muted = false;
     this.osc1;
     // this.osc2;
 
@@ -142,11 +142,12 @@ export class SoundMachine {
 
     // let flavour = "egyptian";
     // let flavour = "minor pentatonic";
-    let flavour = "major pentatonic";
-    this.scale = Tonal.Scale.get("C4 major pentatonic").notes;
-    this.scale = this.scale.concat(
-      Tonal.Scale.get("C4 minor pentatonic").notes
-    );
+    // let flavour = "major pentatonic";
+    // this.scale = Tonal.Scale.get("C4 major pentatonic").notes;
+    // this.scale = this.scale.concat(
+    //   Tonal.Scale.get("C4 minor pentatonic").notes
+    // );
+    this.scale = ["C4", "Eb4", "C4", "G4", "Ab4", "G4", "Eb4", "D4"];
     // scale = scale.concat(Tonal.Scale.get("C5 " + flavour).notes);
 
     // optional but fun: shuffle the scale array to mixup the notes
@@ -156,8 +157,8 @@ export class SoundMachine {
 
     // create as many pendulums as we have notes in the scale[] array
     for (let i = 0; i < this.scale.length; i++) {
-      // let synth = new Tone.Synth();
-      let synth = new Tone.MembraneSynth();
+      let synth = new Tone.Synth();
+      // let synth = new Tone.MembraneSynth();
       synth.connect(this.mixer);
 
       this.soundObjects.push({
