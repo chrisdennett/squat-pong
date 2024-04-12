@@ -14,7 +14,7 @@ class Pong extends HTMLElement {
     shadow.append(PongTemplate.content.cloneNode(true));
 
     this.defaultGameSettings = {
-      gameMode: "onePlayer" /*demo, onePlayer, twoPlayer*/,
+      gameMode: "demo" /*demo, onePlayer, twoPlayer*/,
       displayWidth: 350,
       delayAfterPoint: 1000,
       delayRestartAfterWin: 2000,
@@ -24,7 +24,7 @@ class Pong extends HTMLElement {
       palette: {
         surround: "#7d7d7d",
         inlay: "#4d4d4d",
-        screen: "#3584fb",
+        screen: "#0e0e0e",
         paddleLeft: "white",
         paddleRight: "white",
         ball: "white",
@@ -125,9 +125,9 @@ class Pong extends HTMLElement {
     this.svgPong.draw();
   }
 
-  loop(p1HandsUp, p2HandsUp) {
+  loop() {
     this.dataPong.update();
-    this.svgPong.draw(p1HandsUp, p2HandsUp);
+    this.svgPong.draw();
   }
 }
 

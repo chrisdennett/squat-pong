@@ -1,4 +1,4 @@
-const fpsCounter = document.getElementById('fpsCounter');
+const fpsCounter = document.getElementById("fpsCounter");
 
 let fps = 0;
 let avFps = 0;
@@ -7,21 +7,21 @@ const valuesToAverage = [];
 let lastFrameTime = performance.now();
 
 export function calculateFPS() {
-    const currentFrameTime = performance.now();
-    const deltaTime = currentFrameTime - lastFrameTime;
-    lastFrameTime = currentFrameTime;
-  
-    // Calculate FPS
-    fps = Math.round(1000 / deltaTime);
-    valuesToAverage.push(fps);
+  const currentFrameTime = performance.now();
+  const deltaTime = currentFrameTime - lastFrameTime;
+  lastFrameTime = currentFrameTime;
 
-    if(valuesToAverage.length >= avCount){
-        valuesToAverage.shift();
-    }
+  // Calculate FPS
+  fps = Math.round(1000 / deltaTime);
+  valuesToAverage.push(fps);
 
-    const total = valuesToAverage.reduce((tally, curr) => tally + curr);
-    avFps = Math.round(total / valuesToAverage.length);
-  
-    // Display FPS
-    fpsCounter.innerHTML = `av FPS: ${avFps}`;
+  if (valuesToAverage.length >= avCount) {
+    valuesToAverage.shift();
   }
+
+  const total = valuesToAverage.reduce((tally, curr) => tally + curr);
+  avFps = Math.round(total / valuesToAverage.length);
+
+  // Display FPS
+  fpsCounter.innerHTML = `av FPS: ${avFps}`;
+}

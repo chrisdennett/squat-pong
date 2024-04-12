@@ -1,3 +1,5 @@
+import { BeatBar } from "./BeatBar.js";
+
 const template = document.createElement("template");
 template.innerHTML = /*html*/ `
     <style>
@@ -313,6 +315,10 @@ template.innerHTML = /*html*/ `
                 PLAYER X WINS
                 </text>
             </g>
+
+            <g id="noteBumpers"></g>
+            <g id="beatBars"></g>
+            <g id="effectsBumpers"></g>
        
         </g>   
     </svg>
@@ -356,6 +362,12 @@ class SvgPong extends HTMLElement {
 
     this.stopColour1 = shadow.getElementById("stopColour1");
     this.stopColour2 = shadow.getElementById("stopColour2");
+
+    this.noteBumpersGrp = shadow.getElementById("noteBumpers");
+    this.beatBarsGrp = shadow.getElementById("beatBars");
+    this.effectsBumpers = shadow.getElementById("stopColour2");
+
+    this.beatBars = [];
   }
 
   setup(dataPong) {
@@ -402,11 +414,34 @@ class SvgPong extends HTMLElement {
 
     // screen colours
     this.inlay.style.fill = dataPong.palette.inlay;
-    // this.screen.style.fill = dataPong.palette.screen;
+    this.screen.style.fill = dataPong.palette.screen;
     this.surround.style.background = dataPong.palette.surround;
 
     // this.hideGameOverScreen();
     // this.showGameOverScreen();
+    this.addBeatBars();
+  }
+
+  addBeatBars() {
+    const totalBars = 8;
+    const boundsWidth = this.dataPong.bounds.right - this.dataPong.bounds.left;
+    const barWidth = boundsWidth / totalBars;
+    const boundsHeight = this.dataPong.bounds.bottom - this.dataPong.bounds.top;
+    const barHeight = boundsHeight;
+    const barY = this.dataPong.bounds.top;
+
+    for (let i = 0; i < totalBars; i++) {
+      const barX = this.dataPong.bounds.left + i * barWidth;
+      const newBeatBar = new BeatBar(
+        this.beatBarsGrp,
+        barX,
+        barY,
+        barWidth,
+        barHeight
+      );
+      this.beatBars.push(newBeatBar);
+    }
+    // <path id="paddleLeftPath" stroke="none" d="M0 0 h5 v20 h-5z" />
   }
 
   showGameOverScreen() {
@@ -422,7 +457,7 @@ class SvgPong extends HTMLElement {
     this.gameOverContent.style.display = "none";
   }
 
-  draw(p1HandsUp, p2HandsUp) {
+  draw() {
     this.ballElem.style.fill = this.dataPong.ball.colour;
 
     if (this.dataPong.gameState === "gameOver") {
@@ -449,13 +484,17 @@ class SvgPong extends HTMLElement {
       );
     }
 
-    let hue1 = 90 + this.dataPong.paddleLeft.yAsFraction * 120;
-    if (p1HandsUp) hue1 = 0;
-    this.stopColour1.style.stopColor = `hsl(${hue1}deg, 48%, 42%)`;
+    for (let b of this.beatBars) {
+      b.checkCollision(this.dataPong.ball);
+    }
 
-    let hue2 = 90 + this.dataPong.paddleRight.yAsFraction * 120;
-    if (p2HandsUp) hue2 = 0;
-    this.stopColour2.style.stopColor = `hsl(${hue2}deg, 42%, 48%)`;
+    // let hue1 = 90 + this.dataPong.paddleLeft.yAsFraction * 120;
+    // if (p1HandsUp) hue1 = 0;
+    // this.stopColour1.style.stopColor = `hsl(${hue1}deg, 48%, 42%)`;
+
+    // let hue2 = 90 + this.dataPong.paddleRight.yAsFraction * 120;
+    // if (p2HandsUp) hue2 = 0;
+    // this.stopColour2.style.stopColor = `hsl(${hue2}deg, 42%, 48%)`;
 
     this.scoreLeft.innerHTML = this.dataPong.score.p1;
     this.scoreRight.innerHTML = this.dataPong.score.p2;

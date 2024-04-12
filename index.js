@@ -1,6 +1,6 @@
 import { PoseTracker } from "./js/poseTracking/poseTracker.js";
 import { SoundMachine } from "./js/sound/soundMachine.js";
-// import { calculateFPS } from "./js/utils/fps.js";
+import { calculateFPS } from "./js/utils/fps.js";
 
 const pong = document.querySelector("#pong");
 const soundMachine = new SoundMachine();
@@ -8,8 +8,13 @@ const soundMachine = new SoundMachine();
 const poseTracker = new PoseTracker();
 const pose1Canvas = document.getElementById("pose1Canvas");
 const pose2Canvas = document.getElementById("pose2Canvas");
+// const gameCanvas = document.getElementById("gameCanvas");
 // const mainElement = document.getElementsByTagName("main")[0];
 // let hueRotate = 0;
+
+// gameCanvas.width = 480;
+// gameCanvas.height = 360;
+// const gameCtx = gameCanvas.getContext("2d");
 
 document.addEventListener("keyup", (e) => {
   if (e.key === "b") {
@@ -51,22 +56,29 @@ document.addEventListener("keyup", (e) => {
   soundMachine.playNote(parseInt(e.key));
 });
 
+const fpsCounter = document.getElementById("fpsCounter");
+
+let fps = 0;
+let avFps = 0;
+const avCount = 50;
+const valuesToAverage = [];
+let lastFrameTime = performance.now();
+
+const beatBar = document.createElementNS("http://www.w3.org/2000/svg", "path");
+beatBar.setAttribute("fill", "rgba(255,0,0,0.5)");
+
 // game loop
 function loop() {
+  calculateFPS();
+
   poseTracker.detectLandmarks();
   const { p1Tracker, p2Tracker } = poseTracker;
   poseTracker.drawPlayers(pose1Canvas, pose2Canvas);
 
-  let p1HandsUp = p1Tracker.leftHandY < p1Tracker.y;
-  let p2HandsUp = p1Tracker.rightHandY < p1Tracker.y;
+  // let p1HandsUp = p1Tracker.leftHandY < p1Tracker.y;
+  // let p2HandsUp = p1Tracker.rightHandY < p1Tracker.y;
 
-  if (p1HandsUp || p2HandsUp) {
-    soundMachine.useSawtooth();
-  } else {
-    soundMachine.useSine();
-  }
-
-  pong.loop(p1HandsUp, p2HandsUp);
+  pong.loop();
 
   if (pong.gameMode !== "demo") {
     pong.setPaddleOneY(p1Tracker.y);
@@ -76,11 +88,8 @@ function loop() {
     pong.setPaddleTwoY(p2Tracker.y);
   }
 
-  soundMachine.frequency1 = pong.paddleOneY;
-  soundMachine.frequency2 = pong.paddleTwoY;
-
   // Calculate and display FPS
-  // calculateFPS();
+
   // hueRotate += 0.3;
   // mainElement.style.filter = `hue-rotate(${hueRotate}deg)`;
 

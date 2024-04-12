@@ -17,6 +17,8 @@ export class DataPong extends EventTarget {
       palette,
     } = params;
 
+    this.bounds = bounds;
+
     this.params = params;
     this.displayWidth = displayWidth;
     this.palette = palette;

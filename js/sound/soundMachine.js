@@ -141,14 +141,18 @@ export class SoundMachine {
     // names
 
     // let flavour = "egyptian";
-    let flavour = "minor pentatonic";
-    // let flavour = "major pentatonic";
-    this.scale = Tonal.Scale.get("C3 " + flavour).notes;
-    this.scale = this.scale.concat(Tonal.Scale.get("C4 " + flavour).notes);
+    // let flavour = "minor pentatonic";
+    let flavour = "major pentatonic";
+    this.scale = Tonal.Scale.get("C4 major pentatonic").notes;
+    this.scale = this.scale.concat(
+      Tonal.Scale.get("C4 minor pentatonic").notes
+    );
     // scale = scale.concat(Tonal.Scale.get("C5 " + flavour).notes);
 
     // optional but fun: shuffle the scale array to mixup the notes
     // Tonal.Collection.shuffle(scale);
+
+    console.log("this.scale.length: ", this.scale);
 
     // create as many pendulums as we have notes in the scale[] array
     for (let i = 0; i < this.scale.length; i++) {

@@ -8,7 +8,7 @@
     <script src="./libs/tonal.min.js"></script>
     <script src="./libs/Tone.js"></script>
     <!-- <script src="./libs/howler.min.js"></script> -->
-    <script src="js/pong/SVGPong.js"></script>
+    <script type="module" src="js/pong/SVGPong.js"></script>
     <script type="module" src="js/poseTracking/poseTracker.js"></script>
     <script type="module" src="js/pong/Pong.js"></script>
     <script defer src="index.js" type="module"></script>
@@ -19,9 +19,10 @@
       <canvas id="poseTrackerCanvas"></canvas>
     </div>
 
-    <!-- <div id="fpsCounter"></div> -->
+    <div id="fpsCounter"></div>
 
     <main>
+      <!-- <canvas id="gameCanvas"></canvas> -->
       <canvas id="pose1Canvas"></canvas>
       <canvas id="pose2Canvas"></canvas>
       <p-o-n-g id="pong"></p-o-n-g>
