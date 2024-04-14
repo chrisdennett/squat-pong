@@ -26,7 +26,7 @@ document.addEventListener("keyup", (e) => {
   }
 
   if (e.key === "v") {
-    soundMachine.muted = !soundMachine.muted;
+    soundMachine.toggleSound();
   }
 
   // Game settings
@@ -76,8 +76,10 @@ function loop() {
   if (pong.gameMode === "twoPlayer") {
     pong.setPaddleTwoY(p2Tracker.y);
   }
-
   // Calculate and display FPS
+
+  soundMachine.frequency1 = pong.paddleOneY;
+  soundMachine.frequency2 = pong.paddleTwoY;
 
   // hueRotate += 0.3;
   // mainElement.style.filter = `hue-rotate(${hueRotate}deg)`;

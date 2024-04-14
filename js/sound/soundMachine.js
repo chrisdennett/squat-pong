@@ -25,11 +25,77 @@ export class SoundMachine {
     this.frequencyMax = 300;
     this.frequencyRange = this.frequencyMax - this.frequencyMin;
 
-    this.initializeAudio();
-    // this.initializeOscillators();
+    const noteNames = ["C4", "Eb4", "G4", "Ab4", "G4", "Eb4", "D4"];
+    //Note.freq
+    this.notes = noteNames.map((n) => {
+      return { name: n, freq: Tonal.Note.freq(n) };
+    });
+    this.noteObjects = [];
+    this.maxNoteObjects = this.notes.length * 2;
+    this.currNoteObjIndex = 0;
+
+    // this.initializeAudio();
+    this.initializeOscillators();
+  }
+
+  toggleSound() {
+    this.muted ? this.play() : this.pause();
+  }
+
+  pause() {
+    this.osc1.stop();
+    this.osc2.stop();
+    this.muted = true;
+  }
+
+  play() {
+    this.osc1.start();
+    this.osc2.start();
+    this.muted = false;
   }
 
   playNote(noteIndex) {
+    if (this.muted) return;
+
+    if (isNaN(noteIndex) || noteIndex >= this.notes.length) return;
+
+    // reuse to prevent too many being created
+    let noteObj = this.noteObjects[this.currNoteObjIndex];
+    if (!noteObj) {
+      noteObj = {};
+    }
+    this.noteObjects[this.currNoteObjIndex] = noteObj;
+
+    // clean up
+    if (noteObj.env) {
+      noteObj.env.disconnect();
+      noteObj.env.dispose();
+    }
+    if (noteObj.osc) {
+      noteObj.osc.disconnect();
+      noteObj.osc.dispose();
+    }
+
+    // Create new sound
+    noteObj.env = new Tone.AmplitudeEnvelope({
+      attack: 0.3,
+      decay: 0.3,
+      sustain: 0.8,
+      release: 0.8,
+    }).toDestination();
+    noteObj.osc = new Tone.Oscillator(this.notes[noteIndex].freq, "sine");
+    noteObj.osc.connect(noteObj.env);
+    noteObj.osc.start();
+    noteObj.env.triggerAttackRelease("8t");
+
+    // deal with current object to reuse
+    this.currNoteObjIndex++;
+    if (this.currNoteObjIndex >= this.maxNoteObjects) {
+      this.currNoteObjIndex = 0;
+    }
+  }
+
+  playNoteOLD(noteIndex) {
     if (this.muted) return;
 
     if (isNaN(noteIndex) || noteIndex >= this.soundObjects.length) return;
@@ -85,15 +151,15 @@ export class SoundMachine {
     this.osc1.type = this.oscillatorType; // sine, triangle, square or sawtooth
     this.osc1.frequency.value = 220; // hz
     this.osc1.volume.value = -15;
-    this.osc1.start();
+    // this.osc1.start();
     this.osc1.toDestination(); // connect the oscillator to the audio output
 
-    // this.osc2 = new Tone.Oscillator();
-    // this.osc2.type = "sine"; // triangle, square or sawtooth
-    // this.osc2.frequency.value = 220; // hz
-    // this.osc2.volume.value = -15;
+    this.osc2 = new Tone.Oscillator();
+    this.osc2.type = "sine"; // triangle, square or sawtooth
+    this.osc2.frequency.value = 220; // hz
+    this.osc2.volume.value = -15;
     // this.osc2.start();
-    // this.osc2.toDestination(); // connect the oscillator to the audio output
+    this.osc2.toDestination(); // connect the oscillator to the audio output
 
     // let lfo = new Tone.LFO(0.1, 200, 240);
     // lfo.connect(osc2.frequency);
@@ -152,8 +218,6 @@ export class SoundMachine {
 
     // optional but fun: shuffle the scale array to mixup the notes
     // Tonal.Collection.shuffle(scale);
-
-    console.log("this.scale.length: ", this.scale);
 
     // create as many pendulums as we have notes in the scale[] array
     for (let i = 0; i < this.scale.length; i++) {
