@@ -17,6 +17,12 @@ const pose2Canvas = document.getElementById("pose2Canvas");
 // const gameCtx = gameCanvas.getContext("2d");
 
 document.addEventListener("keyup", (e) => {
+  const asNum = parseInt(e.key);
+
+  if (!isNaN(asNum)) {
+    soundMachine.onNumPress(asNum);
+  }
+
   if (e.key === "b") {
     if ((playerTracker.style.opacity = 0)) {
       playerTracker.style.opacity = 1;
@@ -85,6 +91,7 @@ function loop() {
   // mainElement.style.filter = `hue-rotate(${hueRotate}deg)`;
 
   window.requestAnimationFrame(loop);
+  // setTimeout(loop, 16.7);
 }
 
 // kick off

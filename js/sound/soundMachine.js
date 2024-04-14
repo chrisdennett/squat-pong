@@ -15,11 +15,12 @@ export class SoundMachine {
     this.mixer;
     this.reverb;
     this.soundObjects = [];
-    this.muted = false;
+    this.muted = true;
     this.osc1;
     // this.osc2;
 
-    this.oscillatorType = "sine"; // sine, triangle, square or sawtooth
+    this.oscillatorOptions = ["sine", "triangle", "square", "sawtooth"];
+    this.oscillatorType = this.oscillatorOptions[0];
 
     this.frequencyMin = 100;
     this.frequencyMax = 300;
@@ -36,6 +37,17 @@ export class SoundMachine {
 
     // this.initializeAudio();
     this.initializeOscillators();
+  }
+
+  onNumPress(num) {
+    if (num === 1) {
+      const currIndex = this.oscillatorOptions.findIndex(
+        (o) => o === this.oscillatorType
+      );
+      const nextIndex =
+        currIndex === this.oscillatorOptions.length - 1 ? 0 : currIndex + 1;
+      this.oscillatorType = this.oscillatorOptions[nextIndex];
+    }
   }
 
   toggleSound() {
@@ -83,7 +95,10 @@ export class SoundMachine {
       sustain: 0.8,
       release: 0.8,
     }).toDestination();
-    noteObj.osc = new Tone.Oscillator(this.notes[noteIndex].freq, "sine");
+    noteObj.osc = new Tone.Oscillator(
+      this.notes[noteIndex].freq,
+      this.oscillatorType
+    );
     noteObj.osc.connect(noteObj.env);
     noteObj.osc.start();
     noteObj.env.triggerAttackRelease("8t");
@@ -136,14 +151,14 @@ export class SoundMachine {
 
   useSawtooth() {
     if (!this.osc1) return;
-    this.oscillatorType = "sawtooth";
-    this.osc1.type = this.oscillatorType;
+    // this.oscillatorType = "sawtooth";
+    // this.osc1.type = this.oscillatorType;
   }
 
   useSine() {
     if (!this.osc1) return;
-    this.oscillatorType = "sine";
-    this.osc1.type = this.oscillatorType;
+    // this.oscillatorType = "sine";
+    // this.osc1.type = this.oscillatorType;
   }
 
   initializeOscillators() {

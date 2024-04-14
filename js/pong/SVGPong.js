@@ -449,8 +449,8 @@ class SvgPong extends HTMLElement {
 
       /*
             The is my lovely new keyboard.  Isn't it lush!!!!!!!The is my new keyboard. Do you like it?  Isn't it lush!!!!
-            
-        
+            ~#~Zz¬`¬[]{}~~~~~####£$~~~~~~~~~!!!!111``¬¬¬¬
+        #########~~~~
         */
 
       const barX = currX;
