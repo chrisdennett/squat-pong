@@ -25,7 +25,7 @@ export class SoundMachine {
     this.frequencyMax = 300;
     this.frequencyRange = this.frequencyMax - this.frequencyMin;
 
-    const noteNames = ["C4", "Eb4", "G4", "Ab4", "G4", "Eb4", "D4"];
+    const noteNames = ["C4", "Eb4", "C4", "G4", "Ab4", "G4", "Eb4", "D4"];
     //Note.freq
     this.notes = noteNames.map((n) => {
       return { name: n, freq: Tonal.Note.freq(n) };

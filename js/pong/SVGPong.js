@@ -423,7 +423,7 @@ class SvgPong extends HTMLElement {
   }
 
   addBeatBars() {
-    const totalBars = 6;
+    const totalBars = 8;
     let boundsWidth = this.dataPong.bounds.right - this.dataPong.bounds.left;
     boundsWidth -=
       this.dataPong.paddleLeft.width + this.dataPong.paddleRight.width;
@@ -446,6 +446,12 @@ class SvgPong extends HTMLElement {
       if (onLeft || onRight) {
         barWidth = halfBarWidth;
       }
+
+      /*
+            The is my lovely new keyboard.  Isn't it lush!!!!!!!The is my new keyboard. Do you like it?  Isn't it lush!!!!
+            
+        
+        */
 
       const barX = currX;
       const newBeatBar = new BeatBar(
