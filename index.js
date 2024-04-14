@@ -59,7 +59,7 @@ document.addEventListener("keyup", (e) => {
   }
 
   // sound testing
-  soundMachine.playNote(parseInt(e.key));
+  // soundMachine.playNote(parseInt(e.key));
 });
 
 // game loop
