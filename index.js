@@ -95,7 +95,7 @@ function loop() {
 }
 
 // kick off
-pong.setup();
+pong.setup({}, soundMachine.notes.length);
 pong.start();
 loop();
 

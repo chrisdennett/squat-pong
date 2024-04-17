@@ -370,9 +370,10 @@ class SvgPong extends HTMLElement {
     this.beatBars = [];
   }
 
-  setup(dataPong) {
+  setup(dataPong, totalNotes) {
     this.dataPong = dataPong;
     this.bounds = dataPong.bounds;
+    this.totalBars = totalNotes;
 
     // outer size
     this.svg.setAttribute("width", `${dataPong.displayWidth}px`);
@@ -423,11 +424,10 @@ class SvgPong extends HTMLElement {
   }
 
   addBeatBars() {
-    const totalBars = 8;
     let boundsWidth = this.dataPong.bounds.right - this.dataPong.bounds.left;
     boundsWidth -=
       this.dataPong.paddleLeft.width + this.dataPong.paddleRight.width;
-    const fullBarWidth = boundsWidth / (totalBars - 1);
+    const fullBarWidth = boundsWidth / (this.totalBars - 1);
     const halfBarWidth = fullBarWidth / 2;
     const boundsHeight = this.dataPong.bounds.bottom - this.dataPong.bounds.top;
     const barHeight = boundsHeight;
@@ -439,10 +439,10 @@ class SvgPong extends HTMLElement {
 
     let currX = this.dataPong.bounds.left + this.dataPong.paddleLeft.width;
 
-    for (let i = 0; i < totalBars; i++) {
+    for (let i = 0; i < this.totalBars; i++) {
       let barWidth = fullBarWidth;
       const onLeft = i === 0;
-      const onRight = i === totalBars - 1;
+      const onRight = i === this.totalBars - 1;
       if (onLeft || onRight) {
         barWidth = halfBarWidth;
       }

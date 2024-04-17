@@ -23,45 +23,41 @@ export class SoundMachine {
     this.frequencyMax = 400;
     this.frequencyRange = this.frequencyMax - this.frequencyMin;
 
+    this.octave = "3";
+
     this.noteOptions = [
-      "C4",
-      "Db4",
-      "D4",
-      "Eb4",
-      "E4",
-      "F4",
-      "Gb4",
-      "G4",
-      "Ab4",
-      "A4",
-      "Bb4",
-      "B4",
-      "C5",
+      "C",
+      "G",
+      "D",
+      "A",
+      "E",
+      "B",
+      "Gb",
+      "Db",
+      "Ab",
+      "Eb",
+      "Bb",
+      "F",
     ];
-    const noteNames = [
-      this.noteOptions[0],
-      this.noteOptions[3],
-      this.noteOptions[0],
-      this.noteOptions[7],
-      this.noteOptions[8],
-      this.noteOptions[7],
-      this.noteOptions[3],
-      this.noteOptions[2],
-    ];
+    const noteNames = ["C", "G", "D", "A", "E", "B", "Gb", "Db", "Ab"];
+    // const noteNames = ["A", "E", "B", "Gb", "Db", "Ab"];
     //Note.freq
     this.notes = noteNames.map((n) => {
-      return { name: n, freq: Tonal.Note.freq(n) };
+      return { name: n, freq: Tonal.Note.freq(n + this.octave) };
     });
     this.noteObjects = [];
     this.maxNoteObjects = this.notes.length * 2;
     this.currNoteObjIndex = 0;
 
     this.oscillatorOptions = ["sine", "triangle", "square", "sawtooth"];
-    this.oscillatorType = this.oscillatorOptions[0];
+    this.octaveOptions = [2, 3, 4, 5, 6];
+    this.oscillatorType = this.oscillatorOptions[3];
     this.attack = 0.3;
-    this.decay = 0.3;
-    this.sustain = 0.8;
-    this.release = 0.6;
+    this.decay = 0.9;
+    this.sustain = 0.9;
+    this.release = 0.8;
+
+    this.useRandomOscillator = false;
 
     // noteObj.env = new Tone.AmplitudeEnvelope({
     //   attack: 0.3,
@@ -86,27 +82,47 @@ export class SoundMachine {
 
     if (num === 2) {
       // randomise attack
-      // this.attack = Math.random();
-      // this.decay = Math.random();
-      // this.sustain = Math.random();
-      // this.release = Math.random();
-      // console.log("this.attack: ", this.attack);
-      // console.log(" this.sustain: ", this.sustain);
-      // console.log("this.release: ", this.release);
+      this.attack = Math.random();
+      this.decay = Math.random();
+      this.sustain = Math.random();
+      this.release = Math.random();
+      console.log("this.attack: ", this.attack);
+      console.log(" this.sustain: ", this.sustain);
+      console.log("this.release: ", this.release);
     }
 
     if (num === 3) {
       this.randomiseNotes();
+    }
+
+    if (num === 4) {
+      // toggle
+      this.useRandomOscillator = !this.useRandomOscillator;
+      console.log("this.useRandomOscillator: ", this.useRandomOscillator);
     }
   }
 
   randomiseNotes() {
     const total = this.notes.length;
     for (let i = 0; i < total; i++) {
-      const randInt = this.getRandInt(0, total);
-      console.log("randInt: ", randInt);
       const noteName = this.noteOptions[this.getRandInt(0, total - 1)];
-      this.notes[i] = { n: noteName, freq: Tonal.Note.freq(noteName) };
+      const randOct =
+        this.octaveOptions[
+          (0, this.getRandInt(0, this.octaveOptions.length - 1))
+        ];
+
+      let ocs =
+        this.oscillatorOptions[
+          this.getRandInt(0, this.oscillatorOptions.length - 1)
+        ];
+
+      console.log("ocs: ", ocs);
+
+      this.notes[i] = {
+        n: noteName,
+        freq: Tonal.Note.freq(noteName + randOct),
+        ocs,
+      };
     }
   }
 
@@ -124,14 +140,14 @@ export class SoundMachine {
   }
 
   pause() {
-    this.osc1.stop();
-    this.osc2.stop();
+    // this.osc1.stop();
+    // this.osc2.stop();
     this.muted = true;
   }
 
   play() {
-    this.osc1.start();
-    this.osc2.start();
+    // this.osc1.start();
+    // this.osc2.start();
     this.muted = false;
   }
 
@@ -164,10 +180,13 @@ export class SoundMachine {
       sustain: this.sustain,
       release: this.release,
     }).toDestination();
-    noteObj.osc = new Tone.Oscillator(
-      this.notes[noteIndex].freq,
-      this.oscillatorType
-    );
+
+    const oscType = this.useRandomOscillator
+      ? this.notes[noteIndex].osc
+      : this.oscillatorType;
+
+    noteObj.osc = new Tone.Oscillator(this.notes[noteIndex].freq, oscType);
+
     noteObj.osc.connect(noteObj.env);
     noteObj.osc.start();
     noteObj.env.triggerAttackRelease("8t");
