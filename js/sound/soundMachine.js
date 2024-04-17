@@ -51,11 +51,12 @@ export class SoundMachine {
 
     this.oscillatorOptions = ["sine", "triangle", "square", "sawtooth"];
     this.octaveOptions = [2, 3, 4, 5, 6];
-    this.oscillatorType = this.oscillatorOptions[3];
+    this.oscillatorType = this.oscillatorOptions[0];
     this.attack = 0.3;
     this.decay = 0.9;
     this.sustain = 0.9;
     this.release = 0.8;
+    this.noteLength = 0.1;
 
     this.useRandomOscillator = false;
 
@@ -82,13 +83,15 @@ export class SoundMachine {
 
     if (num === 2) {
       // randomise attack
-      this.attack = Math.random();
-      this.decay = Math.random();
-      this.sustain = Math.random();
-      this.release = Math.random();
-      console.log("this.attack: ", this.attack);
-      console.log(" this.sustain: ", this.sustain);
-      console.log("this.release: ", this.release);
+      // this.attack = Math.random();
+      // this.decay = Math.random();
+      // this.sustain = Math.random();
+      // this.release = Math.random();
+      // console.log("this.attack: ", this.attack);
+      // console.log(" this.sustain: ", this.sustain);
+      // console.log("this.release: ", this.release);
+      this.noteLength = Math.random() * 0.4 + 0.2;
+      console.log("this.noteLength: ", this.noteLength);
     }
 
     if (num === 3) {
@@ -98,7 +101,6 @@ export class SoundMachine {
     if (num === 4) {
       // toggle
       this.useRandomOscillator = !this.useRandomOscillator;
-      console.log("this.useRandomOscillator: ", this.useRandomOscillator);
     }
   }
 
@@ -115,8 +117,6 @@ export class SoundMachine {
         this.oscillatorOptions[
           this.getRandInt(0, this.oscillatorOptions.length - 1)
         ];
-
-      console.log("ocs: ", ocs);
 
       this.notes[i] = {
         n: noteName,
@@ -189,7 +189,7 @@ export class SoundMachine {
 
     noteObj.osc.connect(noteObj.env);
     noteObj.osc.start();
-    noteObj.env.triggerAttackRelease("8t");
+    noteObj.env.triggerAttackRelease(this.noteLength);
 
     // deal with current object to reuse
     this.currNoteObjIndex++;
