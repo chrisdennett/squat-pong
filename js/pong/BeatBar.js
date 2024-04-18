@@ -13,7 +13,7 @@ export class BeatBar extends EventTarget {
       "path"
     );
 
-    const markerWidth = 1;
+    const markerWidth = w; //1;
     this.beatBarElement.setAttribute("fill", "yellow");
     this.beatBarElement.setAttribute(
       "d",
@@ -31,7 +31,7 @@ export class BeatBar extends EventTarget {
     this.beatBarText.setAttribute("fill", "yellow");
     this.beatBarText.setAttribute("text-anchor", "middle");
     this.beatBarText.style.opacity = 0.2;
-    this.beatBarText.innerHTML = note.name + note.octave;
+    this.beatBarText.innerHTML = note.name;
 
     this.x = x;
     this.y = y;
@@ -51,7 +51,7 @@ export class BeatBar extends EventTarget {
     this.checkCollision(ball);
     if (notes) {
       const note = notes[this.index];
-      this.beatBarText.innerHTML = note.name + note.octave;
+      this.beatBarText.innerHTML = note.name;
     }
   }
 
@@ -61,9 +61,9 @@ export class BeatBar extends EventTarget {
       this.isOnRight || ball.x + ball.radius <= this.right;
 
     if (insideLeftEdge && insideRightEdge) {
-      this.beatBarElement.style.opacity = 0;
+      // this.beatBarElement.style.opacity = 0;
       if (this.isLastHit === false) {
-        this.beatBarGroup.style.transform = `translate(${ball.x}px, ${this.y}px)`;
+        // this.beatBarGroup.style.transform = `translate(${ball.x}px, ${this.y}px)`;
         this.beatBarElement.style.opacity = 0.2;
 
         this.beatBarText.style.opacity = 1;

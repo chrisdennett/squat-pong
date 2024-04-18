@@ -27,7 +27,7 @@ export class SoundMachine {
       "Bb",
       "F",
     ];
-    const noteNames = this.noteOptions;
+    const noteNames = ["c3", "c4", "c5", "c4", "c3"];
     this.notes = noteNames.map((n) =>
       this.getNoteObject(n, this.octave, this.oscillatorType)
     );
@@ -48,7 +48,7 @@ export class SoundMachine {
   }
 
   getNoteObject(name, octave, oscillator) {
-    const freq = Tonal.Note.freq(name + octave);
+    const freq = Tonal.Note.freq(name);
     return { name, octave, freq, oscillator };
   }
 
