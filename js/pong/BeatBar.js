@@ -15,6 +15,10 @@ export class BeatBar extends EventTarget {
 
     const markerWidth = w; //1;
     this.beatBarElement.setAttribute("fill", "yellow");
+    // this.beatBarElement.setAttribute("cx", w / 2);
+    // this.beatBarElement.setAttribute("cy", w / 2);
+    // this.beatBarElement.setAttribute("r", w / 2);
+
     this.beatBarElement.setAttribute(
       "d",
       `M${0} ${0} h${markerWidth} v${h} h-${markerWidth}z`
@@ -72,8 +76,9 @@ export class BeatBar extends EventTarget {
       if (this.isLastHit === false) {
         // this.beatBarGroup.style.transform = `translate(${ball.x}px, ${this.y}px)`;
         this.beatBarElement.style.opacity = 0.2;
+        // this.beatBarText.style.opacity = 1;
 
-        this.beatBarText.style.opacity = 1;
+        this.beatBarText.style.opacity = 0.5;
         this.isLastHit = true;
         this.dispatchEvent(
           new CustomEvent("beatBarHit", {
@@ -83,7 +88,7 @@ export class BeatBar extends EventTarget {
         );
       }
     } else {
-      this.beatBarText.style.opacity = 0.5;
+      this.beatBarText.style.opacity = 0.1;
       this.beatBarElement.style.opacity = 0;
       this.isLastHit = false;
     }
