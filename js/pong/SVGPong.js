@@ -530,7 +530,7 @@ class SvgPong extends HTMLElement {
     }
 
     for (let b of this.beatBars) {
-      b.update(this.dataPong.ball, notes);
+      b.update(this.dataPong.ball);
     }
 
     // let hue1 = 90 + this.dataPong.paddleLeft.yAsFraction * 120;

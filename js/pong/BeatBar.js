@@ -48,12 +48,11 @@ export class BeatBar extends EventTarget {
     parentElement.appendChild(this.beatBarText);
   }
 
-  update(ball, notes) {
+  update(ball) {
     this.checkCollision(ball);
-    // if (notes) {
-    //   const note = notes[this.index];
-    //   this.beatBarText.innerHTML = note.name;
-    // }
+    if (this.note) {
+      this.beatBarText.innerHTML = this.note.name;
+    }
   }
 
   checkCollision(ball) {

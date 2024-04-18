@@ -91,6 +91,7 @@ pong.addEventListener("paddleStrike", (e) => {
 pong.addEventListener("wallStrike", (e) => {
   // const noteIndex = Math.round(e.detail.offset * 9);
   // soundMachine.playNote(noteIndex);
+  soundMachine.updateNotes();
   // soundMachine.randomiseNotes();
 });
 

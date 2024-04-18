@@ -46,21 +46,32 @@ export class SoundMachine {
 
     this.totalNotes = this.octaveOptions * this.noteOptions;
 
-    this.notes = this.noteInfoList[0];
     this.noteObjects = [];
     this.maxNoteObjects = this.totalNotes * 2;
     this.currNoteObjIndex = 0;
 
-    this.oscillatorOptions = ["sine", "sine", "triangle", "square"];
+    this.oscillatorOptions = ["sine", "sine", "triangle"];
     this.oscillatorType = this.oscillatorOptions[1];
     this.attack = 0.3;
-    this.decay = 0.9;
+    this.decay = 0.2;
     this.sustain = 0.9;
     this.release = 0.8;
-    this.noteLength = 0.1;
+    this.noteLength = 0.06;
   }
 
-  // getNoteBasedOn
+  updateNotes() {
+    for (let row of this.noteInfoList) {
+      for (let n of row) {
+        const note = getRandomArrayItem(this.noteOptions);
+        const name = note + n.octave;
+        const freq = Tonal.Note.freq(name);
+
+        n.note = note;
+        n.name = name;
+        n.freq = freq;
+      }
+    }
+  }
 
   getNoteObject(note, octave) {
     const name = note + octave;
