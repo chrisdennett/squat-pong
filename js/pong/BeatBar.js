@@ -1,7 +1,7 @@
 export class BeatBar extends EventTarget {
   constructor({ parentElement, index, x, y, w, h, isOnLeft, isOnRight, note }) {
     super();
-
+    this.note = note;
     this.isOnLeft = isOnLeft;
     this.isOnRight = isOnRight;
     this.beatBarGroup = document.createElementNS(
@@ -26,7 +26,7 @@ export class BeatBar extends EventTarget {
       "text"
     );
     this.beatBarText.setAttribute("x", x + w / 2);
-    this.beatBarText.setAttribute("y", y - 5);
+    this.beatBarText.setAttribute("y", y + h / 2);
     this.beatBarText.setAttribute("font-size", 4);
     this.beatBarText.setAttribute("fill", "yellow");
     this.beatBarText.setAttribute("text-anchor", "middle");
@@ -36,6 +36,7 @@ export class BeatBar extends EventTarget {
     this.x = x;
     this.y = y;
     this.width = w;
+    this.height = h;
     this.right = x + w;
     this.index = index;
     this.isLastHit = false;
@@ -49,18 +50,25 @@ export class BeatBar extends EventTarget {
 
   update(ball, notes) {
     this.checkCollision(ball);
-    if (notes) {
-      const note = notes[this.index];
-      this.beatBarText.innerHTML = note.name;
-    }
+    // if (notes) {
+    //   const note = notes[this.index];
+    //   this.beatBarText.innerHTML = note.name;
+    // }
   }
 
   checkCollision(ball) {
     const insideLeftEdge = this.isOnLeft || ball.x + ball.radius >= this.x;
     const insideRightEdge =
       this.isOnRight || ball.x + ball.radius <= this.right;
+    const insideTopEdge = ball.y + ball.radius >= this.y;
+    const insideBottomEdge = ball.y + ball.radius <= this.y + this.height;
 
-    if (insideLeftEdge && insideRightEdge) {
+    if (
+      insideLeftEdge &&
+      insideRightEdge &&
+      insideTopEdge &&
+      insideBottomEdge
+    ) {
       // this.beatBarElement.style.opacity = 0;
       if (this.isLastHit === false) {
         // this.beatBarGroup.style.transform = `translate(${ball.x}px, ${this.y}px)`;
@@ -71,7 +79,7 @@ export class BeatBar extends EventTarget {
         this.dispatchEvent(
           new CustomEvent("beatBarHit", {
             bubbles: true,
-            detail: { index: this.index },
+            detail: { note: this.note },
           })
         );
       }

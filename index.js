@@ -96,5 +96,5 @@ pong.addEventListener("wallStrike", (e) => {
 
 pong.svgPong.addEventListener("beatBarHit", (e) => {
   // const i = e.target.detail.index;
-  soundMachine.playNote(e.detail.index);
+  soundMachine.playNote(e.detail.note);
 });

@@ -136,7 +136,6 @@ export class DataPong extends EventTarget {
     this.gameState = isWinner ? "gameOver" : "playing";
 
     // if winner show
-
     return isWinner;
   }
 
