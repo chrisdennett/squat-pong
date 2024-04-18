@@ -18,6 +18,8 @@ export class PoseTracker {
     this.videoRunning = false;
     this.logged = false;
     this.segmentationMasks = [];
+    this.pose1Canvas = document.getElementById("pose1Canvas");
+    this.pose2Canvas = document.getElementById("pose2Canvas");
 
     // Before we can use PoseLandmarker class we must wait for it to finish
     // loading. Machine Learning models can be large and take a moment to
@@ -30,20 +32,32 @@ export class PoseTracker {
     this.landmarks = [];
     this.p1Tracker = new PlayerTracker();
     this.p2Tracker = new PlayerTracker();
+
+    this.loop();
   }
 
-  drawPlayers(canvas1, canvas2) {
+  loop(timeStamp) {
+    this.detectLandmarks(timeStamp);
+    this.drawPlayers();
+
+    window.requestAnimationFrame(this.loop.bind(this));
+  }
+
+  drawPlayers() {
     if (this.width > 0) {
       const w = this.width / 2;
       const h = this.height;
 
       this.canvas.width = this.width;
-      canvas1.width = canvas2.width = w;
-      canvas1.height = canvas2.height = this.canvas.height = h;
+      this.pose1Canvas.width = this.pose2Canvas.width = w;
+      this.pose1Canvas.height =
+        this.pose2Canvas.height =
+        this.canvas.height =
+          h;
 
       this.drawLandmarks();
-      const ctx1 = canvas1.getContext("2d");
-      const ctx2 = canvas2.getContext("2d");
+      const ctx1 = this.pose1Canvas.getContext("2d");
+      const ctx2 = this.pose2Canvas.getContext("2d");
 
       ctx1.drawImage(this.video, w, 0, w, h, 0, 0, w, h);
       ctx1.drawImage(this.canvas, w, 0, w, h, 0, 0, w, h);
@@ -51,8 +65,18 @@ export class PoseTracker {
       ctx2.drawImage(this.video, 0, 0, w, h, 0, 0, w, h);
       ctx2.drawImage(this.canvas, 0, 0, w, h, 0, 0, w, h);
 
-      this.p1Tracker.drawMinMax(ctx1, canvas1.width, canvas1.height, false);
-      this.p2Tracker.drawMinMax(ctx2, canvas2.width, canvas2.height, true);
+      this.p1Tracker.drawMinMax(
+        ctx1,
+        this.pose1Canvas.width,
+        this.pose1Canvas.height,
+        false
+      );
+      this.p2Tracker.drawMinMax(
+        ctx2,
+        this.pose2Canvas.width,
+        this.pose2Canvas.height,
+        true
+      );
     }
   }
 
@@ -105,14 +129,12 @@ export class PoseTracker {
       });
   }
 
-  detectLandmarks() {
+  detectLandmarks(timeStamp) {
     if (!this.poseLandmarker || !this.videoRunning) return;
-
-    let startTimeMs = performance.now();
 
     if (this.lastVideoTime !== this.video.currentTime) {
       this.lastVideoTime = this.video.currentTime;
-      this.poseLandmarker.detectForVideo(this.video, startTimeMs, (result) => {
+      this.poseLandmarker.detectForVideo(this.video, timeStamp, (result) => {
         this.landmarks = result.landmarks;
 
         // if (!this.logged && result.segmentationMasks.length > 0) {

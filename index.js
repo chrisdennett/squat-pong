@@ -6,15 +6,6 @@ const pong = document.querySelector("#pong");
 const soundMachine = new SoundMachine();
 
 const poseTracker = new PoseTracker();
-const pose1Canvas = document.getElementById("pose1Canvas");
-const pose2Canvas = document.getElementById("pose2Canvas");
-// const gameCanvas = document.getElementById("gameCanvas");
-// const mainElement = document.getElementsByTagName("main")[0];
-// let hueRotate = 0;
-
-// gameCanvas.width = 480;
-// gameCanvas.height = 360;
-// const gameCtx = gameCanvas.getContext("2d");
 
 document.addEventListener("keyup", (e) => {
   const asNum = parseInt(e.key);
@@ -66,10 +57,7 @@ document.addEventListener("keyup", (e) => {
 function loop(timeStamp) {
   calculateFPS(timeStamp);
 
-  poseTracker.detectLandmarks();
-  const { p1Tracker, p2Tracker } = poseTracker;
-  poseTracker.drawPlayers(pose1Canvas, pose2Canvas);
-
+  // const { p1Tracker, p2Tracker } = poseTracker;
   // let p1HandsUp = p1Tracker.leftHandY < p1Tracker.y;
   // let p2HandsUp = p1Tracker.rightHandY < p1Tracker.y;
 
@@ -82,10 +70,9 @@ function loop(timeStamp) {
   if (pong.gameMode === "twoPlayer") {
     pong.setPaddleTwoY(p2Tracker.y);
   }
-  // Calculate and display FPS
 
-  soundMachine.frequency1 = pong.paddleOneY;
-  soundMachine.frequency2 = pong.paddleTwoY;
+  // soundMachine.frequency1 = pong.paddleOneY;
+  // soundMachine.frequency2 = pong.paddleTwoY;
 
   // hueRotate += 0.3;
   // mainElement.style.filter = `hue-rotate(${hueRotate}deg)`;
