@@ -82,11 +82,10 @@ loop();
 // listeners
 pong.addEventListener("paddleStrike", (e) => {
   // 0 to 1 into int between 0 and 9 inclusive
-  // const fraction = (e.detail.offsetAsFraction + 1) / 2;
+  const fraction = (e.detail.offsetAsFraction + 1) / 2;
   // const inverse = 1 - fraction;
-  // const noteIndex = Math.round(inverse * 9);
-  // soundMachine.playNote(noteIndex);
-  // soundMachine.setRandomOscillator();
+  const fractionFromCenter = Math.abs(e.detail.offsetAsFraction);
+  soundMachine.setOscillatorFromFraction(fractionFromCenter);
 });
 
 pong.addEventListener("wallStrike", (e) => {

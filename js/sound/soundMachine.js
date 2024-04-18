@@ -28,6 +28,7 @@ export class SoundMachine {
       "F",
     ];
     const noteNames = ["c3", "c4", "c5", "c4", "c3"];
+
     this.notes = noteNames.map((n) =>
       this.getNoteObject(n, this.octave, this.oscillatorType)
     );
@@ -50,6 +51,20 @@ export class SoundMachine {
   getNoteObject(name, octave, oscillator) {
     const freq = Tonal.Note.freq(name);
     return { name, octave, freq, oscillator };
+  }
+
+  setOscillatorFromFraction(fraction) {
+    /**
+    if 0 or 1 - sawtooth
+    if 0.5 - sine
+     */
+
+    const index = Math.round(fraction * (this.oscillatorOptions.length - 1));
+    this.oscillatorType = this.oscillatorOptions[index];
+
+    if (!this.oscillatorType) {
+      console.log("index: ", index);
+    }
   }
 
   setRandomOscillator() {
