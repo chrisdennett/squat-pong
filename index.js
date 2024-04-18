@@ -71,14 +71,7 @@ function loop(timeStamp) {
     pong.setPaddleTwoY(p2Tracker.y);
   }
 
-  // soundMachine.frequency1 = pong.paddleOneY;
-  // soundMachine.frequency2 = pong.paddleTwoY;
-
-  // hueRotate += 0.3;
-  // mainElement.style.filter = `hue-rotate(${hueRotate}deg)`;
-
   window.requestAnimationFrame(loop);
-  // setTimeout(loop, 16.7);
 }
 
 // kick off
@@ -93,13 +86,13 @@ pong.addEventListener("paddleStrike", (e) => {
   // const inverse = 1 - fraction;
   // const noteIndex = Math.round(inverse * 9);
   // soundMachine.playNote(noteIndex);
-  soundMachine.setRandomOscillator();
+  // soundMachine.setRandomOscillator();
 });
 
 pong.addEventListener("wallStrike", (e) => {
   // const noteIndex = Math.round(e.detail.offset * 9);
   // soundMachine.playNote(noteIndex);
-  soundMachine.randomiseNotes();
+  // soundMachine.randomiseNotes();
 });
 
 pong.svgPong.addEventListener("beatBarHit", (e) => {
