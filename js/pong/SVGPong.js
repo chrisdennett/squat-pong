@@ -367,13 +367,26 @@ class SvgPong extends HTMLElement {
     this.beatBarsGrp = shadow.getElementById("beatBars");
     this.effectsBumpers = shadow.getElementById("stopColour2");
 
+    this.footerText = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "text"
+    );
+    this.footerText.setAttribute("x", 37);
+    this.footerText.setAttribute("y", 202);
+    this.footerText.setAttribute("font-size", 4);
+    this.footerText.setAttribute("fill", "white");
+    this.footerText.setAttribute("text-anchor", "left");
+    this.svg.appendChild(this.footerText);
+
     this.beatBars = [];
   }
 
-  setup(dataPong, notes) {
+  setup(dataPong, soundMachine) {
     this.dataPong = dataPong;
     this.bounds = dataPong.bounds;
-    this.notes = notes;
+    this.soundMachine = soundMachine;
+
+    this.footerText.innerHTML = `oscillator: ${this.soundMachine.oscillatorType}`;
 
     // outer size
     this.svg.setAttribute("width", `${dataPong.displayWidth}px`);
@@ -424,10 +437,11 @@ class SvgPong extends HTMLElement {
   }
 
   addBeatBars() {
+    const totalNotes = this.soundMachine.notes.length;
     let boundsWidth = this.dataPong.bounds.right - this.dataPong.bounds.left;
     boundsWidth -=
       this.dataPong.paddleLeft.width + this.dataPong.paddleRight.width;
-    const fullBarWidth = boundsWidth / (this.notes.length - 1);
+    const fullBarWidth = boundsWidth / (totalNotes - 1);
     const halfBarWidth = fullBarWidth / 2;
     const boundsHeight = this.dataPong.bounds.bottom - this.dataPong.bounds.top;
     const barHeight = boundsHeight;
@@ -439,10 +453,10 @@ class SvgPong extends HTMLElement {
 
     let currX = this.dataPong.bounds.left + this.dataPong.paddleLeft.width;
 
-    for (let i = 0; i < this.notes.length; i++) {
+    for (let i = 0; i < totalNotes; i++) {
       let barWidth = fullBarWidth;
       const onLeft = i === 0;
-      const onRight = i === this.notes.length - 1;
+      const onRight = i === totalNotes - 1;
       if (onLeft || onRight) {
         barWidth = halfBarWidth;
       }
@@ -457,7 +471,7 @@ class SvgPong extends HTMLElement {
         h: barHeight,
         isOnLeft: onLeft,
         isOnRight: onRight,
-        note: this.notes[i],
+        note: this.soundMachine.notes[i],
       });
       this.beatBars.push(newBeatBar);
       newBeatBar.addEventListener("beatBarHit", (e) => {
@@ -481,7 +495,8 @@ class SvgPong extends HTMLElement {
     this.gameOverContent.style.display = "none";
   }
 
-  draw(notes) {
+  draw() {
+    const { notes } = this.soundMachine;
     this.ballElem.style.fill = this.dataPong.ball.colour;
 
     if (this.dataPong.gameState === "gameOver") {
@@ -522,6 +537,8 @@ class SvgPong extends HTMLElement {
 
     this.scoreLeft.innerHTML = this.dataPong.score.p1;
     this.scoreRight.innerHTML = this.dataPong.score.p2;
+
+    this.footerText.innerHTML = `oscillator: ${this.soundMachine.oscillatorType}`;
   }
 
   positionElement(element, x, y) {

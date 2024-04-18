@@ -18,11 +18,10 @@ export class BeatBar extends EventTarget {
     );
     this.beatBarText.setAttribute("x", x + w / 2);
     this.beatBarText.setAttribute("y", y - 5);
-    this.beatBarText.setAttribute("font-size", 6);
+    this.beatBarText.setAttribute("font-size", 4);
     this.beatBarText.setAttribute("fill", "white");
     this.beatBarText.setAttribute("text-anchor", "middle");
-    this.note = note;
-    this.beatBarText.innerHTML = note.name;
+    this.beatBarText.innerHTML = note.name + note.octave;
 
     this.x = x;
     this.width = w;
@@ -37,12 +36,12 @@ export class BeatBar extends EventTarget {
   update(ball, notes) {
     this.checkCollision(ball);
     if (notes) {
-      this.beatBarText.innerHTML = notes[this.index].name;
+      const note = notes[this.index];
+      this.beatBarText.innerHTML = note.name + note.octave;
     }
   }
 
   checkCollision(ball) {
-    this.beatBarText.innerHTML = this.note.name;
     const insideLeftEdge = this.isOnLeft || ball.x + ball.radius >= this.x;
     const insideRightEdge =
       this.isOnRight || ball.x + ball.radius <= this.right;

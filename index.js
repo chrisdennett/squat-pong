@@ -73,7 +73,7 @@ function loop(timeStamp) {
   // let p1HandsUp = p1Tracker.leftHandY < p1Tracker.y;
   // let p2HandsUp = p1Tracker.rightHandY < p1Tracker.y;
 
-  pong.loop(soundMachine.notes);
+  pong.loop();
 
   if (pong.gameMode !== "demo") {
     pong.setPaddleOneY(p1Tracker.y);
@@ -95,7 +95,7 @@ function loop(timeStamp) {
 }
 
 // kick off
-pong.setup({}, soundMachine.notes);
+pong.setup({}, soundMachine);
 pong.start();
 loop();
 

@@ -42,9 +42,9 @@ export class SoundMachine {
     const noteNames = ["C", "G", "D", "A", "E", "B", "Gb", "Db", "Ab"];
     // const noteNames = ["A", "E", "B", "Gb", "Db", "Ab"];
     //Note.freq
-    this.notes = noteNames.map((n) => {
-      return { name: n, freq: Tonal.Note.freq(n + this.octave) };
-    });
+    this.notes = noteNames.map((n) =>
+      this.getNoteObject(n, this.octave, this.oscillatorType)
+    );
     this.noteObjects = [];
     this.maxNoteObjects = this.notes.length * 2;
     this.currNoteObjIndex = 0;
@@ -69,6 +69,11 @@ export class SoundMachine {
 
     // this.initializeAudio();
     this.initializeOscillators();
+  }
+
+  getNoteObject(name, octave, oscillator) {
+    const freq = Tonal.Note.freq(name + octave);
+    return { name, octave, freq, oscillator };
   }
 
   setRandomOscillator() {
@@ -107,14 +112,9 @@ export class SoundMachine {
     for (let i = 0; i < total; i++) {
       const noteName = getRandomArrayItem(this.noteOptions);
       const randOctave = getRandomArrayItem(this.octaveOptions);
+      const ocs = getRandomArrayItem(this.oscillatorOptions);
 
-      let ocs = getRandomArrayItem(this.oscillatorOptions);
-
-      this.notes[i] = {
-        name: noteName,
-        freq: Tonal.Note.freq(noteName + randOctave),
-        ocs,
-      };
+      this.notes[i] = this.getNoteObject(noteName, randOctave, ocs);
     }
   }
 

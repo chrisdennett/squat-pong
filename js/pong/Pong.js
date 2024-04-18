@@ -70,7 +70,7 @@ class Pong extends HTMLElement {
     this.svgPong = shadow.getElementById("svgPong");
   }
 
-  setup(customSettings, notes) {
+  setup(customSettings, soundMachine) {
     this.dataPong = new DataPong(
       {
         ...this.defaultGameSettings,
@@ -89,7 +89,7 @@ class Pong extends HTMLElement {
       this.dispatchEvent(new CustomEvent(e.type, { detail: e.detail }));
     });
 
-    this.svgPong.setup(this.dataPong, notes);
+    this.svgPong.setup(this.dataPong, soundMachine);
   }
 
   onGameEvent(event) {
@@ -125,9 +125,9 @@ class Pong extends HTMLElement {
     this.svgPong.draw();
   }
 
-  loop(notes) {
+  loop() {
     this.dataPong.update();
-    this.svgPong.draw(notes);
+    this.svgPong.draw();
   }
 }
 
