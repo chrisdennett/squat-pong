@@ -13,7 +13,7 @@ export class SoundMachine {
   constructor() {
     this.muted = false;
     this.octave = "3";
-    this.noteOptions = [
+    /* this.fullNoteOptions = [
       "C",
       "G",
       "D",
@@ -26,7 +26,8 @@ export class SoundMachine {
       "Eb",
       "Bb",
       "F",
-    ];
+    ]; */
+    this.noteOptions = ["C", "G", "D", "G", "C"];
     // const noteNames = ["c", "c", "c", "c", "c"];
     this.octaveOptions = [3, 4, 5, 4, 3];
 
@@ -50,8 +51,8 @@ export class SoundMachine {
     this.maxNoteObjects = this.totalNotes * 2;
     this.currNoteObjIndex = 0;
 
-    this.oscillatorOptions = ["sine", "triangle", "square", "sawtooth"];
-    this.oscillatorType = this.oscillatorOptions[0];
+    this.oscillatorOptions = ["sine", "sine", "triangle", "square"];
+    this.oscillatorType = this.oscillatorOptions[1];
     this.attack = 0.3;
     this.decay = 0.9;
     this.sustain = 0.9;
@@ -141,6 +142,8 @@ export class SoundMachine {
 
   playNote(note) {
     if (this.muted) return;
+
+    // if (Math.random() > 0.8) return;
 
     if (!note) return;
 
