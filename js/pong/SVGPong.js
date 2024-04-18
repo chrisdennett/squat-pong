@@ -370,10 +370,10 @@ class SvgPong extends HTMLElement {
     this.beatBars = [];
   }
 
-  setup(dataPong, totalNotes) {
+  setup(dataPong, notes) {
     this.dataPong = dataPong;
     this.bounds = dataPong.bounds;
-    this.totalBars = totalNotes;
+    this.notes = notes;
 
     // outer size
     this.svg.setAttribute("width", `${dataPong.displayWidth}px`);
@@ -427,7 +427,7 @@ class SvgPong extends HTMLElement {
     let boundsWidth = this.dataPong.bounds.right - this.dataPong.bounds.left;
     boundsWidth -=
       this.dataPong.paddleLeft.width + this.dataPong.paddleRight.width;
-    const fullBarWidth = boundsWidth / (this.totalBars - 1);
+    const fullBarWidth = boundsWidth / (this.notes.length - 1);
     const halfBarWidth = fullBarWidth / 2;
     const boundsHeight = this.dataPong.bounds.bottom - this.dataPong.bounds.top;
     const barHeight = boundsHeight;
@@ -439,31 +439,26 @@ class SvgPong extends HTMLElement {
 
     let currX = this.dataPong.bounds.left + this.dataPong.paddleLeft.width;
 
-    for (let i = 0; i < this.totalBars; i++) {
+    for (let i = 0; i < this.notes.length; i++) {
       let barWidth = fullBarWidth;
       const onLeft = i === 0;
-      const onRight = i === this.totalBars - 1;
+      const onRight = i === this.notes.length - 1;
       if (onLeft || onRight) {
         barWidth = halfBarWidth;
       }
 
-      /*
-            The is my lovely new keyboard.  Isn't it lush!!!!!!!The is my new keyboard. Do you like it?  Isn't it lush!!!!
-            ~#~Zz¬`¬[]{}~~~~~####£$~~~~~~~~~!!!!111``¬¬¬¬
-        #########~~~~
-        */
-
       const barX = currX;
-      const newBeatBar = new BeatBar(
-        this.beatBarsGrp,
-        i,
-        barX,
-        barY,
-        barWidth,
-        barHeight,
-        onLeft,
-        onRight
-      );
+      const newBeatBar = new BeatBar({
+        parentElement: this.beatBarsGrp,
+        index: i,
+        x: barX,
+        y: barY,
+        w: barWidth,
+        h: barHeight,
+        isOnLeft: onLeft,
+        isOnRight: onRight,
+        note: this.notes[i],
+      });
       this.beatBars.push(newBeatBar);
       newBeatBar.addEventListener("beatBarHit", (e) => {
         this.dispatchEvent(new CustomEvent(e.type, { detail: e.detail }));
@@ -471,8 +466,6 @@ class SvgPong extends HTMLElement {
 
       currX += barWidth;
     }
-
-    // <path id="paddleLeftPath" stroke="none" d="M0 0 h5 v20 h-5z" />
   }
 
   showGameOverScreen() {
@@ -488,7 +481,7 @@ class SvgPong extends HTMLElement {
     this.gameOverContent.style.display = "none";
   }
 
-  draw() {
+  draw(notes) {
     this.ballElem.style.fill = this.dataPong.ball.colour;
 
     if (this.dataPong.gameState === "gameOver") {
@@ -516,7 +509,7 @@ class SvgPong extends HTMLElement {
     }
 
     for (let b of this.beatBars) {
-      b.checkCollision(this.dataPong.ball);
+      b.update(this.dataPong.ball, notes);
     }
 
     // let hue1 = 90 + this.dataPong.paddleLeft.yAsFraction * 120;

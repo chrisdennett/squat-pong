@@ -63,8 +63,8 @@ document.addEventListener("keyup", (e) => {
 });
 
 // game loop
-function loop() {
-  calculateFPS();
+function loop(timeStamp) {
+  calculateFPS(timeStamp);
 
   poseTracker.detectLandmarks();
   const { p1Tracker, p2Tracker } = poseTracker;
@@ -73,7 +73,7 @@ function loop() {
   // let p1HandsUp = p1Tracker.leftHandY < p1Tracker.y;
   // let p2HandsUp = p1Tracker.rightHandY < p1Tracker.y;
 
-  pong.loop();
+  pong.loop(soundMachine.notes);
 
   if (pong.gameMode !== "demo") {
     pong.setPaddleOneY(p1Tracker.y);
@@ -95,23 +95,24 @@ function loop() {
 }
 
 // kick off
-pong.setup({}, soundMachine.notes.length);
+pong.setup({}, soundMachine.notes);
 pong.start();
 loop();
 
 // listeners
 pong.addEventListener("paddleStrike", (e) => {
-  const fraction = (e.detail.offsetAsFraction + 1) / 2;
-  const inverse = 1 - fraction;
-
   // 0 to 1 into int between 0 and 9 inclusive
-  const noteIndex = Math.round(inverse * 9);
+  // const fraction = (e.detail.offsetAsFraction + 1) / 2;
+  // const inverse = 1 - fraction;
+  // const noteIndex = Math.round(inverse * 9);
   // soundMachine.playNote(noteIndex);
+  soundMachine.setRandomOscillator();
 });
 
 pong.addEventListener("wallStrike", (e) => {
-  const noteIndex = Math.round(e.detail.offset * 9);
+  // const noteIndex = Math.round(e.detail.offset * 9);
   // soundMachine.playNote(noteIndex);
+  soundMachine.randomiseNotes();
 });
 
 pong.svgPong.addEventListener("beatBarHit", (e) => {

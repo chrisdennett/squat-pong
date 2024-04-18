@@ -1,5 +1,4 @@
 // https://www.youtube.com/watch?v=hgg3ZBLRH58
-
 // this one looks really promising (code: https://jsfiddle.net/dirklo/m30n1w6c/) article below.
 // https://medium.com/geekculture/building-a-modular-synth-with-web-audio-api-and-javascript-d38ccdeca9ea
 
@@ -8,6 +7,7 @@
 
 // tone.js squelchy sound
 // https://medium.com/dev-red/tutorial-lets-make-music-with-javascript-and-tone-js-f6ac39d95b8c
+import { getRandomArrayItem } from "../utils/helpers.js";
 
 export class SoundMachine {
   constructor() {
@@ -71,9 +71,8 @@ export class SoundMachine {
     this.initializeOscillators();
   }
 
-  getRandInt(min = 0, max = 9) {
-    const range = max - min;
-    return min + Math.round(range * Math.random());
+  setRandomOscillator() {
+    this.oscillatorType = getRandomArrayItem(this.oscillatorOptions);
   }
 
   onNumPress(num) {
@@ -91,7 +90,6 @@ export class SoundMachine {
       // console.log(" this.sustain: ", this.sustain);
       // console.log("this.release: ", this.release);
       this.noteLength = Math.random() * 0.4 + 0.2;
-      console.log("this.noteLength: ", this.noteLength);
     }
 
     if (num === 3) {
@@ -107,20 +105,14 @@ export class SoundMachine {
   randomiseNotes() {
     const total = this.notes.length;
     for (let i = 0; i < total; i++) {
-      const noteName = this.noteOptions[this.getRandInt(0, total - 1)];
-      const randOct =
-        this.octaveOptions[
-          (0, this.getRandInt(0, this.octaveOptions.length - 1))
-        ];
+      const noteName = getRandomArrayItem(this.noteOptions);
+      const randOctave = getRandomArrayItem(this.octaveOptions);
 
-      let ocs =
-        this.oscillatorOptions[
-          this.getRandInt(0, this.oscillatorOptions.length - 1)
-        ];
+      let ocs = getRandomArrayItem(this.oscillatorOptions);
 
       this.notes[i] = {
-        n: noteName,
-        freq: Tonal.Note.freq(noteName + randOct),
+        name: noteName,
+        freq: Tonal.Note.freq(noteName + randOctave),
         ocs,
       };
     }
