@@ -437,54 +437,48 @@ class SvgPong extends HTMLElement {
   }
 
   addBeatBars() {
-    const totalNotes = this.soundMachine.octaveOptions.length;
+    const totalNotes = this.soundMachine.notes.length;
     let boundsWidth = this.dataPong.bounds.right - this.dataPong.bounds.left;
     boundsWidth -=
       this.dataPong.paddleLeft.width + this.dataPong.paddleRight.width;
     const fullBarWidth = boundsWidth / (totalNotes - 1);
     const halfBarWidth = fullBarWidth / 2;
     const boundsHeight = this.dataPong.bounds.bottom - this.dataPong.bounds.top;
+    const barHeight = boundsHeight;
+    const barY = this.dataPong.bounds.top;
 
-    const totalNoteTypes = this.soundMachine.noteOptions.length;
-    const barHeight = boundsHeight / totalNoteTypes;
-    const topEdge = this.dataPong.bounds.top;
-    const leftEdge = this.dataPong.bounds.left + this.dataPong.paddleLeft.width;
-    let noteStoreIndex = 0;
+    // make first and last bars half width because ball
+    // bouncing both ways over them so will be on them
+    // twice as long.
 
-    let barX = leftEdge;
+    let currX = this.dataPong.bounds.left + this.dataPong.paddleLeft.width;
 
-    for (let j = 0; j < this.soundMachine.noteInfoList.length; j++) {
-      const rowNotes = this.soundMachine.noteInfoList[j];
-      const barY = j * barHeight + topEdge;
-      barX = leftEdge;
-
-      for (let i = 0; i < rowNotes.length; i++) {
-        let barWidth = fullBarWidth;
-
-        const onLeft = i === 0;
-        const onRight = i === totalNotes - 1;
-        if (onLeft || onRight) {
-          barWidth = halfBarWidth;
-        }
-
-        const newBeatBar = new BeatBar({
-          parentElement: this.beatBarsGrp,
-          index: noteStoreIndex,
-          x: barX,
-          y: barY,
-          w: barWidth,
-          h: barHeight,
-          isOnLeft: onLeft,
-          isOnRight: onRight,
-          note: rowNotes[i],
-        });
-        noteStoreIndex++;
-        this.beatBars.push(newBeatBar);
-        newBeatBar.addEventListener("beatBarHit", (e) => {
-          this.dispatchEvent(new CustomEvent(e.type, { detail: e.detail }));
-        });
-        barX += barWidth;
+    for (let i = 0; i < totalNotes; i++) {
+      let barWidth = fullBarWidth;
+      const onLeft = i === 0;
+      const onRight = i === totalNotes - 1;
+      if (onLeft || onRight) {
+        barWidth = halfBarWidth;
       }
+
+      const barX = currX;
+      const newBeatBar = new BeatBar({
+        parentElement: this.beatBarsGrp,
+        index: i,
+        x: barX,
+        y: barY,
+        w: barWidth,
+        h: barHeight,
+        isOnLeft: onLeft,
+        isOnRight: onRight,
+        note: this.soundMachine.notes[i],
+      });
+      this.beatBars.push(newBeatBar);
+      newBeatBar.addEventListener("beatBarHit", (e) => {
+        this.dispatchEvent(new CustomEvent(e.type, { detail: e.detail }));
+      });
+
+      currX += barWidth;
     }
   }
 
@@ -530,7 +524,7 @@ class SvgPong extends HTMLElement {
     }
 
     for (let b of this.beatBars) {
-      b.update(this.dataPong.ball);
+      b.update(this.dataPong.ball, notes);
     }
 
     // let hue1 = 90 + this.dataPong.paddleLeft.yAsFraction * 120;
