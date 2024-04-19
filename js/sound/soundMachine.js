@@ -12,7 +12,6 @@ import { getRandomArrayItem } from "../utils/helpers.js";
 export class SoundMachine {
   constructor() {
     this.muted = false;
-    this.octave = "3";
     this.noteOptions = [
       "C",
       "G",
@@ -27,48 +26,56 @@ export class SoundMachine {
       "Bb",
       "F",
     ];
-    const noteNames = ["c3", "c4", "c5", "c4", "c3"];
+    this.totalNotes = this.noteOptions.length;
+    this.currOctaveList = ["3", "4", "5", "4", "3"];
+    this.currNoteIndex = 0;
+    this.currNote = this.noteOptions[this.currNoteIndex];
 
-    this.notes = noteNames.map((n) =>
-      this.getNoteObject(n, this.octave, this.oscillatorType)
-    );
+    this.notes = this.currOctaveList.map((o) => this.getNoteObject(o));
     this.noteObjects = [];
+
     this.maxNoteObjects = this.notes.length * 2;
     this.currNoteObjIndex = 0;
 
-    this.oscillatorOptions = ["sine", "triangle", "square", "sawtooth"];
-    this.octaveOptions = [2, 3, 4, 5, 6];
-    this.oscillatorType = this.oscillatorOptions[0];
+    // this.oscillatorOptions = ["sine", "triangle", "square", "sawtooth"];
+    this.oscillatorOptions = ["sine", "sine", "triangle"];
+    this.currOscillator = this.oscillatorOptions[0];
+
     this.attack = 0.3;
     this.decay = 0.9;
     this.sustain = 0.9;
     this.release = 0.8;
-    this.noteLength = 0.1;
-
-    this.useRandomOscillator = false;
+    this.noteLength = 0.2;
   }
 
-  getNoteObject(name, octave, oscillator) {
+  setNextNote() {
+    this.currNoteIndex++;
+
+    if (this.currNoteIndex >= this.totalNotes) {
+      this.currNoteIndex = 0;
+    }
+    this.currNote = this.noteOptions[this.currNoteIndex];
+
+    this.notes = this.currOctaveList.map((o) => this.getNoteObject(o));
+  }
+
+  getNoteObject(octave) {
+    const name = this.currNote + octave;
     const freq = Tonal.Note.freq(name);
-    return { name, octave, freq, oscillator };
+    return { name, octave, freq };
   }
 
   setOscillatorFromFraction(fraction) {
-    /**
-    if 0 or 1 - sawtooth
-    if 0.5 - sine
-     */
-
     const index = Math.round(fraction * (this.oscillatorOptions.length - 1));
-    this.oscillatorType = this.oscillatorOptions[index];
+    this.currOscillator = this.oscillatorOptions[index];
 
-    if (!this.oscillatorType) {
+    if (!this.currOscillator) {
       console.log("index: ", index);
     }
   }
 
   setRandomOscillator() {
-    this.oscillatorType = getRandomArrayItem(this.oscillatorOptions);
+    this.currOscillator = getRandomArrayItem(this.oscillatorOptions);
   }
 
   onNumPress(num) {
@@ -95,24 +102,13 @@ export class SoundMachine {
     }
   }
 
-  // randomiseNotes() {
-  //   const total = this.notes.length;
-  //   for (let i = 0; i < total; i++) {
-  //     const noteName = getRandomArrayItem(this.noteOptions);
-  //     const randOctave = getRandomArrayItem(this.octaveOptions);
-  //     const ocs = getRandomArrayItem(this.oscillatorOptions);
-
-  //     this.notes[i] = this.getNoteObject(noteName, randOctave, ocs);
-  //   }
-  // }
-
   changeOscillator() {
     const currIndex = this.oscillatorOptions.findIndex(
-      (o) => o === this.oscillatorType
+      (o) => o === this.currOscillator
     );
     const nextIndex =
       currIndex === this.oscillatorOptions.length - 1 ? 0 : currIndex + 1;
-    this.oscillatorType = this.oscillatorOptions[nextIndex];
+    this.currOscillator = this.oscillatorOptions[nextIndex];
   }
 
   toggleSound() {
@@ -157,12 +153,10 @@ export class SoundMachine {
       release: this.release,
     }).toDestination();
 
-    const oscType = this.useRandomOscillator
-      ? this.notes[noteIndex].osc
-      : this.oscillatorType;
-
-    noteObj.osc = new Tone.Oscillator(this.notes[noteIndex].freq, oscType);
-
+    noteObj.osc = new Tone.Oscillator(
+      this.notes[noteIndex].freq,
+      this.currOscillator
+    );
     noteObj.osc.connect(noteObj.env);
     noteObj.osc.start();
     noteObj.env.triggerAttackRelease(this.noteLength);
@@ -174,11 +168,11 @@ export class SoundMachine {
     }
   }
 
-  playDrum() {
-    if (this.muted) return;
+  // playDrum() {
+  //   if (this.muted) return;
 
-    const synth = new Tone.MembraneSynth().toDestination();
-    synth.triggerAttackRelease("C2", 1);
-    // synth.triggerAttackRelease("C2", "8n");
-  }
+  //   const synth = new Tone.MembraneSynth().toDestination();
+  //   synth.triggerAttackRelease("C2", 1);
+  //   // synth.triggerAttackRelease("C2", "8n");
+  // }
 }

@@ -386,7 +386,7 @@ class SvgPong extends HTMLElement {
     this.bounds = dataPong.bounds;
     this.soundMachine = soundMachine;
 
-    this.footerText.innerHTML = `oscillator: ${this.soundMachine.oscillatorType}`;
+    this.footerText.innerHTML = `oscillator: ${this.soundMachine.currOscillator}`;
 
     // outer size
     this.svg.setAttribute("width", `${dataPong.displayWidth}px`);
@@ -538,7 +538,7 @@ class SvgPong extends HTMLElement {
     this.scoreLeft.innerHTML = this.dataPong.score.p1;
     this.scoreRight.innerHTML = this.dataPong.score.p2;
 
-    this.footerText.innerHTML = `oscillator: ${this.soundMachine.oscillatorType}`;
+    this.footerText.innerHTML = `oscillator: ${this.soundMachine.currOscillator}`;
   }
 
   positionElement(element, x, y) {
