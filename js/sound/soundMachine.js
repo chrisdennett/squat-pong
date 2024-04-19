@@ -50,7 +50,8 @@ export class SoundMachine {
     this.maxNoteObjects = this.totalNotes * 2;
     this.currNoteObjIndex = 0;
 
-    this.oscillatorOptions = ["sine", "sine", "triangle"];
+    // this.oscillatorOptions = ["sine", "triangle", "square", "sawtooth"];
+    this.oscillatorOptions = ["sine", "sine", "triangle", "square", "sawtooth"];
     this.oscillatorType = this.oscillatorOptions[1];
     this.attack = 0.3;
     this.decay = 0.2;
