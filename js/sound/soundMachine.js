@@ -46,6 +46,25 @@ export class SoundMachine {
     this.sustain = 0.9;
     this.release = 0.8;
     this.noteLength = 0.2;
+
+    // this.osc1;
+    // this.initializeOscillators();
+  }
+
+  initializeOscillators() {
+    this.osc1 = new Tone.Oscillator();
+    this.osc1.type = this.currOscillator; // sine, triangle, square or sawtooth
+    this.osc1.frequency.value = 220; // hz
+    this.osc1.volume.value = -15;
+    this.osc1.start();
+    this.osc1.toDestination(); // connect the oscillator to the audio output
+
+    // let lfo = new Tone.LFO(0.1, 200, 240);
+    // lfo.connect(osc2.frequency);
+    // lfo.start();
+
+    this.waveform = new Tone.Waveform();
+    Tone.Master.connect(this.waveform);
   }
 
   setNextNote() {
@@ -124,9 +143,10 @@ export class SoundMachine {
   }
 
   playNote(noteIndex) {
-    if (this.muted) return;
-
     if (isNaN(noteIndex) || noteIndex >= this.notes.length) return;
+
+    // this.osc1.frequency.value = this.notes[noteIndex].freq;
+    // this.osc1.type = this.currOscillator;
 
     // reuse to prevent too many being created
     let noteObj = this.noteObjects[this.currNoteObjIndex];
@@ -140,10 +160,16 @@ export class SoundMachine {
       noteObj.env.disconnect();
       noteObj.env.dispose();
     }
+    // if (noteObj.vibrato) {
+    //   noteObj.vibrato.disconnect();
+    //   noteObj.vibrato.dispose();
+    // }
     if (noteObj.osc) {
       noteObj.osc.disconnect();
       noteObj.osc.dispose();
     }
+
+    if (this.muted) return;
 
     // Create new sound
     noteObj.env = new Tone.AmplitudeEnvelope({
@@ -153,10 +179,18 @@ export class SoundMachine {
       release: this.release,
     }).toDestination();
 
+    // create a tremolo and start it's LFO
+    // noteObj.vibrato = new Tone.Vibrato(0.01, 0.1);
+    // route an oscillator through the tremolo and start it
+    // const oscillator = new Tone.Oscillator().connect(tremolo).start();
+
     noteObj.osc = new Tone.Oscillator(
       this.notes[noteIndex].freq,
       this.currOscillator
     );
+    // .connect(noteObj.vibrato)
+    // .toDestination()
+    // .start();
     noteObj.osc.connect(noteObj.env);
     noteObj.osc.start();
     noteObj.env.triggerAttackRelease(this.noteLength);
