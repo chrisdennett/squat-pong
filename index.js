@@ -26,6 +26,11 @@ document.addEventListener("keyup", (e) => {
     soundMachine.toggleSound();
   }
 
+  // test instruction
+  if (e.key === "p") {
+    soundMachine.playInstruction();
+  }
+
   // Game settings
   if (e.key === "q") {
     // set player one upper pos
@@ -57,7 +62,7 @@ document.addEventListener("keyup", (e) => {
 function loop(timeStamp) {
   calculateFPS(timeStamp);
 
-  // const { p1Tracker, p2Tracker } = poseTracker;
+  const { p1Tracker, p2Tracker } = poseTracker;
   // let p1HandsUp = p1Tracker.leftHandY < p1Tracker.y;
   // let p2HandsUp = p1Tracker.rightHandY < p1Tracker.y;
 
@@ -82,7 +87,7 @@ loop();
 // listeners
 pong.addEventListener("paddleStrike", (e) => {
   // 0 to 1 into int between 0 and 9 inclusive
-  const fraction = (e.detail.offsetAsFraction + 1) / 2;
+  // const fraction = (e.detail.offsetAsFraction + 1) / 2;
   // const inverse = 1 - fraction;
   const fractionFromCenter = Math.abs(e.detail.offsetAsFraction);
   soundMachine.setOscillatorFromFraction(fractionFromCenter);

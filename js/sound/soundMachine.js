@@ -142,6 +142,15 @@ export class SoundMachine {
     this.muted = false;
   }
 
+  playInstruction() {
+    const playerOneEnter = new Tone.Player(
+      "./audio/player-one-has-entered-the-game.mp3"
+    ).toDestination();
+    Tone.loaded().then(() => {
+      playerOneEnter.start();
+    });
+  }
+
   playNote(noteIndex) {
     if (isNaN(noteIndex) || noteIndex >= this.notes.length) return;
 

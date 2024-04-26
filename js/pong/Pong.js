@@ -14,7 +14,7 @@ class Pong extends HTMLElement {
     shadow.append(PongTemplate.content.cloneNode(true));
 
     this.defaultGameSettings = {
-      gameMode: "demo" /*demo, onePlayer, twoPlayer*/,
+      gameMode: "twoPlayer" /*demo, onePlayer, twoPlayer*/,
       displayWidth: 350,
       delayAfterPoint: 1000,
       delayRestartAfterWin: 2000,
