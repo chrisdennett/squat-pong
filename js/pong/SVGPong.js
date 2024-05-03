@@ -6,7 +6,10 @@ template.innerHTML = /*html*/ `
 
         #svgPong{
             width: 100%;
-            min-height: 100vh;
+            height: 780px;
+            position: fixed;
+            left: 10px;
+            top: 30px;
         }
 
         #surround{
@@ -16,7 +19,7 @@ template.innerHTML = /*html*/ `
 
         #gradientOverlay {
             mix-blend-mode: hard-light;
-            opacity: 0.5;
+            opacity: 0.6;
         }
 
         #stop1{
@@ -428,6 +431,7 @@ class SvgPong extends HTMLElement {
 
     // screen colours
     this.inlay.style.fill = dataPong.palette.inlay;
+    // this.inlay.style.fill = dataPong.palette.screen;
     this.screen.style.fill = dataPong.palette.screen;
     this.surround.style.background = dataPong.palette.surround;
 

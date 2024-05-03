@@ -12,8 +12,8 @@ export function drawVideoToCanvas(video) {
   }
 
   vidCtx.save();
-  vidCtx.translate(0, videoHeight);
-  vidCtx.scale(1, -1);
+  vidCtx.translate(0, 0);
+  vidCtx.scale(1, 1);
   //  ctx.filter = "invert(100%)";
   // ctx.globalAlpha = 0.1;
   // ctx.globalCompositeOperation = "multiply";

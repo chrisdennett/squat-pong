@@ -63,20 +63,20 @@ export class PoseTracker {
       const ctx1 = this.pose1Canvas.getContext("2d");
       const ctx2 = this.pose2Canvas.getContext("2d");
 
-      ctx2.drawImage(this.webcamCanvas, w, 0, w, h, 0, 0, w, h);
-      ctx2.drawImage(this.canvas, w, 0, w, h, 0, 0, w, h);
+      ctx1.drawImage(this.webcamCanvas, w, 0, w, h, 0, 0, w, h);
+      ctx1.drawImage(this.canvas, w, 0, w, h, 0, 0, w, h);
 
-      ctx1.drawImage(this.webcamCanvas, 0, 0, w, h, 0, 0, w, h);
-      ctx1.drawImage(this.canvas, 0, 0, w, h, 0, 0, w, h);
+      ctx2.drawImage(this.webcamCanvas, 0, 0, w, h, 0, 0, w, h);
+      ctx2.drawImage(this.canvas, 0, 0, w, h, 0, 0, w, h);
 
       this.p1Tracker.drawMinMax(
-        ctx1,
+        ctx2,
         this.pose1Canvas.width,
         this.pose1Canvas.height,
         false
       );
       this.p2Tracker.drawMinMax(
-        ctx2,
+        ctx1,
         this.pose2Canvas.width,
         this.pose2Canvas.height,
         true
