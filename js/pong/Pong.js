@@ -71,13 +71,10 @@ class Pong extends HTMLElement {
   }
 
   setup(customSettings, soundMachine) {
-    this.dataPong = new DataPong(
-      {
-        ...this.defaultGameSettings,
-        ...customSettings,
-      },
-      this.onGameEvent
-    );
+    this.dataPong = new DataPong({
+      ...this.defaultGameSettings,
+      ...customSettings,
+    });
 
     // even when set to true bubbling doesn't seem to work here
     // so I'm simply passing on the event with a new one
@@ -90,10 +87,6 @@ class Pong extends HTMLElement {
     });
 
     this.svgPong.setup(this.dataPong, soundMachine);
-  }
-
-  onGameEvent(event) {
-    console.log("event: ", event);
   }
 
   setPaddleOneY(y) {

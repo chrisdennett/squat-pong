@@ -5,6 +5,15 @@ import { calculateFPS } from "./js/utils/fps.js";
 const pong = document.querySelector("#pong");
 const soundMachine = new SoundMachine();
 
+const gameStates = {
+  0: "awaitingPlayers",
+  1: "playersAvailable",
+  2: "calibration",
+  3: "playingGame",
+  4: "gameOver",
+  5: "demoMode",
+};
+
 const poseTracker = new PoseTracker();
 
 document.addEventListener("keyup", (e) => {
@@ -63,6 +72,15 @@ function loop(timeStamp) {
   calculateFPS(timeStamp);
 
   const { p1Tracker, p2Tracker } = poseTracker;
+
+  if (p1Tracker.isDetected) {
+    console.log("p1 detected");
+  }
+
+  if (p2Tracker.isDetected) {
+    console.log("p2 detected");
+  }
+
   // let p1HandsUp = p1Tracker.leftHandY < p1Tracker.y;
   // let p2HandsUp = p1Tracker.rightHandY < p1Tracker.y;
 
@@ -81,7 +99,7 @@ function loop(timeStamp) {
 
 // kick off
 pong.setup({}, soundMachine);
-pong.start();
+// pong.start();
 loop();
 
 // listeners

@@ -3,6 +3,7 @@
 // https://josephwritescode.substack.com/p/realtime-web-motion-detection-with-mediapipe
 // https://developers.google.com/mediapipe/solutions/vision/pose_landmarker/index#models
 import * as Vision from "../../libs/@mediapipe/tasks-vision/vision_bundle.mjs";
+import { drawVideoToCanvas } from "../utils/drawVideoToCanvas.js";
 import { PlayerTracker } from "./playerTracker.js";
 const { PoseLandmarker, FilesetResolver, DrawingUtils } = Vision;
 
@@ -45,6 +46,8 @@ export class PoseTracker {
 
   drawPlayers() {
     if (this.width > 0) {
+      const vidCanvas = drawVideoToCanvas(this.video);
+
       const w = this.width / 2;
       const h = this.height;
 
@@ -59,10 +62,10 @@ export class PoseTracker {
       const ctx1 = this.pose1Canvas.getContext("2d");
       const ctx2 = this.pose2Canvas.getContext("2d");
 
-      ctx1.drawImage(this.video, w, 0, w, h, 0, 0, w, h);
+      ctx1.drawImage(vidCanvas, w, 0, w, h, 0, 0, w, h);
       ctx1.drawImage(this.canvas, w, 0, w, h, 0, 0, w, h);
 
-      ctx2.drawImage(this.video, 0, 0, w, h, 0, 0, w, h);
+      ctx2.drawImage(vidCanvas, 0, 0, w, h, 0, 0, w, h);
       ctx2.drawImage(this.canvas, 0, 0, w, h, 0, 0, w, h);
 
       this.p1Tracker.drawMinMax(

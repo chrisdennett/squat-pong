@@ -1,25 +1,27 @@
-export function drawVideoToCanvas(video, canvas) {
+let vidCanvas = null;
+let vidCtx = null;
+
+export function drawVideoToCanvas(video) {
   const { videoWidth, videoHeight } = video;
-  const ctx = canvas.getContext("2d");
-  ctx.save();
-  ctx.translate(canvas.width, 0);
-  ctx.scale(-1, 1);
+
+  if (!vidCanvas) {
+    vidCanvas = document.createElement("canvas");
+    vidCanvas.width = videoWidth;
+    vidCanvas.height = videoHeight;
+    vidCtx = vidCanvas.getContext("2d");
+  }
+
+  vidCtx.save();
+  vidCtx.translate(videoWidth, videoHeight);
+  vidCtx.scale(-1, -1);
   //  ctx.filter = "invert(100%)";
   // ctx.globalAlpha = 0.1;
   // ctx.globalCompositeOperation = "multiply";
 
-  ctx.drawImage(
-    video,
-    0,
-    0,
-    videoWidth,
-    videoHeight,
-    0,
-    0,
-    canvas.width,
-    canvas.height
-  );
-  ctx.restore();
+  vidCtx.drawImage(video, 0, 0);
+  vidCtx.restore();
+
+  return vidCanvas;
 }
 
 // fade out the blob canvas trails

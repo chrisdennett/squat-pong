@@ -3,6 +3,7 @@ export class PlayerTracker {
     this.landmarks = [];
     this.minY = 0.35;
     this.maxY = 0.6;
+    this.isDetected = false;
   }
 
   setMinY() {
@@ -14,6 +15,7 @@ export class PlayerTracker {
   }
 
   setLandmarks(landmarks) {
+    this.isDetected = landmarks.length > 0;
     this.landmarks = landmarks;
   }
 
