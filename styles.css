@@ -48,7 +48,7 @@ main {
   /* border: blue 1px solid; */
   overflow: hidden;
   width: 250px;
-  z-index: 9999;
+  z-index: 9;
 }
 
 #pose2Canvas {
@@ -62,7 +62,30 @@ main {
   /* mix-blend-mode: color-burn; */
   overflow: hidden;
   width: 250px;
-  z-index: 9999;
+  z-index: 9;
+}
+
+.playerText {
+  position: fixed;
+  top: 610px;
+  width: 230px;
+  height: 110px;
+  color: black;
+  background: #ff7800;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  justify-content: center;
+  z-index: 999999;
+}
+
+#player1Text {
+  left: 30px;
+}
+
+#player2Text {
+  right: 0;
 }
 
 .hidden {
