@@ -13,6 +13,7 @@ export class PoseTracker {
 
     this.poseLandmarker = undefined;
     this.video = document.getElementById("webcam");
+    this.webcamCanvas;
     this.canvas = document.getElementById("poseTrackerCanvas");
     this.canvasCtx = this.canvas.getContext("2d");
     this.drawingUtils = new DrawingUtils(this.canvasCtx);
@@ -46,7 +47,7 @@ export class PoseTracker {
 
   drawPlayers() {
     if (this.width > 0) {
-      const vidCanvas = drawVideoToCanvas(this.video);
+      this.webcamCanvas = drawVideoToCanvas(this.video);
 
       const w = this.width / 2;
       const h = this.height;
@@ -62,10 +63,10 @@ export class PoseTracker {
       const ctx1 = this.pose1Canvas.getContext("2d");
       const ctx2 = this.pose2Canvas.getContext("2d");
 
-      ctx1.drawImage(vidCanvas, w, 0, w, h, 0, 0, w, h);
+      ctx1.drawImage(this.webcamCanvas, w, 0, w, h, 0, 0, w, h);
       ctx1.drawImage(this.canvas, w, 0, w, h, 0, 0, w, h);
 
-      ctx2.drawImage(vidCanvas, 0, 0, w, h, 0, 0, w, h);
+      ctx2.drawImage(this.webcamCanvas, 0, 0, w, h, 0, 0, w, h);
       ctx2.drawImage(this.canvas, 0, 0, w, h, 0, 0, w, h);
 
       this.p1Tracker.drawMinMax(
@@ -133,51 +134,56 @@ export class PoseTracker {
   }
 
   detectLandmarks(timeStamp) {
-    if (!this.poseLandmarker || !this.videoRunning) return;
+    if (!this.poseLandmarker || !this.videoRunning || !this.webcamCanvas)
+      return;
 
     if (this.lastVideoTime !== this.video.currentTime) {
       this.lastVideoTime = this.video.currentTime;
-      this.poseLandmarker.detectForVideo(this.video, timeStamp, (result) => {
-        this.landmarks = result.landmarks;
+      this.poseLandmarker.detectForVideo(
+        this.webcamCanvas,
+        timeStamp,
+        (result) => {
+          this.landmarks = result.landmarks;
 
-        // if (!this.logged && result.segmentationMasks.length > 0) {
-        //   this.logged = true;
-        //   console.log("result: ", result);
-        // }
-        // this.segmentationMasks = result.segmentationMasks;
+          // if (!this.logged && result.segmentationMasks.length > 0) {
+          //   this.logged = true;
+          //   console.log("result: ", result);
+          // }
+          // this.segmentationMasks = result.segmentationMasks;
 
-        let p1Landmarks = [];
-        let p2Landmarks = [];
+          let p1Landmarks = [];
+          let p2Landmarks = [];
 
-        // order find poses might not be same as player 1 then player 2
-        const firstPoseFound = this.landmarks.length > 0;
-        const secondPoseFound = this.landmarks.length > 1;
+          // order find poses might not be same as player 1 then player 2
+          const firstPoseFound = this.landmarks.length > 0;
+          const secondPoseFound = this.landmarks.length > 1;
 
-        // set first pose to p1 or p2 depending on side found
-        if (firstPoseFound) {
-          const noseX = this.landmarks[0][0].x * this.width;
-          // if on left set it to p1
-          if (noseX < this.width / 2) {
-            p2Landmarks = this.landmarks[0];
-          } else {
-            p1Landmarks = this.landmarks[0];
+          // set first pose to p1 or p2 depending on side found
+          if (firstPoseFound) {
+            const noseX = this.landmarks[0][0].x * this.width;
+            // if on left set it to p1
+            if (noseX < this.width / 2) {
+              p2Landmarks = this.landmarks[0];
+            } else {
+              p1Landmarks = this.landmarks[0];
+            }
           }
-        }
 
-        // set second pose to p1 or p2 depending on side found
-        if (secondPoseFound) {
-          const noseX = this.landmarks[1][0].x * this.width;
-          // if on left set it to p1
-          if (noseX < this.width / 2) {
-            p2Landmarks = this.landmarks[1];
-          } else {
-            p1Landmarks = this.landmarks[1];
+          // set second pose to p1 or p2 depending on side found
+          if (secondPoseFound) {
+            const noseX = this.landmarks[1][0].x * this.width;
+            // if on left set it to p1
+            if (noseX < this.width / 2) {
+              p2Landmarks = this.landmarks[1];
+            } else {
+              p1Landmarks = this.landmarks[1];
+            }
           }
-        }
 
-        this.p1Tracker.setLandmarks(p1Landmarks);
-        this.p2Tracker.setLandmarks(p2Landmarks);
-      });
+          this.p1Tracker.setLandmarks(p1Landmarks);
+          this.p2Tracker.setLandmarks(p2Landmarks);
+        }
+      );
     }
   }
 
