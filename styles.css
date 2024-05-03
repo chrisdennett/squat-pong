@@ -39,20 +39,21 @@ main {
 
 #pose1Canvas {
   position: fixed;
-  opacity: 0.5;
+  /* opacity: 0.5; */
   transform: scale(-1, 1);
   border-radius: 30px;
   top: 200px;
-  left: 20px;
+  left: 10px;
   /* mix-blend-mode: color-burn; */
   /* border: blue 1px solid; */
   overflow: hidden;
   width: 250px;
+  z-index: 9999;
 }
 
 #pose2Canvas {
   position: fixed;
-  opacity: 0.5;
+  /* opacity: 0.5; */
   /* border: red 1px solid; */
   transform: scale(-1, 1);
   border-radius: 30px;
@@ -61,6 +62,7 @@ main {
   /* mix-blend-mode: color-burn; */
   overflow: hidden;
   width: 250px;
+  z-index: 9999;
 }
 
 .hidden {

@@ -14,6 +14,7 @@ export class DataPong extends EventTarget {
       gameMode,
       display,
       displayWidth,
+      displayHeight,
       palette,
     } = params;
 
@@ -21,6 +22,7 @@ export class DataPong extends EventTarget {
 
     this.params = params;
     this.displayWidth = displayWidth;
+    this.displayHeight = displayHeight;
     this.palette = palette;
     this.showSides = display.showSides;
     this.winningScore = winningScore; // set here for convenience

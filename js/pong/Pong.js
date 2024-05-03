@@ -15,7 +15,8 @@ class Pong extends HTMLElement {
 
     this.defaultGameSettings = {
       gameMode: "twoPlayer" /*demo, onePlayer, twoPlayer*/,
-      displayWidth: 350,
+      displayWidth: 1100,
+      displayHeight: 900,
       delayAfterPoint: 1000,
       delayRestartAfterWin: 2000,
       winningScore: 11,
