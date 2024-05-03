@@ -29,9 +29,9 @@ body {
 }
 
 main {
-  display: flex;
+  /* display: flex;
   align-items: start;
-  justify-content: center;
+  justify-content: center; */
   /* filter: hue-rotate(72deg); */
   background-color: #7d7d7d;
 }
@@ -39,7 +39,7 @@ main {
 #pose1Canvas {
   position: fixed;
   opacity: 0.5;
-  transform: scale(-1, 1);
+  /* transform: scale(-1, 1); */
   border-radius: 30px;
   top: 300px;
   left: 10px;
@@ -53,7 +53,7 @@ main {
   position: fixed;
   opacity: 0.5;
   /* border: red 1px solid; */
-  transform: scale(-1, 1);
+  /* transform: scale(-1, 1); */
   border-radius: 30px;
   top: 300px;
   right: 10px;
