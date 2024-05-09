@@ -2,6 +2,11 @@ import { PoseTracker } from "./js/poseTracking/poseTracker.js";
 import { SoundMachine } from "./js/sound/soundMachine.js";
 import { calculateFPS } from "./js/utils/fps.js";
 
+const player1Text = document.getElementById("player1Text");
+const player2Text = document.getElementById("player2Text");
+const pose1Canvas = document.getElementById("pose1Canvas");
+const pose2Canvas = document.getElementById("pose2Canvas");
+
 const pong = document.querySelector("#pong");
 const soundMachine = new SoundMachine();
 
@@ -74,13 +79,28 @@ function loop(timeStamp) {
   const { p1Tracker, p2Tracker } = poseTracker;
 
   if (p1Tracker.isDetected) {
-    console.log("p1 detected");
+    player1Text.style.background = "#ff7800";
+    player1Text.innerHTML = "PLAYER ONE";
+    player1Text.style.color = "white";
+    pose1Canvas.style.filter = "grayscale(0)";
+  } else {
+    player1Text.style.background = "black";
+    player1Text.innerHTML = "AWAITING PLAYER";
+    player1Text.style.color = "gray";
+    pose1Canvas.style.filter = "grayscale(1)";
   }
 
   if (p2Tracker.isDetected) {
-    console.log("p2 detected");
+    player2Text.style.background = "#ff7800";
+    player2Text.innerHTML = "PLAYER TWO";
+    player2Text.style.color = "white";
+    pose2Canvas.style.filter = "grayscale(0)";
+  } else {
+    player2Text.style.background = "black";
+    player2Text.style.color = "gray";
+    player2Text.innerHTML = "AWAITING PLAYER";
+    pose2Canvas.style.filter = "grayscale(1)";
   }
-
   // let p1HandsUp = p1Tracker.leftHandY < p1Tracker.y;
   // let p2HandsUp = p1Tracker.rightHandY < p1Tracker.y;
 

@@ -39,6 +39,7 @@ main {
 
 #pose1Canvas {
   position: fixed;
+  filter: hue-rotate(45deg);
   /* opacity: 0.5; */
   transform: scale(-1, 1);
   border-radius: 30px;
