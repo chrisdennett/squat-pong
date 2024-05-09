@@ -13,8 +13,8 @@ export class BeatBar extends EventTarget {
       "path"
     );
 
-    const markerWidth = w; //1;
-    this.beatBarElement.setAttribute("fill", "yellow");
+    const markerWidth = 1; // w
+    this.beatBarElement.setAttribute("fill", "#ff7800");
     this.beatBarElement.setAttribute(
       "d",
       `M${0} ${0} h${markerWidth} v${h} h-${markerWidth}z`
@@ -28,7 +28,7 @@ export class BeatBar extends EventTarget {
     this.beatBarText.setAttribute("x", x + w / 2);
     this.beatBarText.setAttribute("y", y - 5);
     this.beatBarText.setAttribute("font-size", 4);
-    this.beatBarText.setAttribute("fill", "yellow");
+    this.beatBarText.setAttribute("fill", "#ff7800");
     this.beatBarText.setAttribute("text-anchor", "middle");
     this.beatBarText.style.opacity = 0.2;
     this.beatBarText.innerHTML = note.name;
@@ -64,10 +64,15 @@ export class BeatBar extends EventTarget {
       // this.beatBarElement.style.opacity = 0;
       if (this.isLastHit === false) {
         // this.beatBarGroup.style.transform = `translate(${ball.x}px, ${this.y}px)`;
-        this.beatBarElement.style.opacity = 0.2;
+        this.beatBarElement.style.opacity = 0.1;
 
         this.beatBarText.style.opacity = 1;
         this.isLastHit = true;
+
+        this.beatBarGroup.style.transform = `translate(${
+          ball.x + ball.radius
+        }px, ${this.y}px)`;
+
         this.dispatchEvent(
           new CustomEvent("beatBarHit", {
             bubbles: true,
@@ -76,7 +81,7 @@ export class BeatBar extends EventTarget {
         );
       }
     } else {
-      this.beatBarText.style.opacity = 0.5;
+      this.beatBarText.style.opacity = 0.3;
       this.beatBarElement.style.opacity = 0;
       this.isLastHit = false;
     }

@@ -35,11 +35,16 @@ export class DataPong extends EventTarget {
     this.ball = new DataBall({ bounds, ...ball });
     this.paddleLeft = new DataPaddle({ bounds, ...paddle, type: "left" });
     this.paddleRight = new DataPaddle({ bounds, ...paddle, type: "right" });
-    if (this.gameMode === "onePlayer") {
-      this.paddleRight.speed = paddle.computerSpeed;
-    }
+
     this.dataInputs = new DataInputs({});
     this.serveLeft = false;
+  }
+
+  setGameMode(mode) {
+    this.gameMode = mode;
+    if (this.gameMode === "onePlayer") {
+      this.paddleRight.speed = this.params.paddle.computerSpeed;
+    }
   }
 
   startGame() {

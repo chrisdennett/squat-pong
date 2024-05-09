@@ -14,7 +14,7 @@ class Pong extends HTMLElement {
     shadow.append(PongTemplate.content.cloneNode(true));
 
     this.defaultGameSettings = {
-      gameMode: "twoPlayer" /*demo, onePlayer, twoPlayer*/,
+      gameMode: "onePlayer" /*demo, onePlayer, twoPlayer*/,
       displayWidth: 1100,
       displayHeight: 900,
       delayAfterPoint: 1000,
@@ -69,6 +69,21 @@ class Pong extends HTMLElement {
     this.gameMode = this.defaultGameSettings.gameMode;
 
     this.svgPong = shadow.getElementById("svgPong");
+  }
+
+  setTo2PlayerMode() {
+    this.gameMode = "twoPlayer";
+    this.dataPong.setGameMode(this.gameMode);
+  }
+
+  setTo1PlayerMode() {
+    this.gameMode = "onePlayer";
+    this.dataPong.setGameMode(this.gameMode);
+  }
+
+  setToDemoMode() {
+    this.gameMode = "demo";
+    this.dataPong.setGameMode(this.gameMode);
   }
 
   setup(customSettings, soundMachine) {

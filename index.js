@@ -4,8 +4,9 @@ import { calculateFPS } from "./js/utils/fps.js";
 
 const player1Text = document.getElementById("player1Text");
 const player2Text = document.getElementById("player2Text");
-const pose1Canvas = document.getElementById("pose1Canvas");
-const pose2Canvas = document.getElementById("pose2Canvas");
+const gameText = document.getElementById("gameText");
+// const pose1Canvas = document.getElementById("pose1Canvas");
+// const pose2Canvas = document.getElementById("pose2Canvas");
 const player1Overlay = document.getElementById("player1Overlay");
 const player2Overlay = document.getElementById("player2Overlay");
 
@@ -20,6 +21,8 @@ const gameStates = {
   4: "gameOver",
   5: "demoMode",
 };
+
+const gameState = "awaitingPlayers";
 
 const poseTracker = new PoseTracker();
 
@@ -80,28 +83,8 @@ function loop(timeStamp) {
 
   const { p1Tracker, p2Tracker } = poseTracker;
 
-  if (p1Tracker.isDetected) {
-    player1Text.style.background = "#ff7800";
-    player1Text.innerHTML = "PLAYER ONE";
-    player1Text.style.color = "white";
-    player1Overlay.style.display = "inherit";
-  } else {
-    player1Text.style.background = "black";
-    player1Text.innerHTML = "AWAITING PLAYER";
-    player1Text.style.color = "gray";
-    player1Overlay.style.display = "none";
-  }
-
-  if (p2Tracker.isDetected) {
-    player2Text.style.background = "#ff7800";
-    player2Text.innerHTML = "PLAYER TWO";
-    player2Text.style.color = "white";
-    player2Overlay.style.display = "inherit";
-  } else {
-    player2Text.style.background = "black";
-    player2Text.style.color = "gray";
-    player2Text.innerHTML = "AWAITING PLAYER";
-    player2Overlay.style.display = "none";
+  if (gameState === "awaitingPlayers") {
+    updateGameText(p1Tracker, p2Tracker);
   }
   // let p1HandsUp = p1Tracker.leftHandY < p1Tracker.y;
   // let p2HandsUp = p1Tracker.rightHandY < p1Tracker.y;
@@ -143,3 +126,46 @@ pong.svgPong.addEventListener("beatBarHit", (e) => {
   // const i = e.target.detail.index;
   soundMachine.playNote(e.detail.index);
 });
+
+function updateGameText(p1Tracker, p2Tracker) {
+  const p1Detected = p1Tracker.isDetected;
+  const p2Detected = p2Tracker.isDetected;
+
+  // PLAYER ONE
+  updatePlayerText(1, p1Detected);
+
+  // PLAYER TWO
+  updatePlayerText(2, p2Detected);
+
+  // game text
+  if (p1Detected && p2Detected) {
+    // 2 player mode
+    gameText.innerHTML = "2 Player Mode";
+    pong.setTo2PlayerMode();
+  } else if (p1Detected) {
+    // 1 player mode
+    gameText.innerHTML = "1 Player Mode";
+    pong.setTo1PlayerMode();
+  } else {
+    // demo mode
+    gameText.innerHTML = "Demo Mode";
+    pong.setToDemoMode();
+  }
+}
+
+function updatePlayerText(player, isDetected) {
+  const text = player === 1 ? player1Text : player2Text;
+  const overlay = player === 1 ? player1Overlay : player2Overlay;
+
+  if (isDetected) {
+    text.style.background = "#ff7800";
+    text.innerHTML = player === 1 ? "PLAYER ONE" : "PLAYER TWO";
+    text.style.color = "white";
+    overlay.style.display = "inherit";
+  } else {
+    text.style.background = "black";
+    text.style.color = "gray";
+    text.innerHTML = "AWAITING PLAYER";
+    overlay.style.display = "none";
+  }
+}
