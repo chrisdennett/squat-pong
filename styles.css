@@ -54,6 +54,11 @@ main {
   font-size: 42px;
 }
 
+#gameInstruction {
+  font-size: 24px;
+  max-width: 600px;
+}
+
 .playerView {
   position: fixed;
   top: 200px;

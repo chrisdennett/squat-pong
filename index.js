@@ -5,6 +5,7 @@ import { calculateFPS } from "./js/utils/fps.js";
 const player1Text = document.getElementById("player1Text");
 const player2Text = document.getElementById("player2Text");
 const gameText = document.getElementById("gameText");
+const gameInstruction = document.getElementById("gameInstruction");
 // const pose1Canvas = document.getElementById("pose1Canvas");
 // const pose2Canvas = document.getElementById("pose2Canvas");
 const player1Overlay = document.getElementById("player1Overlay");
@@ -22,7 +23,7 @@ const gameStates = {
   5: "demoMode",
 };
 
-const gameState = "awaitingPlayers";
+let gameState = "awaitingPlayers";
 
 const poseTracker = new PoseTracker();
 
@@ -83,11 +84,9 @@ function loop(timeStamp) {
 
   const { p1Tracker, p2Tracker } = poseTracker;
 
-  if (gameState === "awaitingPlayers") {
-    updateGameText(p1Tracker, p2Tracker);
+  if (gameState === "awaitingPlayers" || gameState === "playersAvailable") {
+    updateGameState(p1Tracker, p2Tracker);
   }
-  // let p1HandsUp = p1Tracker.leftHandY < p1Tracker.y;
-  // let p2HandsUp = p1Tracker.rightHandY < p1Tracker.y;
 
   pong.loop();
 
@@ -127,9 +126,27 @@ pong.svgPong.addEventListener("beatBarHit", (e) => {
   soundMachine.playNote(e.detail.index);
 });
 
-function updateGameText(p1Tracker, p2Tracker) {
+function updateGameState(p1Tracker, p2Tracker) {
   const p1Detected = p1Tracker.isDetected;
   const p2Detected = p2Tracker.isDetected;
+
+  const p1LeftHandUp = p1Tracker.y - p1Tracker.leftHand.y > 0.5;
+  const p1RightHandUp = p1Tracker.y - p1Tracker.rightHand.y > 0.5;
+
+  if (p1LeftHandUp && p1RightHandUp) {
+    // console.log("p1Tracker.y: ", p1Tracker.y);
+    console.log(
+      "p1Tracker.y - p1Tracker.leftHand.y: ",
+      p1Tracker.y - p1Tracker.leftHand.y
+    );
+    gameState = "playingGame";
+    gameText.style.display = "none";
+    gameInstruction.style.display = "none";
+    pong.start();
+    return;
+  }
+
+  pong.hideNetAndBall();
 
   // PLAYER ONE
   updatePlayerText(1, p1Detected);
@@ -141,14 +158,19 @@ function updateGameText(p1Tracker, p2Tracker) {
   if (p1Detected && p2Detected) {
     // 2 player mode
     gameText.innerHTML = "2 Player Mode";
+    gameInstruction.innerHTML =
+      "Either player put your hands above head to start.";
     pong.setTo2PlayerMode();
   } else if (p1Detected) {
     // 1 player mode
     gameText.innerHTML = "1 Player Mode";
+    gameInstruction.innerHTML =
+      "Put your hands above head to start  or wait for opponent.";
     pong.setTo1PlayerMode();
   } else {
     // demo mode
     gameText.innerHTML = "Demo Mode";
+    gameInstruction.innerHTML = "";
     pong.setToDemoMode();
   }
 }

@@ -337,6 +337,7 @@ class SvgPong extends HTMLElement {
     // game elements
     this.gameGroup = shadow.getElementById("game");
     this.ballElem = shadow.getElementById("svgBall");
+    this.fullNet = shadow.getElementById("fullNet");
     this.leftPaddle = shadow.getElementById("paddleLeft");
     this.rightPaddle = shadow.getElementById("paddleRight");
 
@@ -499,6 +500,18 @@ class SvgPong extends HTMLElement {
 
   hideGameOverScreen() {
     this.gameOverContent.style.display = "none";
+  }
+
+  hideNetAndBall() {
+    this.ballElem.style.display = "none";
+    this.fullNet.style.display = "none";
+    this.beatBarsGrp.style.display = "none";
+  }
+
+  showNetAndBall() {
+    this.ballElem.style.display = "inherit";
+    this.fullNet.style.display = "inherit";
+    this.beatBarsGrp.style.display = "inherit";
   }
 
   draw() {

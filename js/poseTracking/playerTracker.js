@@ -44,22 +44,22 @@ export class PlayerTracker {
     return yPos / range;
   }
 
-  get leftHandY() {
+  get leftHand() {
     let pos = { x: 0, y: 0, z: 0 };
     if (this.landmarks && this.landmarks.length >= 17) {
       pos = this.landmarks[17];
     }
 
-    return pos.y;
+    return { ...pos };
   }
 
-  get rightHandY() {
+  get rightHand() {
     let pos = { x: 0, y: 0, z: 0 };
     if (this.landmarks && this.landmarks.length >= 18) {
       pos = this.landmarks[18];
     }
 
-    return pos.y;
+    return { y: pos.y, visibility: pos.visibility };
   }
 
   getNoseY() {

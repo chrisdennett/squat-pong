@@ -71,6 +71,14 @@ class Pong extends HTMLElement {
     this.svgPong = shadow.getElementById("svgPong");
   }
 
+  hideNetAndBall() {
+    this.svgPong.hideNetAndBall();
+  }
+
+  showNetAndBall() {
+    this.svgPong.showNetAndBall();
+  }
+
   setTo2PlayerMode() {
     this.gameMode = "twoPlayer";
     this.dataPong.setGameMode(this.gameMode);
@@ -130,6 +138,7 @@ class Pong extends HTMLElement {
   }
 
   start() {
+    this.showNetAndBall();
     this.dataPong.startGame();
     this.svgPong.draw();
   }
