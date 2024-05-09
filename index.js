@@ -6,6 +6,8 @@ const player1Text = document.getElementById("player1Text");
 const player2Text = document.getElementById("player2Text");
 const pose1Canvas = document.getElementById("pose1Canvas");
 const pose2Canvas = document.getElementById("pose2Canvas");
+const player1Overlay = document.getElementById("player1Overlay");
+const player2Overlay = document.getElementById("player2Overlay");
 
 const pong = document.querySelector("#pong");
 const soundMachine = new SoundMachine();
@@ -82,24 +84,24 @@ function loop(timeStamp) {
     player1Text.style.background = "#ff7800";
     player1Text.innerHTML = "PLAYER ONE";
     player1Text.style.color = "white";
-    pose1Canvas.style.filter = "grayscale(0)";
+    player1Overlay.style.display = "inherit";
   } else {
     player1Text.style.background = "black";
     player1Text.innerHTML = "AWAITING PLAYER";
     player1Text.style.color = "gray";
-    pose1Canvas.style.filter = "grayscale(1)";
+    player1Overlay.style.display = "none";
   }
 
   if (p2Tracker.isDetected) {
     player2Text.style.background = "#ff7800";
     player2Text.innerHTML = "PLAYER TWO";
     player2Text.style.color = "white";
-    pose2Canvas.style.filter = "grayscale(0)";
+    player2Overlay.style.display = "inherit";
   } else {
     player2Text.style.background = "black";
     player2Text.style.color = "gray";
     player2Text.innerHTML = "AWAITING PLAYER";
-    pose2Canvas.style.filter = "grayscale(1)";
+    player2Overlay.style.display = "none";
   }
   // let p1HandsUp = p1Tracker.leftHandY < p1Tracker.y;
   // let p2HandsUp = p1Tracker.rightHandY < p1Tracker.y;

@@ -22,12 +22,24 @@
     <div id="fpsCounter"></div>
 
     <main>
-      <!-- <canvas id="gameCanvas"></canvas> -->
-      <canvas id="pose1Canvas"></canvas>
-      <canvas id="pose2Canvas"></canvas>
+      <!-- player webcam view -->
+      <div id="player1View" class="playerView">
+        <div id="player1Overlay" class="playerOverlay"></div>
+        <canvas id="pose1Canvas" class="playerCanvas"></canvas>
+      </div>
+      <div id="player2View" class="playerView">
+        <div id="player2Overlay" class="playerOverlay"></div>
+        <canvas id="pose2Canvas" class="playerCanvas"></canvas>
+      </div>
+
+      <!-- Player text -->
       <div class="playerText" id="player1Text">PLAYER ONE</div>
       <div class="playerText" id="player2Text">PLAYER TWO</div>
+
+      <!-- game -->
       <p-o-n-g id="pong"></p-o-n-g>
+
+      <!-- offscreen tracker -->
       <webcam-player-tracker id="tracker"></webcam-player-tracker>
     </main>
   </body>
