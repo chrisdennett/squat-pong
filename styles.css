@@ -53,6 +53,7 @@ main {
 }
 
 .playerOverlay {
+  mix-blend-mode: color;
   position: absolute;
   background: #ff7800;
   opacity: 0.7;
