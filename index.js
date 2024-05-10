@@ -13,6 +13,7 @@ const player2Overlay = document.getElementById("player2Overlay");
 
 const pong = document.querySelector("#pong");
 const soundMachine = new SoundMachine();
+let isPaused = false;
 
 const gameStates = {
   0: "awaitingPlayers",
@@ -24,6 +25,7 @@ const gameStates = {
 };
 
 let gameState = "awaitingPlayers";
+let prevGameState = gameState;
 
 const poseTracker = new PoseTracker();
 
@@ -78,6 +80,10 @@ document.addEventListener("keyup", (e) => {
   // soundMachine.playNote(parseInt(e.key));
 });
 
+let pauseCount = 0;
+const maxPauseCount = 5 * 60; // five seconds assuming 60fps
+let currentTimers = [];
+
 // game loop
 function loop(timeStamp) {
   calculateFPS(timeStamp);
@@ -92,6 +98,31 @@ function loop(timeStamp) {
   // calibration phase
   if (gameState === "startCalibration") {
     startCalibration(p1Tracker, p2Tracker);
+  }
+
+  // if neither tracker is detected for a count reset
+  if (
+    !p1Tracker.isDetected &&
+    !p2Tracker.isDetected &&
+    gameState !== "paused"
+  ) {
+    prevGameState = gameState;
+    gameState = "paused";
+  } else if (gameState === "paused") {
+    gameState = prevGameState;
+  }
+
+  // if paused
+  if (gameState === "paused") {
+    pauseCount++;
+    // if no player for full 5 seconds, reset to beginning
+    if (pauseCount === maxPauseCount) {
+      for (let t of currentTimers) {
+        window.clearInterval(t);
+      }
+      currentTimers = [];
+      gameState = "awaitingPlayers";
+    }
   }
 
   pong.loop();
@@ -148,6 +179,9 @@ function startCalibration(p1Tracker, p2Tracker) {
 
   // Step 1
   gameState = "calibrating";
+
+  gameInstruction.innerHTML = "Leave screen to reset.";
+
   // start calibration
   runFunctionAfterCountdown("Entering Calibration Phase in", 3, () => {
     // setting top marker
@@ -169,23 +203,16 @@ function startCalibration(p1Tracker, p2Tracker) {
       });
     });
   });
-  // let count = 3;
-  // gameText.innerHTML = `Entering Calibration Phase in ${count}`;
-  // gameInstruction.innerHTML = "Walk out of view to cancel";
-
-  // const timer1 = setInterval(() => {
-  //   count--;
-  //   gameText.innerHTML = `Entering Calibration Phase in ${count}`;
-
-  //   if (count <= 0) {
-  //     clearInterval(timer1);
-  //   }
-  // }, 1000);
 }
 
 function runFunctionAfterCountdown(text, max, callback) {
   let count = max;
+  gameText.innerHTML = `${text} ${count}`;
+
   const timer1 = setInterval(() => {
+    // wait if paused
+    if (gameState === "paused") return;
+
     count--;
     gameText.innerHTML = `${text} ${count}`;
 
@@ -194,6 +221,8 @@ function runFunctionAfterCountdown(text, max, callback) {
       callback();
     }
   }, 1000);
+
+  currentTimers.push(timer1);
 }
 
 function updateGameState(p1Tracker, p2Tracker) {
