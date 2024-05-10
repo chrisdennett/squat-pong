@@ -70,13 +70,13 @@ export class PoseTracker {
       ctx2.drawImage(this.canvas, 0, 0, w, h, 0, 0, w, h);
 
       this.p1Tracker.drawMinMax(
-        ctx2,
+        ctx1,
         this.pose1Canvas.width,
         this.pose1Canvas.height,
         false
       );
       this.p2Tracker.drawMinMax(
-        ctx1,
+        ctx2,
         this.pose2Canvas.width,
         this.pose2Canvas.height,
         true

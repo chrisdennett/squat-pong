@@ -137,7 +137,7 @@ function startCalibration(p1Tracker, p2Tracker) {
   When hands are lifted enter a calibration mode.
   Entering Calibration Phase, leave screen to cancel.
   3, 2, 1
-  Stand straight and hold for
+  Stand upright and hold for
   3, 2, 1
   Squat and hold for 
   3, 2, 1
@@ -148,9 +148,52 @@ function startCalibration(p1Tracker, p2Tracker) {
 
   // Step 1
   gameState = "calibrating";
-  gameText.innerHTML = "Entering Calibration Phase";
-  gameInstruction.innerHTML = "Walk out of view to cancel";
-  console.log("gameState: ", gameState);
+  // start calibration
+  runFunctionAfterCountdown("Entering Calibration Phase in", 3, () => {
+    // setting top marker
+    runFunctionAfterCountdown("STAY STILL. Hold for", 5, () => {
+      poseTracker.p1Tracker.setMinY();
+      poseTracker.p2Tracker.setMinY();
+
+      // setting bottom marker
+      runFunctionAfterCountdown("SQUAT. Hold for", 5, () => {
+        poseTracker.p1Tracker.setMaxY();
+        poseTracker.p2Tracker.setMaxY();
+
+        // Start game
+        runFunctionAfterCountdown("Start Game in", 5, () => {
+          gameText.style.display = "none";
+          gameInstruction.style.display = "none";
+          pong.start();
+        });
+      });
+    });
+  });
+  // let count = 3;
+  // gameText.innerHTML = `Entering Calibration Phase in ${count}`;
+  // gameInstruction.innerHTML = "Walk out of view to cancel";
+
+  // const timer1 = setInterval(() => {
+  //   count--;
+  //   gameText.innerHTML = `Entering Calibration Phase in ${count}`;
+
+  //   if (count <= 0) {
+  //     clearInterval(timer1);
+  //   }
+  // }, 1000);
+}
+
+function runFunctionAfterCountdown(text, max, callback) {
+  let count = max;
+  const timer1 = setInterval(() => {
+    count--;
+    gameText.innerHTML = `${text} ${count}`;
+
+    if (count <= 0) {
+      clearInterval(timer1);
+      callback();
+    }
+  }, 1000);
 }
 
 function updateGameState(p1Tracker, p2Tracker) {
@@ -162,9 +205,6 @@ function updateGameState(p1Tracker, p2Tracker) {
 
   if (p1LeftHandUp && p1RightHandUp) {
     gameState = "startCalibration";
-    // gameText.style.display = "none";
-    // gameInstruction.style.display = "none";
-    // pong.start();
     return;
   }
 
