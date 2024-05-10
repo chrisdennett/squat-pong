@@ -84,8 +84,14 @@ function loop(timeStamp) {
 
   const { p1Tracker, p2Tracker } = poseTracker;
 
+  // game selection phase
   if (gameState === "awaitingPlayers" || gameState === "playersAvailable") {
     updateGameState(p1Tracker, p2Tracker);
+  }
+
+  // calibration phase
+  if (gameState === "startCalibration") {
+    startCalibration(p1Tracker, p2Tracker);
   }
 
   pong.loop();
@@ -126,23 +132,39 @@ pong.svgPong.addEventListener("beatBarHit", (e) => {
   soundMachine.playNote(e.detail.index);
 });
 
+function startCalibration(p1Tracker, p2Tracker) {
+  /**
+  When hands are lifted enter a calibration mode.
+  Entering Calibration Phase, leave screen to cancel.
+  3, 2, 1
+  Stand straight and hold for
+  3, 2, 1
+  Squat and hold for 
+  3, 2, 1
+  Calibration complete, game starts in 
+  3, 2, 1, PLAY
+  start game
+ */
+
+  // Step 1
+  gameState = "calibrating";
+  gameText.innerHTML = "Entering Calibration Phase";
+  gameInstruction.innerHTML = "Walk out of view to cancel";
+  console.log("gameState: ", gameState);
+}
+
 function updateGameState(p1Tracker, p2Tracker) {
   const p1Detected = p1Tracker.isDetected;
   const p2Detected = p2Tracker.isDetected;
 
-  const p1LeftHandUp = p1Tracker.y - p1Tracker.leftHand.y > 0.5;
-  const p1RightHandUp = p1Tracker.y - p1Tracker.rightHand.y > 0.5;
+  const p1LeftHandUp = p1Tracker.y - p1Tracker.leftHand.y > 0.15;
+  const p1RightHandUp = p1Tracker.y - p1Tracker.rightHand.y > 0.15;
 
   if (p1LeftHandUp && p1RightHandUp) {
-    // console.log("p1Tracker.y: ", p1Tracker.y);
-    console.log(
-      "p1Tracker.y - p1Tracker.leftHand.y: ",
-      p1Tracker.y - p1Tracker.leftHand.y
-    );
-    gameState = "playingGame";
-    gameText.style.display = "none";
-    gameInstruction.style.display = "none";
-    pong.start();
+    gameState = "startCalibration";
+    // gameText.style.display = "none";
+    // gameInstruction.style.display = "none";
+    // pong.start();
     return;
   }
 
