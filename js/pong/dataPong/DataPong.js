@@ -19,8 +19,6 @@ export class DataPong extends EventTarget {
     } = params;
 
     this.bounds = bounds;
-
-    this.params = params;
     this.displayWidth = displayWidth;
     this.displayHeight = displayHeight;
     this.palette = palette;
@@ -28,15 +26,22 @@ export class DataPong extends EventTarget {
     this.winningScore = winningScore; // set here for convenience
     // demo, onePlayer, twoPlayer,
     // demoDoubles, onePlayerDoubles, twoPlayerDoubles
+    this.params = params;
     this.gameMode = gameMode;
-    this.gameState = "playing"; // "playing", "gameOver", "menu"
+    this.gameState = "playing"; // "playing", "gameOver"
     this.winner = "NULL";
     this.score = { p1: 0, p2: 0 };
+    this.serveLeft = false;
     this.ball = new DataBall({ bounds, ...ball });
     this.paddleLeft = new DataPaddle({ bounds, ...paddle, type: "left" });
     this.paddleRight = new DataPaddle({ bounds, ...paddle, type: "right" });
-
     this.dataInputs = new DataInputs({});
+  }
+
+  reset() {
+    this.gameState = "playing"; // "playing", "gameOver"
+    this.winner = "NULL";
+    this.score = { p1: 0, p2: 0 };
     this.serveLeft = false;
   }
 
@@ -117,9 +122,10 @@ export class DataPong extends EventTarget {
     const gameOver = this.checkForWinner();
     // game over - start new game after a delay
     if (gameOver) {
-      setTimeout(() => {
-        // this.startGame();
-      }, this.params.delayRestartAfterWin);
+      console.log("gameOver: ", gameOver);
+      this.dispatchEvent(
+        new CustomEvent("gameOver", { bubbles: false, detail: "gameOver" })
+      );
     }
     // point over serve after a delay
     else {

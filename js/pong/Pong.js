@@ -19,7 +19,7 @@ class Pong extends HTMLElement {
       displayHeight: 900,
       delayAfterPoint: 1000,
       delayRestartAfterWin: 2000,
-      winningScore: 11,
+      winningScore: 2,
       useGapBug: false,
       useScoreBasedPaddleSizes: false,
       palette: {
@@ -71,6 +71,11 @@ class Pong extends HTMLElement {
     this.svgPong = shadow.getElementById("svgPong");
   }
 
+  reset() {
+    this.gameMode = "demo";
+    this.dataPong.reset(this.gameSettings);
+  }
+
   hideNetAndBall() {
     this.svgPong.hideNetAndBall();
   }
@@ -95,6 +100,7 @@ class Pong extends HTMLElement {
   }
 
   setup(customSettings, soundMachine) {
+    this.gameSettings = { ...this.defaultGameSettings, ...customSettings };
     this.dataPong = new DataPong({
       ...this.defaultGameSettings,
       ...customSettings,
@@ -108,6 +114,10 @@ class Pong extends HTMLElement {
 
     this.dataPong.ball.addEventListener("wallStrike", (e) => {
       this.dispatchEvent(new CustomEvent(e.type, { detail: e.detail }));
+    });
+
+    this.dataPong.addEventListener("gameOver", (e) => {
+      this.dispatchEvent(new CustomEvent(e.type));
     });
 
     this.svgPong.setup(this.dataPong, soundMachine);

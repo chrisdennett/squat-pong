@@ -92,6 +92,7 @@ function loop(timeStamp) {
 
   // game selection phase
   if (gameState === "awaitingPlayers" || gameState === "playersAvailable") {
+    console.log("gameState: ", gameState);
     updateGameState(p1Tracker, p2Tracker);
   }
 
@@ -117,11 +118,7 @@ function loop(timeStamp) {
     pauseCount++;
     // if no player for full 5 seconds, reset to beginning
     if (pauseCount === maxPauseCount) {
-      for (let t of currentTimers) {
-        window.clearInterval(t);
-      }
-      currentTimers = [];
-      gameState = "awaitingPlayers";
+      resetGame();
     }
   }
 
@@ -163,6 +160,23 @@ pong.svgPong.addEventListener("beatBarHit", (e) => {
   soundMachine.playNote(e.detail.index);
 });
 
+pong.addEventListener("gameOver", (e) => {
+  runFunctionAfterCountdown("", 5, () => {
+    resetGame();
+  });
+});
+
+function resetGame() {
+  for (let t of currentTimers) {
+    window.clearInterval(t);
+  }
+  currentTimers = [];
+  pong.reset();
+  gameText.style.opacity = 1;
+  gameInstruction.style.opacity = 1;
+  gameState = "awaitingPlayers";
+}
+
 function startCalibration(p1Tracker, p2Tracker) {
   /**
   When hands are lifted enter a calibration mode.
@@ -196,8 +210,8 @@ function startCalibration(p1Tracker, p2Tracker) {
 
         // Start game
         runFunctionAfterCountdown("Start Game in", 5, () => {
-          gameText.style.display = "none";
-          gameInstruction.style.display = "none";
+          gameText.style.opacity = 0;
+          gameInstruction.style.opacity = 0;
           pong.start();
         });
       });
