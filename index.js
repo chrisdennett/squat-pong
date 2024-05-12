@@ -6,14 +6,13 @@ const player1Text = document.getElementById("player1Text");
 const player2Text = document.getElementById("player2Text");
 const gameText = document.getElementById("gameText");
 const gameInstruction = document.getElementById("gameInstruction");
-// const pose1Canvas = document.getElementById("pose1Canvas");
-// const pose2Canvas = document.getElementById("pose2Canvas");
+const pausedModal = document.getElementById("pausedModal");
+const pausedCountdown = document.getElementById("pausedCountdown");
 const player1Overlay = document.getElementById("player1Overlay");
 const player2Overlay = document.getElementById("player2Overlay");
 
 const pong = document.querySelector("#pong");
 const soundMachine = new SoundMachine();
-let isPaused = false;
 
 const gameStates = {
   0: "awaitingPlayers",
@@ -81,7 +80,7 @@ document.addEventListener("keyup", (e) => {
 });
 
 let pauseCount = 0;
-const maxPauseCount = 5 * 60; // five seconds assuming 60fps
+const maxPauseCount = 3 * 60; // five seconds assuming 60fps
 let currentTimers = [];
 
 // game loop
@@ -90,9 +89,14 @@ function loop(timeStamp) {
 
   const { p1Tracker, p2Tracker } = poseTracker;
 
+  // PLAYER ONE
+  updatePlayerPresence(1, p1Tracker.isDetected);
+
+  // PLAYER TWO
+  updatePlayerPresence(2, p2Tracker.isDetected);
+
   // game selection phase
   if (gameState === "awaitingPlayers" || gameState === "playersAvailable") {
-    console.log("gameState: ", gameState);
     updateGameState(p1Tracker, p2Tracker);
   }
 
@@ -101,25 +105,38 @@ function loop(timeStamp) {
     startCalibration(p1Tracker, p2Tracker);
   }
 
-  // if neither tracker is detected for a count reset
+  // if neither tracker is detected set as paused
   if (
     !p1Tracker.isDetected &&
     !p2Tracker.isDetected &&
-    gameState !== "paused"
+    gameState !== "awaitingPlayers"
   ) {
-    prevGameState = gameState;
+    if (gameState !== "paused") {
+      prevGameState = gameState;
+    }
     gameState = "paused";
-  } else if (gameState === "paused") {
-    gameState = prevGameState;
+  } else {
+    if (gameState === "paused") {
+      gameState = prevGameState;
+    }
   }
 
   // if paused
   if (gameState === "paused") {
+    pong.isPaused = true;
+    pausedModal.style.opacity = 1;
     pauseCount++;
+
+    pausedCountdown.innerHTML = `Game will reset in ${Math.round(
+      (maxPauseCount - pauseCount) / 60
+    )} seconds`;
     // if no player for full 5 seconds, reset to beginning
     if (pauseCount === maxPauseCount) {
       resetGame();
     }
+  } else {
+    pong.isPaused = false;
+    pausedModal.style.opacity = 0;
   }
 
   pong.loop();
@@ -167,44 +184,41 @@ pong.addEventListener("gameOver", (e) => {
 });
 
 function resetGame() {
+  gameState = "awaitingPlayers";
+  pong.isPaused = false;
+  pauseCount = 0;
+  clearTimers();
+  pong.reset();
+  gameText.style.opacity = 1;
+  gameInstruction.style.opacity = 1;
+  pausedModal.style.opacity = 0;
+}
+
+function clearTimers() {
   for (let t of currentTimers) {
     window.clearInterval(t);
   }
   currentTimers = [];
-  pong.reset();
-  gameText.style.opacity = 1;
-  gameInstruction.style.opacity = 1;
-  gameState = "awaitingPlayers";
 }
 
 function startCalibration(p1Tracker, p2Tracker) {
   /**
   When hands are lifted enter a calibration mode.
   Entering Calibration Phase, leave screen to cancel.
-  3, 2, 1
-  Stand upright and hold for
-  3, 2, 1
-  Squat and hold for 
-  3, 2, 1
-  Calibration complete, game starts in 
-  3, 2, 1, PLAY
-  start game
  */
-
   // Step 1
   gameState = "calibrating";
-
   gameInstruction.innerHTML = "Leave screen to reset.";
 
   // start calibration
   runFunctionAfterCountdown("Entering Calibration Phase in", 3, () => {
     // setting top marker
-    runFunctionAfterCountdown("STAY STILL. Hold for", 5, () => {
+    runFunctionAfterCountdown("STAY STILL</br>Hold for", 5, () => {
       poseTracker.p1Tracker.setMinY();
       poseTracker.p2Tracker.setMinY();
 
       // setting bottom marker
-      runFunctionAfterCountdown("SQUAT. Hold for", 5, () => {
+      runFunctionAfterCountdown("SQUAT</br>Hold for", 5, () => {
         poseTracker.p1Tracker.setMaxY();
         poseTracker.p2Tracker.setMaxY();
 
@@ -220,6 +234,9 @@ function startCalibration(p1Tracker, p2Tracker) {
 }
 
 function runFunctionAfterCountdown(text, max, callback) {
+  clearTimers();
+  if (gameState === "paused") return;
+
   let count = max;
   gameText.innerHTML = `${text} ${count}`;
 
@@ -254,10 +271,10 @@ function updateGameState(p1Tracker, p2Tracker) {
   pong.hideNetAndBall();
 
   // PLAYER ONE
-  updatePlayerText(1, p1Detected);
+  updatePlayerPresence(1, p1Detected);
 
   // PLAYER TWO
-  updatePlayerText(2, p2Detected);
+  updatePlayerPresence(2, p2Detected);
 
   // game text
   if (p1Detected && p2Detected) {
@@ -268,7 +285,7 @@ function updateGameState(p1Tracker, p2Tracker) {
     pong.setTo2PlayerMode();
   } else if (p1Detected) {
     // 1 player mode
-    gameText.innerHTML = "1 Player Mode";
+    gameText.innerHTML = "One Player Mode";
     gameInstruction.innerHTML =
       "Put your hands above head to start  or wait for opponent.";
     pong.setTo1PlayerMode();
@@ -280,7 +297,7 @@ function updateGameState(p1Tracker, p2Tracker) {
   }
 }
 
-function updatePlayerText(player, isDetected) {
+function updatePlayerPresence(player, isDetected) {
   const text = player === 1 ? player1Text : player2Text;
   const overlay = player === 1 ? player1Overlay : player2Overlay;
 

@@ -67,12 +67,13 @@ class Pong extends HTMLElement {
     };
 
     this.gameMode = this.defaultGameSettings.gameMode;
-
+    this.isPaused = false;
     this.svgPong = shadow.getElementById("svgPong");
   }
 
   reset() {
     this.gameMode = "demo";
+    this.showNetAndBall();
     this.dataPong.reset(this.gameSettings);
   }
 
@@ -154,6 +155,8 @@ class Pong extends HTMLElement {
   }
 
   loop() {
+    if (this.isPaused) return;
+
     this.dataPong.update();
     this.svgPong.draw();
   }

@@ -42,6 +42,9 @@ export class DataPong extends EventTarget {
     this.gameState = "playing"; // "playing", "gameOver"
     this.winner = "NULL";
     this.score = { p1: 0, p2: 0 };
+    this.paddleLeft.reset();
+    this.paddleRight.reset();
+    this.ball.reset();
     this.serveLeft = false;
   }
 
@@ -122,7 +125,6 @@ export class DataPong extends EventTarget {
     const gameOver = this.checkForWinner();
     // game over - start new game after a delay
     if (gameOver) {
-      console.log("gameOver: ", gameOver);
       this.dispatchEvent(
         new CustomEvent("gameOver", { bubbles: false, detail: "gameOver" })
       );

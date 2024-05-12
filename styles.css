@@ -37,30 +37,57 @@ main {
   background-color: #000000;
 }
 
+/* PAUSE MODAL */
+#pausedModal {
+  background-color: rgba(0, 0, 0, 0.7);
+  width: 100%;
+  height: 100%;
+  position: fixed;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 13;
+}
+#pausedMessage {
+  position: fixed;
+  color: white;
+  text-align: center;
+  padding: 20px;
+  z-index: 10;
+  background-color: #ff7800;
+  border-radius: 20px;
+}
+#pausedText {
+  font-size: 42px;
+}
+#pausedCountdown {
+  font-size: 30px;
+}
+
+/* GAME TEXT */
 #gameTextHolder {
   position: fixed;
   color: white;
   width: 100%;
   height: 100%;
   text-align: center;
-  top: 0px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
   z-index: 9;
 }
-
 #gameText {
   font-size: 50px;
   max-width: 600px;
 }
-
 #gameInstruction {
   font-size: 30px;
   max-width: 600px;
 }
 
+/* PLAYER PANELS */
 .playerView {
   position: fixed;
   top: 200px;
@@ -68,14 +95,12 @@ main {
   overflow: hidden;
   z-index: 9;
 }
-
 #player1View {
   left: 10px;
 }
 #player2View {
   right: 0px;
 }
-
 .playerOverlay {
   mix-blend-mode: color;
   position: absolute;
@@ -85,14 +110,12 @@ main {
   height: 100%;
   z-index: 9;
 }
-
 .playerCanvas {
   filter: grayscale(1);
   transform: scale(-1, 1);
   width: 250px;
   display: block;
 }
-
 .playerText {
   position: fixed;
   top: 610px;
@@ -105,7 +128,7 @@ main {
   align-items: center;
   text-align: center;
   justify-content: center;
-  z-index: 999999;
+  z-index: 12;
 }
 
 #player1Text {
