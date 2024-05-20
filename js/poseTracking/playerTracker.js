@@ -14,6 +14,20 @@ export class PlayerTracker {
     this.maxY = this.getNoseY();
   }
 
+  get bothHandsAreUp() {
+    const noseY = this.getNoseY();
+    const leftHandY = this.leftHand.y;
+    const rightHandY = this.rightHand.y;
+
+    // gap between shoulders and nose.
+    const threshold = 0.2;
+
+    const lefHandUp = noseY - leftHandY > threshold;
+    const rightHandUp = noseY - rightHandY > threshold;
+
+    return lefHandUp && rightHandUp;
+  }
+
   setLandmarks(landmarks) {
     this.isDetected = landmarks.length > 0;
     this.landmarks = landmarks;

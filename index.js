@@ -201,7 +201,7 @@ function clearTimers() {
   currentTimers = [];
 }
 
-function startCalibration(p1Tracker, p2Tracker) {
+function startCalibration() {
   /**
   When hands are lifted enter a calibration mode.
   Entering Calibration Phase, leave screen to cancel.
@@ -260,10 +260,7 @@ function updateGameState(p1Tracker, p2Tracker) {
   const p1Detected = p1Tracker.isDetected;
   const p2Detected = p2Tracker.isDetected;
 
-  const p1LeftHandUp = p1Tracker.y - p1Tracker.leftHand.y > 0.15;
-  const p1RightHandUp = p1Tracker.y - p1Tracker.rightHand.y > 0.15;
-
-  if (p1LeftHandUp && p1RightHandUp) {
+  if (p1Detected && p1Tracker.bothHandsAreUp) {
     gameState = "startCalibration";
     return;
   }
