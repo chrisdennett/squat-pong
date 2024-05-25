@@ -11,7 +11,7 @@ template.innerHTML = /*html*/ `
         #surround{
           position: fixed;
           left: 250px;
-          top: -30px;
+          top: 25px;
         }
 
         #gradientOverlay {

@@ -90,7 +90,7 @@ main {
 /* PLAYER PANELS */
 .playerView {
   position: fixed;
-  top: 200px;
+  top: 310px;
   border-radius: 30px;
   overflow: hidden;
   z-index: 9;
@@ -118,7 +118,7 @@ main {
 }
 .playerText {
   position: fixed;
-  top: 610px;
+  top: 680px;
   width: 230px;
   height: 110px;
   color: black;
