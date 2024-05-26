@@ -27,6 +27,14 @@ template.innerHTML = /*html*/ `
             stop-color: yellow;
         }
 
+        #screenShine{
+          opacity: 0.7;
+        }
+
+        #gradientOverlay{
+          opacity: 0.5;
+        }
+
         #gradientOverlay::before {
             content: "";
             position: absolute;

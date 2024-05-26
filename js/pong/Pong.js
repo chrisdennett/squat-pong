@@ -19,13 +19,13 @@ class Pong extends HTMLElement {
       displayHeight: 900,
       delayAfterPoint: 1000,
       delayRestartAfterWin: 2000,
-      winningScore: 2,
+      winningScore: 11,
       useGapBug: false,
       useScoreBasedPaddleSizes: false,
       palette: {
         surround: "#7d7d7d",
         inlay: "#4d4d4d",
-        screen: "#0e0e0e",
+        screen: "hsl(28, 88%, 33%)",
         paddleLeft: "white",
         paddleRight: "white",
         ball: "white",
@@ -41,8 +41,8 @@ class Pong extends HTMLElement {
       display: {
         showSides: false,
         showNet: true,
-        useGooeyFilter: true,
-        useTvFilter: true,
+        useGooeyFilter: false,
+        useTvFilter: false,
         fullCabinet: false,
       },
       bounds: {

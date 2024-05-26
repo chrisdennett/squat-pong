@@ -288,7 +288,7 @@ function updateGameState(p1Tracker, p2Tracker) {
     pong.setTo1PlayerMode();
   } else {
     // demo mode
-    gameText.innerHTML = "Demo Mode";
+    gameText.innerHTML = "Step up Player One";
     gameInstruction.innerHTML = "";
     pong.setToDemoMode();
   }
@@ -299,7 +299,7 @@ function updatePlayerPresence(player, isDetected) {
   const overlay = player === 1 ? player1Overlay : player2Overlay;
 
   if (isDetected) {
-    text.style.background = "#ff7800";
+    text.style.background = "hsl(28, 88%, 33%)";
     text.innerHTML = player === 1 ? "PLAYER ONE" : "PLAYER TWO";
     text.style.color = "white";
     overlay.style.display = "inherit";
