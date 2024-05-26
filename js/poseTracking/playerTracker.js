@@ -20,7 +20,7 @@ export class PlayerTracker {
     const rightHandY = this.rightHand.y;
 
     // gap between shoulders and nose.
-    const threshold = 0.2;
+    const threshold = 0.12;
 
     const lefHandUp = noseY - leftHandY > threshold;
     const rightHandUp = noseY - rightHandY > threshold;

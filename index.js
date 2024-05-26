@@ -14,14 +14,14 @@ const player2Overlay = document.getElementById("player2Overlay");
 const pong = document.querySelector("#pong");
 const soundMachine = new SoundMachine();
 
-const gameStates = {
-  0: "awaitingPlayers",
-  1: "playersAvailable",
-  2: "calibration",
-  3: "playingGame",
-  4: "gameOver",
-  5: "demoMode",
-};
+// const gameStates = {
+//   0: "awaitingPlayers",
+//   1: "playersAvailable",
+//   2: "calibration",
+//   3: "playingGame",
+//   4: "gameOver",
+//   5: "demoMode",
+// };
 
 let gameState = "awaitingPlayers";
 let prevGameState = gameState;
