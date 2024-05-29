@@ -23,7 +23,7 @@ class Pong extends HTMLElement {
       useGapBug: false,
       useScoreBasedPaddleSizes: false,
       palette: {
-        surround: "#7d7d7d",
+        surround: "#000000",
         inlay: "#4d4d4d",
         screen: "hsl(28, 88%, 33%)",
         paddleLeft: "white",
@@ -52,7 +52,7 @@ class Pong extends HTMLElement {
         left: 37,
       },
       ball: {
-        serveVx: 1.7,
+        serveVx: 1.3,
         serveVy: 0.5,
         vx: 7,
         maxVy: 2,
@@ -129,6 +129,10 @@ class Pong extends HTMLElement {
   }
   setPaddleTwoY(y) {
     this.dataPong.paddleRight.setY(y);
+  }
+
+  get rallyTally() {
+    return this.dataPong.rallyTally;
   }
 
   get paddleOneY() {

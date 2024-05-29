@@ -2,6 +2,8 @@ import { PoseTracker } from "./js/poseTracking/poseTracker.js";
 import { SoundMachine } from "./js/sound/soundMachine.js";
 import { calculateFPS } from "./js/utils/fps.js";
 
+const rallyTallyScoreText = document.getElementById("rallyTallyScore");
+const bestRallyScoreText = document.getElementById("bestRallyScore");
 const player1Text = document.getElementById("player1Text");
 const player2Text = document.getElementById("player2Text");
 const gameText = document.getElementById("gameText");
@@ -25,6 +27,7 @@ const soundMachine = new SoundMachine();
 
 let gameState = "awaitingPlayers";
 let prevGameState = gameState;
+let bestRallyScore = 0;
 
 const poseTracker = new PoseTracker();
 
@@ -88,6 +91,8 @@ function loop(timeStamp) {
   calculateFPS(timeStamp);
 
   const { p1Tracker, p2Tracker } = poseTracker;
+
+  updateRallyText();
 
   // PLAYER ONE
   updatePlayerPresence(1, p1Tracker.isDetected);
@@ -182,6 +187,14 @@ pong.addEventListener("gameOver", (e) => {
     resetGame();
   });
 });
+
+function updateRallyText() {
+  rallyTallyScoreText.innerHTML = pong.rallyTally;
+  if (pong.rallyTally > bestRallyScore) {
+    bestRallyScore = pong.rallyTally;
+    bestRallyScoreText.innerHTML = bestRallyScore;
+  }
+}
 
 function resetGame() {
   gameState = "awaitingPlayers";

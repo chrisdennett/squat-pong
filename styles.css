@@ -66,6 +66,33 @@ main {
   font-size: 30px;
 }
 
+/* RALLY TALLY TEXT */
+#rallyTextHolder {
+  position: fixed;
+  top: 100px;
+  color: white;
+  left: 0;
+  text-align: center;
+  z-index: 12;
+  width: 100vw;
+  font-size: 30px;
+}
+#rallyTallyTitle {
+  font-size: 20px;
+  /* color: black; */
+  font-weight: bold;
+}
+#rallyTallyText {
+  line-height: 1.9em;
+  font-size: 24px;
+}
+#rallyTallyScore {
+  font-size: 36px;
+}
+#bestRallyScore {
+  font-size: 36px;
+}
+
 /* GAME TEXT */
 #gameTextHolder {
   top: 100px;
@@ -131,6 +158,7 @@ main {
   text-align: center;
   justify-content: center;
   z-index: 12;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
 }
 
 #player1Text {

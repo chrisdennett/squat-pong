@@ -18,6 +18,7 @@ export class DataPong extends EventTarget {
       palette,
     } = params;
 
+    this.rallyTally = 0;
     this.bounds = bounds;
     this.displayWidth = displayWidth;
     this.displayHeight = displayHeight;
@@ -46,6 +47,7 @@ export class DataPong extends EventTarget {
     this.paddleRight.reset();
     this.ball.reset();
     this.serveLeft = false;
+    this.rallyTally = 0;
   }
 
   setGameMode(mode) {
@@ -64,6 +66,7 @@ export class DataPong extends EventTarget {
   }
 
   serve() {
+    this.rallyTally = 0;
     this.ball.serve(this.serveLeft);
     this.serveLeft = !this.serveLeft;
   }
@@ -176,6 +179,7 @@ export class DataPong extends EventTarget {
 
     if (contact) {
       const strikeYRelaiveToPaddle = this.ball.centerPt.y - paddle.centerPt.y;
+      this.rallyTally++;
 
       // max offset for center pt of ball is the paddle height PLUS half
       // the ball height (radius) at the top and at the bottom
