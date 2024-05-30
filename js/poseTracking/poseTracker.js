@@ -45,9 +45,34 @@ export class PoseTracker {
       });
 
       // TODO: ensure player 1 landmarks are on the left and p2 on the right
+      let p1Landmarks = [];
+      let p2Landmarks = [];
+      const firstPoseFound = this.poses.length > 0;
+      const secondPoseFound = this.poses.length > 1;
 
-      let p1Landmarks = this.poses.length > 0 ? this.poses[0].keypoints : [];
-      let p2Landmarks = this.poses.length > 1 ? this.poses[1].keypoints : [];
+      // set first pose to p1 or p2 depending on side found
+      if (firstPoseFound) {
+        const noseX = this.poses[0].keypoints[0].x;
+        console.log("noseX: ", noseX);
+        // if on left set it to p1
+        if (noseX < this.width / 2) {
+          p2Landmarks = this.poses[0].keypoints;
+        } else {
+          p1Landmarks = this.poses[0].keypoints;
+        }
+      }
+
+      // set second pose to p1 or p2 depending on side found
+      if (secondPoseFound) {
+        const noseX = this.poses[1].keypoints[0].x;
+        // if on left set it to p1
+        if (noseX < this.width / 2) {
+          p2Landmarks = this.poses[1].keypoints;
+        } else {
+          p1Landmarks = this.poses[1].keypoints;
+        }
+      }
+
       this.p1Tracker.setLandmarks(p1Landmarks);
       this.p2Tracker.setLandmarks(p2Landmarks);
     }
