@@ -53,7 +53,6 @@ export class PoseTracker {
       // set first pose to p1 or p2 depending on side found
       if (firstPoseFound) {
         const noseX = this.poses[0].keypoints[0].x;
-        console.log("noseX: ", noseX);
         // if on left set it to p1
         if (noseX < this.width / 2) {
           p2Landmarks = this.poses[0].keypoints;
