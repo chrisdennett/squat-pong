@@ -60,7 +60,7 @@ class Pong extends HTMLElement {
       },
       paddle: {
         width: 5,
-        height: 20,
+        height: 20, // 10, 20, 40
         speed: 5,
         computerSpeed: 2,
       },

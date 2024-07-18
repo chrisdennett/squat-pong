@@ -137,54 +137,6 @@ export class PoseTracker {
     return this.video.videoHeight;
   }
 
-  // detectLandmarks(timeStamp) {
-  //   if (!this.poseLandmarker || !this.videoRunning || !this.webcamCanvas)
-  //     return;
-
-  //   if (this.lastVideoTime !== this.video.currentTime) {
-  //     this.lastVideoTime = this.video.currentTime;
-  //     this.poseLandmarker.detectForVideo(
-  //       this.webcamCanvas,
-  //       timeStamp,
-  //       (result) => {
-  //         this.landmarks = result.landmarks;
-
-  //         let p1Landmarks = [];
-  //         let p2Landmarks = [];
-
-  //         // order find poses might not be same as player 1 then player 2
-  //         const firstPoseFound = this.landmarks.length > 0;
-  //         const secondPoseFound = this.landmarks.length > 1;
-
-  //         // set first pose to p1 or p2 depending on side found
-  //         if (firstPoseFound) {
-  //           const noseX = this.landmarks[0][0].x * this.width;
-  //           // if on left set it to p1
-  //           if (noseX < this.width / 2) {
-  //             p2Landmarks = this.landmarks[0];
-  //           } else {
-  //             p1Landmarks = this.landmarks[0];
-  //           }
-  //         }
-
-  //         // set second pose to p1 or p2 depending on side found
-  //         if (secondPoseFound) {
-  //           const noseX = this.landmarks[1][0].x * this.width;
-  //           // if on left set it to p1
-  //           if (noseX < this.width / 2) {
-  //             p2Landmarks = this.landmarks[1];
-  //           } else {
-  //             p1Landmarks = this.landmarks[1];
-  //           }
-  //         }
-
-  //         this.p1Tracker.setLandmarks(p1Landmarks);
-  //         this.p2Tracker.setLandmarks(p2Landmarks);
-  //       }
-  //     );
-  //   }
-  // }
-
   getVideo() {
     return this.video;
   }
@@ -247,8 +199,8 @@ export class PoseTracker {
       this.drawCircle(ctx, pose.keypoints[0]); // nose
       this.drawCircle(ctx, pose.keypoints[1]); // left eye
       this.drawCircle(ctx, pose.keypoints[2]); // right eye
-      this.drawCircle(ctx, pose.keypoints[3]); // left ear
-      this.drawCircle(ctx, pose.keypoints[4]); // right ear
+      // this.drawCircle(ctx, pose.keypoints[3]); // left ear
+      // this.drawCircle(ctx, pose.keypoints[4]); // right ear
     }
   }
 
