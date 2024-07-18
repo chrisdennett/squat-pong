@@ -4,9 +4,13 @@
   "description": "Giant pong game created for FON (Full of Noises)",
   "main": "index.js",
   "scripts": {
+    "run": "npm start",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
   "author": "",
-  "license": "ISC"
+  "license": "ISC",
+  "dependencies": {
+    "express": "^4.19.2"
+  }
 }
