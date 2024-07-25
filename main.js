@@ -1,12 +1,13 @@
 // main.js
 const { app, BrowserWindow } = require("electron");
-const { exec } = require("child_process");
+const { spawn } = require("child_process");
 const waitOn = require("wait-on");
 
 let mainWindow;
 let serverProcess;
 
 function createWindow() {
+  // console.log("create-window");
   mainWindow = new BrowserWindow({
     fullscreen: true,
     frame: false,
@@ -19,19 +20,45 @@ function createWindow() {
   mainWindow.loadURL("http://localhost:3000");
 
   mainWindow.on("closed", function () {
-    mainWindow = null;
+    // console.log("closed");
+    stopServer();
+    // mainWindow = null;
+  });
+
+  // Handle the close event to ensure the server is stopped
+  mainWindow.on("close", (event) => {
+    // console.log("close");
+    stopServer();
+    app.quit(); // Ensure the application quits
   });
 }
 
-app.on("ready", () => {
-  // Start the Express server
-  serverProcess = exec("node server.js", (err, stdout, stderr) => {
-    if (err) {
-      console.error(`Error starting server: ${stderr}`);
-      return;
-    }
-    console.log(stdout);
+function startServer() {
+  // console.log("start-server");
+  serverProcess = spawn("node", ["server.js"], { stdio: "inherit" });
+
+  serverProcess.on("error", (err) => {
+    console.error(`Error starting server: ${err.message}`);
   });
+
+  serverProcess.on("exit", (code, signal) => {
+    console.log(`Server process exited with code ${code} and signal ${signal}`);
+  });
+
+  return serverProcess;
+}
+
+function stopServer() {
+  // console.log("stop-server");
+  if (serverProcess) {
+    serverProcess.kill("SIGTERM");
+  }
+}
+
+app.on("ready", () => {
+  // console.log("ready");
+  // Start the Express server
+  serverProcess = startServer();
 
   // Wait for the server to be ready before creating the window
   waitOn({ resources: ["http://localhost:3000"] }, (err) => {
@@ -44,22 +71,38 @@ app.on("ready", () => {
 });
 
 app.on("window-all-closed", () => {
-  if (serverProcess) {
-    serverProcess.kill(); // Kill the server process
-  }
+  // console.log("window-all-closed");
+  // console.log("process.platform: ", process.platform);
+  stopServer();
   if (process.platform !== "darwin") {
     app.quit();
   }
 });
 
 app.on("activate", () => {
+  // console.log("activate");
   if (mainWindow === null) {
     createWindow();
   }
 });
 
+// Ensure the server process is killed when the app quits
+app.on("before-quit", () => {
+  // console.log("before-quit");
+  stopServer();
+});
+
+app.on("will-quit", () => {
+  // console.log("will-quit");
+  stopServer();
+});
+
 app.on("quit", () => {
-  if (serverProcess) {
-    serverProcess.kill(); // Ensure the server process is killed when the app quits
-  }
+  // console.log("quit");
+  stopServer();
+});
+
+process.on("exit", () => {
+  // console.log("exit");
+  stopServer();
 });
