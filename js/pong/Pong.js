@@ -53,14 +53,14 @@ class Pong extends HTMLElement {
       },
       ball: {
         serveVx: 1.3,
-        serveVy: 0.5,
+        serveVy: 0.3,
         vx: 7,
         maxVy: 2,
-        size: 5,
+        size: 9,
       },
       paddle: {
-        width: 5,
-        height: 20, // 10, 20, 40
+        width: 7,
+        height: 25, // 10, 20, 40
         speed: 5,
         computerSpeed: 2,
       },

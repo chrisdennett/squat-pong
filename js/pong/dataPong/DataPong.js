@@ -1,3 +1,5 @@
+import { playInstruction } from "../../sound/soundFilePlayer.js";
+import { SoundMachine } from "../../sound/soundMachine.js";
 import { DataBall } from "./DataBall.js";
 import { DataInputs } from "./DataInputs.js";
 import { DataPaddle } from "./DataPaddle.js";
@@ -18,6 +20,7 @@ export class DataPong extends EventTarget {
       palette,
     } = params;
 
+    this.soundMachine = new SoundMachine();
     this.rallyTally = 0;
     this.bounds = bounds;
     this.displayWidth = displayWidth;
@@ -37,6 +40,7 @@ export class DataPong extends EventTarget {
     this.paddleLeft = new DataPaddle({ bounds, ...paddle, type: "left" });
     this.paddleRight = new DataPaddle({ bounds, ...paddle, type: "right" });
     this.dataInputs = new DataInputs({});
+    this.serveTimerCount = 3;
   }
 
   reset() {
@@ -66,9 +70,21 @@ export class DataPong extends EventTarget {
   }
 
   serve() {
-    this.rallyTally = 0;
-    this.ball.serve(this.serveLeft);
-    this.serveLeft = !this.serveLeft;
+    // playInstruction("serveCountdown");
+    this.soundMachine.playNote(1);
+    this.serveTimerCount = 3;
+
+    const timer1 = setInterval(() => {
+      this.serveTimerCount--;
+      this.soundMachine.playNote(1);
+      if (this.serveTimerCount <= 0) {
+        clearInterval(timer1);
+        this.rallyTally = 0;
+        this.soundMachine.playNote(2);
+        this.ball.serve(this.serveLeft);
+        this.serveLeft = !this.serveLeft;
+      }
+    }, 1000);
   }
 
   update() {

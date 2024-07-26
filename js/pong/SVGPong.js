@@ -283,8 +283,14 @@ template.innerHTML = /*html*/ `
                     0
                 </text>
 
+                <g id="serveDirectionMarker" style="transform:translate(134px, 105.6px)" fill="#9e4f0ad1">
+                  <polygon id="serveRightMarker" style="transform:translate(22px, 0)" points="-5,-5 10,5 -5,15" class="triangle" />
+                  <polygon id="serveLeftMarker"style="transform:translate(-2px, 0)" points="-5,-5 -20,5 -5,15" class="triangle" />
+                  <rect id="serveBallMarker"  stroke="none"  x="-5" y="-5" width="20" height="20"/>
+                </g>
+                
                 <g id="svgBall">
-                    <path id="ballPath" stroke="none" d="M0 0 h5 v5 h-5z" />
+                  <path id="ballPath" stroke="rgba(173, 101, 48, 0.3)" stroke-width="1" d="M0 0 h5 v5 h-5z" />
                 </g>
 
                 <g id="paddleLeft">
@@ -345,6 +351,7 @@ class SvgPong extends HTMLElement {
     // game elements
     this.gameGroup = shadow.getElementById("game");
     this.ballElem = shadow.getElementById("svgBall");
+    this.serveMarker = shadow.getElementById("serveDirectionMarker");
     this.fullNet = shadow.getElementById("fullNet");
     this.leftPaddle = shadow.getElementById("paddleLeft");
     this.rightPaddle = shadow.getElementById("paddleRight");
@@ -511,13 +518,15 @@ class SvgPong extends HTMLElement {
   }
 
   hideNetAndBall() {
-    this.ballElem.style.display = "none";
-    this.fullNet.style.display = "none";
+    // this.ballElem.style.display = "none";
+    // this.fullNet.style.display = "none";
+    // this.serveMarker.style.display = "none";
     this.beatBarsGrp.style.display = "none";
   }
 
   showNetAndBall() {
     this.ballElem.style.display = "inherit";
+    this.serveMarker.style.display = "none";
     this.fullNet.style.display = "inherit";
     this.beatBarsGrp.style.display = "inherit";
   }

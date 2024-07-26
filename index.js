@@ -1,4 +1,5 @@
 import { PoseTracker } from "./js/poseTracking/poseTracker.js";
+import { playInstruction } from "./js/sound/soundFilePlayer.js";
 import { SoundMachine } from "./js/sound/soundMachine.js";
 import { calculateFPS } from "./js/utils/fps.js";
 
@@ -35,7 +36,7 @@ document.addEventListener("keyup", (e) => {
   const asNum = parseInt(e.key);
 
   if (!isNaN(asNum)) {
-    soundMachine.onNumPress(asNum);
+    soundMachine.playNote(asNum);
   }
 
   if (e.key === "b") {
@@ -220,23 +221,27 @@ function startCalibration() {
   Entering Calibration Phase, leave screen to cancel.
  */
   // Step 1
+  playInstruction("gong");
   gameState = "calibrating";
   gameInstruction.innerHTML = "Leave screen to reset.";
 
   // start calibration
   runFunctionAfterCountdown("Entering Calibration Phase in", 3, () => {
     // setting top marker
-    runFunctionAfterCountdown("STAY STILL</br>Hold for", 5, () => {
+    playInstruction("gong");
+    runFunctionAfterCountdown("STAY STILL</br>Hold for", 3, () => {
       poseTracker.p1Tracker.setMinY();
       poseTracker.p2Tracker.setMinY();
 
       // setting bottom marker
-      runFunctionAfterCountdown("SQUAT</br>Hold for", 5, () => {
+      playInstruction("gong");
+      runFunctionAfterCountdown("SQUAT</br>Hold for", 3, () => {
         poseTracker.p1Tracker.setMaxY();
         poseTracker.p2Tracker.setMaxY();
 
         // Start game
-        runFunctionAfterCountdown("Start Game in", 5, () => {
+        playInstruction("gong");
+        runFunctionAfterCountdown("Start Game in", 3, () => {
           gameText.style.opacity = 0;
           gameInstruction.style.opacity = 0;
           pong.start();
