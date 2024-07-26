@@ -3,6 +3,7 @@ import { playInstruction } from "./js/sound/soundFilePlayer.js";
 import { SoundMachine } from "./js/sound/soundMachine.js";
 import { calculateFPS } from "./js/utils/fps.js";
 
+const rallyTextHolder = document.getElementById("rallyTextHolder");
 const rallyTallyScoreText = document.getElementById("rallyTallyScore");
 const bestRallyScoreText = document.getElementById("bestRallyScore");
 const player1Text = document.getElementById("player1Text");
@@ -190,6 +191,9 @@ pong.addEventListener("gameOver", (e) => {
 });
 
 function updateRallyText() {
+  // don't change the tally if in demo mode.
+  if (pong.gameMode === "demo") return;
+
   rallyTallyScoreText.innerHTML = pong.rallyTally;
   if (pong.rallyTally > bestRallyScore) {
     bestRallyScore = pong.rallyTally;
@@ -226,16 +230,16 @@ function startCalibration() {
   gameInstruction.innerHTML = "Leave screen to reset.";
 
   // start calibration
-  runFunctionAfterCountdown("CALIBRATION!", 3, () => {
+  runFunctionAfterCountdown("CALIBRATE IN", 3, () => {
     // setting top marker
     playInstruction("gong");
-    runFunctionAfterCountdown("STAY STILL</br>AND</br>HOLD</br> for", 3, () => {
+    runFunctionAfterCountdown("STAND</br>STILL</br>for", 3, () => {
       poseTracker.p1Tracker.setMinY();
       poseTracker.p2Tracker.setMinY();
 
       // setting bottom marker
       playInstruction("gong");
-      runFunctionAfterCountdown("SQUAT</br>AND</br>HOLD</br> for", 3, () => {
+      runFunctionAfterCountdown("SQUAT</br>&HOLD</br> for", 3, () => {
         poseTracker.p1Tracker.setMaxY();
         poseTracker.p2Tracker.setMaxY();
 
@@ -245,6 +249,7 @@ function startCalibration() {
           gameText.style.opacity = 0;
           gameInstruction.style.opacity = 0;
           pong.start();
+          rallyTextHolder.style.display = "inherit";
         });
       });
     });
@@ -284,6 +289,7 @@ function updateGameState(p1Tracker, p2Tracker) {
   }
 
   pong.hideNetAndBall();
+  rallyTextHolder.style.display = "none";
 
   // PLAYER ONE
   updatePlayerPresence(1, p1Detected);

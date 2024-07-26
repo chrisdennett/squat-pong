@@ -522,15 +522,25 @@ class SvgPong extends HTMLElement {
   }
 
   hideNetAndBall() {
-    // this.ballElem.style.display = "none";
-    // this.fullNet.style.display = "none";
+    this.ballElem.style.display = "none";
+    this.fullNet.style.display = "none";
     this.beatBarsGrp.style.display = "none";
+    this.scoreLeft.style.display = "none";
+    this.scoreRight.style.display = "none";
+    this.topBoundary.style.display = "none";
+    this.bottomBoundary.style.display = "none";
+    this.footerText.style.display = "none";
   }
 
   showNetAndBall() {
     this.ballElem.style.display = "inherit";
     this.fullNet.style.display = "inherit";
     this.beatBarsGrp.style.display = "inherit";
+    this.scoreLeft.style.display = "inherit";
+    this.scoreRight.style.display = "inherit";
+    this.topBoundary.style.display = "inherit";
+    this.bottomBoundary.style.display = "inherit";
+    this.footerText.style.display = "inherit";
   }
 
   draw() {
