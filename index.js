@@ -226,22 +226,22 @@ function startCalibration() {
   gameInstruction.innerHTML = "Leave screen to reset.";
 
   // start calibration
-  runFunctionAfterCountdown("Entering Calibration Phase in", 3, () => {
+  runFunctionAfterCountdown("CALIBRATION!", 3, () => {
     // setting top marker
     playInstruction("gong");
-    runFunctionAfterCountdown("STAY STILL</br>Hold for", 3, () => {
+    runFunctionAfterCountdown("STAY STILL</br>AND</br>HOLD</br> for", 3, () => {
       poseTracker.p1Tracker.setMinY();
       poseTracker.p2Tracker.setMinY();
 
       // setting bottom marker
       playInstruction("gong");
-      runFunctionAfterCountdown("SQUAT</br>Hold for", 3, () => {
+      runFunctionAfterCountdown("SQUAT</br>AND</br>HOLD</br> for", 3, () => {
         poseTracker.p1Tracker.setMaxY();
         poseTracker.p2Tracker.setMaxY();
 
         // Start game
         playInstruction("gong");
-        runFunctionAfterCountdown("Start Game in", 3, () => {
+        runFunctionAfterCountdown("GAME STARTING", 1, () => {
           gameText.style.opacity = 0;
           gameInstruction.style.opacity = 0;
           pong.start();

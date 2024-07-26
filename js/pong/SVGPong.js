@@ -352,6 +352,10 @@ class SvgPong extends HTMLElement {
     this.gameGroup = shadow.getElementById("game");
     this.ballElem = shadow.getElementById("svgBall");
     this.serveMarker = shadow.getElementById("serveDirectionMarker");
+    this.serveRightMarker = shadow.getElementById("serveRightMarker");
+    this.serveLeftMarker = shadow.getElementById("serveLeftMarker");
+    this.serveBallMarker = shadow.getElementById("serveBallMarker");
+
     this.fullNet = shadow.getElementById("fullNet");
     this.leftPaddle = shadow.getElementById("paddleLeft");
     this.rightPaddle = shadow.getElementById("paddleRight");
@@ -520,13 +524,11 @@ class SvgPong extends HTMLElement {
   hideNetAndBall() {
     // this.ballElem.style.display = "none";
     // this.fullNet.style.display = "none";
-    // this.serveMarker.style.display = "none";
     this.beatBarsGrp.style.display = "none";
   }
 
   showNetAndBall() {
     this.ballElem.style.display = "inherit";
-    this.serveMarker.style.display = "none";
     this.fullNet.style.display = "inherit";
     this.beatBarsGrp.style.display = "inherit";
   }
@@ -534,6 +536,19 @@ class SvgPong extends HTMLElement {
   draw() {
     const { notes } = this.soundMachine;
     this.ballElem.style.fill = this.dataPong.ball.colour;
+
+    // show or hide correct serve marker
+    this.serveBallMarker.style.display = "none";
+    this.serveLeftMarker.style.display = "none";
+    this.serveRightMarker.style.display = "none";
+
+    if (this.dataPong.showServeMarker === "left") {
+      this.serveBallMarker.style.display = "inherit";
+      this.serveLeftMarker.style.display = "inherit";
+    } else if (this.dataPong.showServeMarker === "right") {
+      this.serveBallMarker.style.display = "inherit";
+      this.serveRightMarker.style.display = "inherit";
+    }
 
     if (this.dataPong.gameState === "gameOver") {
       this.showGameOverScreen();
