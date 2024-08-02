@@ -163,6 +163,7 @@ template.innerHTML = /*html*/ `
 
             <!-- GAME ELEMENTS -->
             <g>
+                <g id="beatBars"></g>
                 <g id="net" style="display: none">
                     <path
                         id="netTop"
@@ -334,7 +335,7 @@ template.innerHTML = /*html*/ `
             </g>
 
             <g id="noteBumpers"></g>
-            <g id="beatBars"></g>
+            
             <g id="effectsBumpers"></g>
        
         </g>   
@@ -391,16 +392,16 @@ class SvgPong extends HTMLElement {
     this.beatBarsGrp = shadow.getElementById("beatBars");
     this.effectsBumpers = shadow.getElementById("stopColour2");
 
-    this.footerText = document.createElementNS(
-      "http://www.w3.org/2000/svg",
-      "text"
-    );
-    this.footerText.setAttribute("x", 37);
-    this.footerText.setAttribute("y", 202);
-    this.footerText.setAttribute("font-size", 4);
-    this.footerText.setAttribute("fill", "white");
-    this.footerText.setAttribute("text-anchor", "left");
-    this.gameGroup.appendChild(this.footerText);
+    // this.footerText = document.createElementNS(
+    //   "http://www.w3.org/2000/svg",
+    //   "text"
+    // );
+    // this.footerText.setAttribute("x", 37);
+    // this.footerText.setAttribute("y", 202);
+    // this.footerText.setAttribute("font-size", 4);
+    // this.footerText.setAttribute("fill", "white");
+    // this.footerText.setAttribute("text-anchor", "left");
+    // this.gameGroup.appendChild(this.footerText);
 
     this.beatBars = [];
   }
@@ -410,7 +411,7 @@ class SvgPong extends HTMLElement {
     this.bounds = dataPong.bounds;
     this.soundMachine = soundMachine;
 
-    this.footerText.innerHTML = `oscillator: ${this.soundMachine.currOscillator}`;
+    // this.footerText.innerHTML = `oscillator: ${this.soundMachine.currOscillator}`;
 
     // outer size
     this.svg.setAttribute("width", `${dataPong.displayWidth}px`);
@@ -529,7 +530,7 @@ class SvgPong extends HTMLElement {
     this.scoreRight.style.display = "none";
     this.topBoundary.style.display = "none";
     this.bottomBoundary.style.display = "none";
-    this.footerText.style.display = "none";
+    // this.footerText.style.display = "none";
   }
 
   showNetAndBall() {
@@ -540,7 +541,7 @@ class SvgPong extends HTMLElement {
     this.scoreRight.style.display = "inherit";
     this.topBoundary.style.display = "inherit";
     this.bottomBoundary.style.display = "inherit";
-    this.footerText.style.display = "inherit";
+    // this.footerText.style.display = "inherit";
   }
 
   draw() {
@@ -599,7 +600,7 @@ class SvgPong extends HTMLElement {
     this.scoreLeft.innerHTML = this.dataPong.score.p1;
     this.scoreRight.innerHTML = this.dataPong.score.p2;
 
-    this.footerText.innerHTML = `oscillator: ${this.soundMachine.currOscillator}`;
+    // this.footerText.innerHTML = `oscillator: ${this.soundMachine.currOscillator}`;
   }
 
   positionElement(element, x, y) {

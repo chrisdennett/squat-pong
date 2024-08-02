@@ -60,11 +60,15 @@ export class BeatBar extends EventTarget {
     const insideRightEdge =
       this.isOnRight || ball.x + ball.radius <= this.right;
 
+    if (this.beatBarElement.style.opacity > 0) {
+      this.beatBarElement.style.opacity -= 0.1;
+    }
+
     if (insideLeftEdge && insideRightEdge) {
       // this.beatBarElement.style.opacity = 0;
       if (this.isLastHit === false) {
         // this.beatBarGroup.style.transform = `translate(${ball.x}px, ${this.y}px)`;
-        this.beatBarElement.style.opacity = 0.1;
+        this.beatBarElement.style.opacity = 0.6;
 
         this.beatBarText.style.opacity = 1;
         this.isLastHit = true;
