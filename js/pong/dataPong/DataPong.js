@@ -189,8 +189,8 @@ export class DataPong extends EventTarget {
   }
 
   checkPaddleContact(paddle) {
-    const contactMinY = paddle.y - this.ball.size;
-    const contactMaxY = paddle.y + paddle.height;
+    const contactMinY = paddle.y - (this.ball.size + 1);
+    const contactMaxY = paddle.y + paddle.height + 1;
 
     const contact =
       // below the top of the paddle

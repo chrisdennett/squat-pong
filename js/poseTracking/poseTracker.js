@@ -38,7 +38,7 @@ export class PoseTracker {
         modelType: poseDetection.movenet.modelType.MULTIPOSE_LIGHTNING,
         enableSmoothing: true,
         // minPoseScore: 0.5,
-        // multiPoseMaxDimension: 256,
+        multiPoseMaxDimension: 256, // Must be a multiple of 32 and defaults to 256. The recommended range is [128, 512]
       }
     );
   }
