@@ -112,6 +112,7 @@ main {
   max-width: 600px;
 }
 #gameInstruction {
+  margin-top: 60px;
   font-size: 30px;
   max-width: 600px;
 }

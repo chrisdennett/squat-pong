@@ -4,6 +4,7 @@ export class PlayerTracker {
     this.minY = 100;
     this.maxY = 300;
     this.isDetected = false;
+    this.noseY = -30;
   }
 
   setMinY() {
@@ -34,9 +35,17 @@ export class PlayerTracker {
   }
 
   drawMinMax(ctx, w) {
+    ctx.fillStyle = "rgba(0,0,0,0.6)";
+    ctx.fillRect(0, 0, w, this.minY);
+    ctx.fillRect(0, this.maxY, w, 200);
+
+    // min max markers
     ctx.fillStyle = "yellow";
-    ctx.fillRect(0, this.minY, w, 10);
-    ctx.fillRect(0, this.maxY, w, 10);
+    ctx.fillRect(0, this.minY - 3, w, 6);
+    ctx.fillRect(0, this.maxY - 3, w, 6);
+
+    // nose marker
+    ctx.fillRect(0, this.noseY - 5, w, 10);
   }
 
   get y() {
@@ -73,6 +82,8 @@ export class PlayerTracker {
     if (this.landmarks && this.landmarks.length > 0) {
       pos = this.landmarks[0];
     }
+
+    this.noseY = pos.y;
 
     return pos.y;
   }

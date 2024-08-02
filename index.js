@@ -230,29 +230,30 @@ function startCalibration() {
   gameInstruction.innerHTML = "Leave screen to reset.";
 
   // start calibration
-  runFunctionAfterCountdown("CALIBRATE IN", 3, () => {
-    // setting top marker
-    playInstruction("gong");
-    runFunctionAfterCountdown("STAND</br>STILL</br>for", 3, () => {
-      poseTracker.p1Tracker.setMinY();
-      poseTracker.p2Tracker.setMinY();
 
-      // setting bottom marker
-      playInstruction("gong");
-      runFunctionAfterCountdown("SQUAT</br>&HOLD</br> for", 3, () => {
+  runFunctionAfterCountdown("Setup 1:</br></br>STAND STILL</br>for", 5, () => {
+    poseTracker.p1Tracker.setMinY();
+    poseTracker.p2Tracker.setMinY();
+
+    // setting bottom marker
+    playInstruction("gong");
+    runFunctionAfterCountdown(
+      "Setup 2:</br></br> SQUAT & HOLD</br> for",
+      3,
+      () => {
         poseTracker.p1Tracker.setMaxY();
         poseTracker.p2Tracker.setMaxY();
 
         // Start game
-        playInstruction("gong");
+        // playInstruction("gong");
         runFunctionAfterCountdown("GAME STARTING", 1, () => {
           gameText.style.opacity = 0;
           gameInstruction.style.opacity = 0;
           pong.start();
           rallyTextHolder.style.display = "inherit";
         });
-      });
-    });
+      }
+    );
   });
 }
 
