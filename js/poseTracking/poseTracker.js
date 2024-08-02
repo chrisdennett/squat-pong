@@ -33,7 +33,13 @@ export class PoseTracker {
 
   async setup() {
     this.detector = await poseDetection.createDetector(
-      poseDetection.SupportedModels.MoveNet
+      poseDetection.SupportedModels.MoveNet,
+      {
+        modelType: poseDetection.movenet.modelType.MULTIPOSE_LIGHTNING,
+        enableSmoothing: true,
+        // minPoseScore: 0.5,
+        // multiPoseMaxDimension: 256,
+      }
     );
   }
 
@@ -41,7 +47,7 @@ export class PoseTracker {
     if (this.detector && this.videoRunning) {
       this.poses = await this.detector.estimatePoses(this.video, {
         maxPoses: 2,
-        //flipHorizontal: true,
+        // flipHorizontal: true,
       });
 
       // TODO: ensure player 1 landmarks are on the left and p2 on the right
@@ -49,6 +55,8 @@ export class PoseTracker {
       let p2Landmarks = [];
       const firstPoseFound = this.poses.length > 0;
       const secondPoseFound = this.poses.length > 1;
+
+      console.log("this.poses.length: ", this.poses.length);
 
       // set first pose to p1 or p2 depending on side found
       if (firstPoseFound) {
