@@ -56,7 +56,7 @@ export class PoseTracker {
       const firstPoseFound = this.poses.length > 0;
       const secondPoseFound = this.poses.length > 1;
 
-      console.log("this.poses.length: ", this.poses.length);
+      // console.log("this.poses.length: ", this.poses.length);
 
       // set first pose to p1 or p2 depending on side found
       if (firstPoseFound) {

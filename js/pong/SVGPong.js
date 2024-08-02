@@ -5,7 +5,7 @@ template.innerHTML = /*html*/ `
     <style>
         #game{
           scale: 0.85;
-          transform: translate(20px, 20px);
+          transform: translate(20px, 30px);
         }
 
         #surround{
