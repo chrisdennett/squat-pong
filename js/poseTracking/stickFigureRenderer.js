@@ -11,6 +11,11 @@ export class StickFigureRenderer {
   drawStickFigure(landmarks, color = "white") {
     if (!landmarks || landmarks.length < 17) return;
 
+    // Scale factors to map from video coordinates to canvas dimensions
+    // Assuming landmarks are in the range of 0-640 for x and 0-480 for y (typical webcam resolution)
+    const scaleX = this.canvas.width / 640;
+    const scaleY = this.canvas.height / 480;
+
     this.ctx.strokeStyle = color;
     this.ctx.lineWidth = 4;
 
@@ -18,8 +23,8 @@ export class StickFigureRenderer {
     const nose = landmarks[0];
     // this.ctx.strokeRect(nose.x, nose.y, 100, 100);
     if (nose) {
-      const x = nose.x;
-      const y = nose.y;
+      const x = nose.x * scaleX;
+      const y = nose.y * scaleY;
 
       this.ctx.beginPath();
       this.ctx.arc(x, y, 15, 0, 2 * Math.PI);
@@ -29,10 +34,10 @@ export class StickFigureRenderer {
     // Modify drawLine to handle normalization
     const drawLine = (pointA, pointB) => {
       if (pointA && pointB) {
-        const x1 = pointA.x;
-        const y1 = pointA.y;
-        const x2 = pointB.x;
-        const y2 = pointB.y;
+        const x1 = pointA.x * scaleX;
+        const y1 = pointA.y * scaleY;
+        const x2 = pointB.x * scaleX;
+        const y2 = pointB.y * scaleY;
 
         this.ctx.beginPath();
         this.ctx.moveTo(x1, y1);
