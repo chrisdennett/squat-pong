@@ -1,6 +1,7 @@
-import { PoseTracker } from "./js/poseTracking/poseTracker.js";
-import { playInstruction } from "./js/sound/soundFilePlayer.js";
 import { SoundMachine } from "./js/sound/soundMachine.js";
+import { PoseTracker } from "./js/poseTracking/poseTracker.js";
+import { StickFigureRenderer } from "./js/poseTracking/stickFigureRenderer.js";
+import { playInstruction } from "./js/sound/soundFilePlayer.js";
 import { calculateFPS } from "./js/utils/fps.js";
 
 const rallyTextHolder = document.getElementById("rallyTextHolder");
@@ -14,6 +15,7 @@ const pausedModal = document.getElementById("pausedModal");
 const pausedCountdown = document.getElementById("pausedCountdown");
 const player1Overlay = document.getElementById("player1Overlay");
 const player2Overlay = document.getElementById("player2Overlay");
+const stickFigureCanvas = document.getElementById("stickFigureCanvas");
 
 const pong = document.querySelector("#pong");
 const soundMachine = new SoundMachine();
@@ -32,12 +34,37 @@ let prevGameState = gameState;
 let bestRallyScore = 0;
 
 const poseTracker = new PoseTracker();
+const stickFigureRenderer = new StickFigureRenderer(stickFigureCanvas);
+
+// Resize the canvas to match window dimensions
+function resizeCanvas() {
+  stickFigureCanvas.width = window.innerWidth;
+  stickFigureCanvas.height = window.innerHeight;
+}
+window.addEventListener("resize", resizeCanvas);
+resizeCanvas();
 
 document.addEventListener("keyup", (e) => {
   const asNum = parseInt(e.key);
 
   if (!isNaN(asNum)) {
     soundMachine.playNote(asNum);
+  }
+
+  if (e.key === "m" || e.key === "M") {
+    if (gameState !== "muckAbout") {
+      prevGameState = gameState;
+      gameState = "muckAbout";
+      stickFigureCanvas.style.display = "block";
+      gameText.innerHTML = "Muck About Mode";
+      gameInstruction.innerHTML = "Press M to return to game";
+      pong.hideNetAndBall();
+      rallyTextHolder.style.display = "none";
+    } else {
+      gameState = prevGameState;
+      stickFigureCanvas.style.display = "none";
+      updateGameState(poseTracker.p1Tracker, poseTracker.p2Tracker);
+    }
   }
 
   if (e.key === "b") {
@@ -85,75 +112,91 @@ document.addEventListener("keyup", (e) => {
 });
 
 let pauseCount = 0;
-const maxPauseCount = 3 * 60; // five seconds assuming 60fps
+const maxPauseCount = 3 * 60; // 3 seconds assuming 60fps
 let currentTimers = [];
 
 // game loop
 function loop(timeStamp) {
   calculateFPS(timeStamp);
 
-  const { p1Tracker, p2Tracker } = poseTracker;
-
-  updateRallyText();
-
-  // PLAYER ONE
-  updatePlayerPresence(1, p1Tracker.isDetected);
-
-  // PLAYER TWO
-  updatePlayerPresence(2, p2Tracker.isDetected);
-
-  // game selection phase
-  if (gameState === "awaitingPlayers" || gameState === "playersAvailable") {
-    updateGameState(p1Tracker, p2Tracker);
-  }
-
-  // calibration phase
-  if (gameState === "startCalibration") {
-    startCalibration(p1Tracker, p2Tracker);
-  }
-
-  // if neither tracker is detected set as paused
-  if (
-    !p1Tracker.isDetected &&
-    !p2Tracker.isDetected &&
-    gameState !== "awaitingPlayers"
-  ) {
-    if (gameState !== "paused") {
-      prevGameState = gameState;
+  if (gameState === "muckAbout") {
+    stickFigureRenderer.clear();
+    if (poseTracker.p1Tracker.isDetected) {
+      stickFigureRenderer.drawStickFigure(
+        poseTracker.p1Tracker.landmarks,
+        "purple"
+      );
     }
-    gameState = "paused";
+    if (poseTracker.p2Tracker.isDetected) {
+      stickFigureRenderer.drawStickFigure(
+        poseTracker.p2Tracker.landmarks,
+        "yellow"
+      );
+    }
   } else {
+    const { p1Tracker, p2Tracker } = poseTracker;
+
+    updateRallyText();
+
+    // PLAYER ONE
+    updatePlayerPresence(1, p1Tracker.isDetected);
+
+    // PLAYER TWO
+    updatePlayerPresence(2, p2Tracker.isDetected);
+
+    // game selection phase
+    if (gameState === "awaitingPlayers" || gameState === "playersAvailable") {
+      updateGameState(p1Tracker, p2Tracker);
+    }
+
+    // calibration phase
+    if (gameState === "startCalibration") {
+      startCalibration(p1Tracker, p2Tracker);
+    }
+
+    // if neither tracker is detected set as paused
+    if (
+      !p1Tracker.isDetected &&
+      !p2Tracker.isDetected &&
+      gameState !== "awaitingPlayers"
+    ) {
+      if (gameState !== "paused") {
+        prevGameState = gameState;
+      }
+      gameState = "paused";
+    } else {
+      if (gameState === "paused") {
+        gameState = prevGameState;
+      }
+    }
+
+    // if paused
     if (gameState === "paused") {
-      gameState = prevGameState;
+      pong.isPaused = true;
+      pausedModal.style.opacity = 1;
+      pauseCount++;
+
+      pausedCountdown.innerHTML = `Game will reset in ${Math.round(
+        (maxPauseCount - pauseCount) / 60
+      )} seconds`;
+      // if no player for full 5 seconds, reset to beginning
+      if (pauseCount === maxPauseCount) {
+        resetGame();
+      }
+    } else {
+      pong.isPaused = false;
+      pausedModal.style.opacity = 0;
     }
-  }
 
-  // if paused
-  if (gameState === "paused") {
-    pong.isPaused = true;
-    pausedModal.style.opacity = 1;
-    pauseCount++;
+    pong.loop();
 
-    pausedCountdown.innerHTML = `Game will reset in ${Math.round(
-      (maxPauseCount - pauseCount) / 60
-    )} seconds`;
-    // if no player for full 5 seconds, reset to beginning
-    if (pauseCount === maxPauseCount) {
-      resetGame();
+    if (pong.gameMode !== "demo") {
+      pong.setPaddleOneY(p1Tracker.y);
     }
-  } else {
-    pong.isPaused = false;
-    pausedModal.style.opacity = 0;
-  }
 
-  pong.loop();
-
-  if (pong.gameMode !== "demo") {
-    pong.setPaddleOneY(p1Tracker.y);
-  }
-
-  if (pong.gameMode === "twoPlayer") {
-    pong.setPaddleTwoY(p2Tracker.y);
+    if (pong.gameMode === "twoPlayer") {
+      pong.setPaddleTwoY(p2Tracker.y);
+    }
   }
 
   window.requestAnimationFrame(loop);
@@ -281,6 +324,9 @@ function runFunctionAfterCountdown(text, max, callback) {
 }
 
 function updateGameState(p1Tracker, p2Tracker) {
+  // Skip if in muck about mode
+  if (gameState === "muckAbout") return;
+
   const p1Detected = p1Tracker.isDetected;
   const p2Detected = p2Tracker.isDetected;
 
