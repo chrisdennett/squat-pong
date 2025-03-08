@@ -3,19 +3,40 @@ const { app, BrowserWindow } = require("electron");
 const { spawn } = require("child_process");
 const waitOn = require("wait-on");
 
+const IN_DEV_MODE = false;
+
+// Enable live reload for development
+try {
+  if (IN_DEV_MODE) {
+    require("electron-reloader")(module, {
+      // Add any specific files or directories to watch
+      watchRenderer: true,
+      ignore: ["node_modules/**/*", "videos/**/*"],
+    });
+    console.log("Live reload enabled");
+  }
+} catch (err) {
+  console.error("Failed to initialize electron-reloader:", err);
+}
+
 let mainWindow;
 let serverProcess;
 
 function createWindow() {
   // console.log("create-window");
   mainWindow = new BrowserWindow({
-    fullscreen: true,
-    frame: false,
+    fullscreen: !IN_DEV_MODE,
+    frame: IN_DEV_MODE,
     webPreferences: {
       nodeIntegration: true,
       contextIsolation: false,
     },
   });
+
+  if (IN_DEV_MODE) {
+    mainWindow.webContents.openDevTools();
+    mainWindow.maximize();
+  }
 
   mainWindow.loadURL("http://localhost:3000");
 
