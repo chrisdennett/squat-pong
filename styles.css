@@ -16,6 +16,15 @@
   margin: 0;
 }
 
+#stickFigureCanvas {
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 999;
+  display: none;
+  scale: -1 1;
+}
+
 body {
   line-height: 1.5;
   -webkit-font-smoothing: antialiased;
