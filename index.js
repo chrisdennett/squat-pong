@@ -45,6 +45,12 @@ window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
 function showMuckAboutMode() {
+  // Stop any ongoing calibration or game
+  clearTimers();
+
+  // If a game is in progress, reset it
+  resetGame();
+
   prevGameState = gameState;
   gameState = "muckAbout";
   stickFigureCanvas.style.display = "block";
@@ -52,12 +58,16 @@ function showMuckAboutMode() {
   // gameInstruction.innerHTML = "Press M to return to game";
   pong.hideNetAndBall();
   rallyTextHolder.style.display = "none";
+
+  // Reset pause counter
+  pauseCount = 0;
+  pausedModal.style.opacity = 0;
 }
 
 function hideMuckAboutMode() {
-  gameState = prevGameState;
+  gameState = "awaitingPlayers";
   stickFigureCanvas.style.display = "none";
-  updateGameState(poseTracker.p1Tracker, poseTracker.p2Tracker);
+  resetGame();
 }
 
 document.addEventListener("keyup", (e) => {
