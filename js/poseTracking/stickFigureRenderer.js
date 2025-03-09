@@ -6,7 +6,7 @@ export class StickFigureRenderer {
   }
 
   clear() {
-    this.ctx.fillStyle = "rgba(0, 0, 0, 0.02)";
+    this.ctx.fillStyle = "rgba(0, 0, 0, 0.05)";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 

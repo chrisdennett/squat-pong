@@ -21,6 +21,9 @@ export class PoseTracker {
     this.p1Tracker = new PlayerTracker();
     this.p2Tracker = new PlayerTracker();
 
+    this.firstTrackerFound = new PlayerTracker();
+    this.secondTrackerFound = new PlayerTracker();
+
     this.poses = [];
 
     this.detector = null;
@@ -85,6 +88,18 @@ export class PoseTracker {
           p1Landmarks = this.poses[1].keypoints;
           p1Box = this.poses[1].box;
         }
+      }
+
+      if (this.poses.length > 0) {
+        this.firstTrackerFound.setLandmarks(
+          this.poses[0].keypoints,
+          this.poses[0].box
+        );
+      }
+      if (this.poses.length > 1) {
+        this.secondTrackerFound.setLandmarks([], {});
+      } else {
+        this.secondTrackerFound.setLandmarks([], {});
       }
 
       this.p1Tracker.setLandmarks(p1Landmarks, p1Box);

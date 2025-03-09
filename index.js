@@ -139,12 +139,16 @@ function loop(timeStamp) {
 
   if (gameState === "muckAbout") {
     stickFigureRenderer.clear();
-    if (poseTracker.p1Tracker.isDetected) {
-      stickFigureRenderer.drawStickFigure(poseTracker.p1Tracker, "purple");
-    }
-    if (poseTracker.p2Tracker.isDetected) {
-      stickFigureRenderer.drawStickFigure(poseTracker.p2Tracker, "yellow");
-    }
+
+    stickFigureRenderer.drawStickFigure(
+      poseTracker.firstTrackerFound,
+      "#ff7800"
+    );
+
+    stickFigureRenderer.drawStickFigure(
+      poseTracker.secondTrackerFound,
+      "white"
+    );
   } else {
     const { p1Tracker, p2Tracker } = poseTracker;
 
