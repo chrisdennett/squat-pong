@@ -121,7 +121,7 @@ function loop(timeStamp) {
 
   if (gameState === "muckAbout") {
     stickFigureRenderer.clear();
-    console.log("poseTracker.p1Tracker: ", poseTracker.p1Tracker);
+    // console.log("poseTracker.p1Tracker: ", poseTracker.p1Tracker);
     if (poseTracker.p1Tracker.isDetected) {
       stickFigureRenderer.drawStickFigure(
         poseTracker.p1Tracker.landmarks,
