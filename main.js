@@ -3,7 +3,7 @@ const { app, BrowserWindow } = require("electron");
 const { spawn } = require("child_process");
 const waitOn = require("wait-on");
 
-const IN_DEV_MODE = true;
+const IN_DEV_MODE = false;
 
 // Enable live reload for development
 try {
