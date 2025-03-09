@@ -95,9 +95,14 @@ export class PoseTracker {
           this.poses[0].keypoints,
           this.poses[0].box
         );
+      } else {
+        this.firstTrackerFound.setLandmarks([], {});
       }
       if (this.poses.length > 1) {
-        this.secondTrackerFound.setLandmarks([], {});
+        this.secondTrackerFound.setLandmarks(
+          this.poses[1].keypoints,
+          this.poses[1].box
+        );
       } else {
         this.secondTrackerFound.setLandmarks([], {});
       }
