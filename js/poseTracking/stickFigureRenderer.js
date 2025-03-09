@@ -6,6 +6,7 @@ export class StickFigureRenderer {
   }
 
   clear() {
+    this.ctx.fillStyle = "rgba(0, 0, 0, 0.02)";
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
@@ -20,9 +21,10 @@ export class StickFigureRenderer {
     this.scaleY = this.canvas.height / 480;
 
     this.ctx.strokeStyle = color;
+    this.ctx.fillStyle = color;
     this.ctx.lineWidth = this.lineWidth;
 
-    this.drawNormalisedBox(box);
+    // this.drawNormalisedBox(box);
 
     for (let i = 0; i < landmarks.length; i++) {
       this.drawCircle(landmarks[i]);
@@ -64,7 +66,7 @@ export class StickFigureRenderer {
 
     this.ctx.beginPath();
     this.ctx.arc(x, y, 15, 0, 2 * Math.PI);
-    this.ctx.stroke();
+    this.ctx.fill();
   }
 
   drawLine(pointA, pointB) {

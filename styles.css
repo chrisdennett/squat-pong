@@ -18,11 +18,13 @@
 
 #stickFigureCanvas {
   position: fixed;
-  top: 0;
-  left: 0;
+  top: 80px;
+  left: 280px;
   z-index: 999;
   display: none;
   scale: -1 1;
+  width: 1030px;
+  height: 790px;
 }
 
 body {

@@ -44,6 +44,22 @@ function resizeCanvas() {
 window.addEventListener("resize", resizeCanvas);
 resizeCanvas();
 
+function showMuckAboutMode() {
+  prevGameState = gameState;
+  gameState = "muckAbout";
+  stickFigureCanvas.style.display = "block";
+  // gameText.innerHTML = "Muck About Mode";
+  // gameInstruction.innerHTML = "Press M to return to game";
+  pong.hideNetAndBall();
+  rallyTextHolder.style.display = "none";
+}
+
+function hideMuckAboutMode() {
+  gameState = prevGameState;
+  stickFigureCanvas.style.display = "none";
+  updateGameState(poseTracker.p1Tracker, poseTracker.p2Tracker);
+}
+
 document.addEventListener("keyup", (e) => {
   const asNum = parseInt(e.key);
 
@@ -53,17 +69,9 @@ document.addEventListener("keyup", (e) => {
 
   if (e.key === "m" || e.key === "M") {
     if (gameState !== "muckAbout") {
-      prevGameState = gameState;
-      gameState = "muckAbout";
-      stickFigureCanvas.style.display = "block";
-      gameText.innerHTML = "Muck About Mode";
-      gameInstruction.innerHTML = "Press M to return to game";
-      pong.hideNetAndBall();
-      rallyTextHolder.style.display = "none";
+      showMuckAboutMode();
     } else {
-      gameState = prevGameState;
-      stickFigureCanvas.style.display = "none";
-      updateGameState(poseTracker.p1Tracker, poseTracker.p2Tracker);
+      hideMuckAboutMode();
     }
   }
 
