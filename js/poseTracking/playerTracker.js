@@ -1,6 +1,7 @@
 export class PlayerTracker {
   constructor() {
     this.landmarks = [];
+    this.box = {};
     this.minY = 100;
     this.maxY = 300;
     this.isDetected = false;
@@ -29,9 +30,10 @@ export class PlayerTracker {
     return lefHandUp && rightHandUp;
   }
 
-  setLandmarks(landmarks) {
+  setLandmarks(landmarks, box) {
     this.isDetected = landmarks.length > 0;
     this.landmarks = landmarks;
+    this.box = box;
   }
 
   drawMinMax(ctx, w) {

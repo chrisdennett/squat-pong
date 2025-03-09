@@ -54,6 +54,8 @@ export class PoseTracker {
       // TODO: ensure player 1 landmarks are on the left and p2 on the right
       let p1Landmarks = [];
       let p2Landmarks = [];
+      let p1Box = {};
+      let p2Box = {};
       const firstPoseFound = this.poses.length > 0;
       const secondPoseFound = this.poses.length > 1;
 
@@ -65,8 +67,10 @@ export class PoseTracker {
         // if on left set it to p1
         if (noseX < this.width / 2) {
           p2Landmarks = this.poses[0].keypoints;
+          p2Box = this.poses[0].box;
         } else {
           p1Landmarks = this.poses[0].keypoints;
+          p1Box = this.poses[0].box;
         }
       }
 
@@ -76,13 +80,15 @@ export class PoseTracker {
         // if on left set it to p1
         if (noseX < this.width / 2) {
           p2Landmarks = this.poses[1].keypoints;
+          p2Box = this.poses[1].box;
         } else {
           p1Landmarks = this.poses[1].keypoints;
+          p1Box = this.poses[1].box;
         }
       }
 
-      this.p1Tracker.setLandmarks(p1Landmarks);
-      this.p2Tracker.setLandmarks(p2Landmarks);
+      this.p1Tracker.setLandmarks(p1Landmarks, p1Box);
+      this.p2Tracker.setLandmarks(p2Landmarks, p2Box);
     }
     requestAnimationFrame(this.getPoses.bind(this));
   }

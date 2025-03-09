@@ -9,8 +9,10 @@ export class StickFigureRenderer {
     this.ctx.fillRect(0, 0, this.canvas.width, this.canvas.height);
   }
 
-  drawStickFigure(landmarks, color = "white") {
-    if (!landmarks || landmarks.length < 17) return;
+  drawStickFigure(pose, color = "white") {
+    if (!pose || !pose.landmarks) return;
+
+    const { landmarks, box } = pose;
 
     // Scale factors to map from video coordinates to canvas dimensions
     // Assuming landmarks are in the range of 0-640 for x and 0-480 for y (typical webcam resolution)
@@ -19,6 +21,8 @@ export class StickFigureRenderer {
 
     this.ctx.strokeStyle = color;
     this.ctx.lineWidth = this.lineWidth;
+
+    this.drawNormalisedBox(box);
 
     for (let i = 0; i < landmarks.length; i++) {
       this.drawCircle(landmarks[i]);
@@ -75,5 +79,18 @@ export class StickFigureRenderer {
       this.ctx.lineTo(x2, y2);
       this.ctx.stroke();
     }
+  }
+
+  drawNormalisedBox(box) {
+    if (!box || !box.width) return;
+
+    const { height, width, xMax, xMin, yMax, yMin } = box;
+
+    this.ctx.strokeRect(
+      xMin * this.canvas.width,
+      yMin * this.canvas.height,
+      width * this.canvas.width,
+      height * this.canvas.height
+    );
   }
 }
