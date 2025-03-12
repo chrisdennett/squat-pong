@@ -140,12 +140,12 @@ function loop(timeStamp) {
   if (gameState === "muckAbout") {
     stickFigureRenderer.clear();
 
-    stickFigureRenderer.drawStickFigure(
+    stickFigureRenderer.drawStickFigureWithTrail(
       poseTracker.firstTrackerFound,
       "#ff7800"
     );
 
-    stickFigureRenderer.drawStickFigure(
+    stickFigureRenderer.drawStickFigureWithTrail(
       poseTracker.secondTrackerFound,
       "white"
     );
