@@ -14,18 +14,25 @@ export class StickFigureRenderer {
     if (!pose || !pose.landmarks) return;
 
     // Number of copies to draw
-    const numCopies = 5;
+    const numCopies = 10;
     // How much to scale down each copy
-    const scaleStep = 0.15;
+    const scaleStep = 0.1;
     // How much to offset each copy (creates depth effect)
-    const offsetStep = 20;
+    const offsetStep = 0;
+
+    let opacity = 0;
+    let opacityStep = 0.1 / numCopies;
 
     // Draw multiple copies of the stick figure, starting from smallest/farthest
     for (let copy = numCopies - 1; copy >= 0; copy--) {
       // Calculate scale and opacity for this copy
       const scale = 1 - copy * scaleStep;
-      const opacity = 0.3 + 0.7 * (1 - copy / numCopies);
 
+      if (copy === 0) {
+        opacity = 1;
+      } else {
+        opacity += opacityStep;
+      }
       // Create a color with opacity
       const trailColor =
         color === "white"
@@ -41,6 +48,8 @@ export class StickFigureRenderer {
 
       // Draw the stick figure with modified parameters
       this.drawStickFigure(modifiedPose, trailColor, scale);
+
+      // opacity = 0.05;
     }
   }
 
@@ -141,6 +150,8 @@ export class StickFigureRenderer {
     if (!pt || pt.x === undefined || pt.y === undefined) return;
     const x = pt.x * this.scaleX;
     const y = pt.y * this.scaleY;
+
+    if (scale < 0) return;
 
     this.ctx.beginPath();
     this.ctx.arc(x, y, 15 * scale, 0, 2 * Math.PI);
