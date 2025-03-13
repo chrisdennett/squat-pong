@@ -149,6 +149,9 @@ function loop(timeStamp) {
       poseTracker.secondTrackerFound,
       "white"
     );
+
+    const { p1Tracker, p2Tracker } = poseTracker;
+    updateGameState(p1Tracker, p2Tracker);
   } else {
     const { p1Tracker, p2Tracker } = poseTracker;
 
@@ -341,7 +344,16 @@ function runFunctionAfterCountdown(text, max, callback) {
 
 function updateGameState(p1Tracker, p2Tracker) {
   // Skip if in muck about mode
-  if (gameState === "muckAbout") return;
+  if (gameState === "muckAbout") {
+    // PLAYER ONE
+    updatePlayerPresence(1, true);
+
+    // PLAYER TWO
+
+    updatePlayerPresence(2, true);
+
+    return;
+  }
 
   const p1Detected = p1Tracker.isDetected;
   const p2Detected = p2Tracker.isDetected;
@@ -385,9 +397,14 @@ function updatePlayerPresence(player, isDetected) {
   const text = player === 1 ? player1Text : player2Text;
   const overlay = player === 1 ? player1Overlay : player2Overlay;
 
+  let playerText = player === 1 ? "PLAYER ONE" : "PLAYER TWO";
+  if (gameState === "muckAbout") {
+    playerText = "MUCK ABOUT MODE";
+  }
+
   if (isDetected) {
     text.style.background = "hsl(28, 88%, 33%)";
-    text.innerHTML = player === 1 ? "PLAYER ONE" : "PLAYER TWO";
+    text.innerHTML = playerText;
     text.style.color = "white";
     overlay.style.display = "inherit";
   } else {
